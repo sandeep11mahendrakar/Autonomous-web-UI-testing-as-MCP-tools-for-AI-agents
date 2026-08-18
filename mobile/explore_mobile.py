@@ -22,6 +22,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).parent / ".env")
+except ImportError:
+    pass  # python-dotenv not installed - fall back to shell-exported env vars
+
 from src.view_hierarchy_parser import get_view_hierarchy, parse_elements, get_screen_meta
 from src.mobile_preprocess import preprocess_elements, build_exploration_prompt
 from src.memory_log import store_step, save_log
@@ -41,6 +47,7 @@ TEST_CASES_PATH = str(LOGS_DIR / "mobile_test_cases.json")
 DEFAULT_APP_PACKAGE  = "com.android.settings"
 DEFAULT_APP_ACTIVITY = ".Settings"
 
+
 def take_screenshot(driver, label: str) -> str:
     filename = f"{label}.png"
     full_path = SCREENSHOTS_DIR / filename
@@ -49,6 +56,7 @@ def take_screenshot(driver, label: str) -> str:
     except Exception as e:
         print(f"[explore_mobile] Screenshot failed ({label}): {e}")
     return f"logs/screenshots/{filename}"
+
 
 
 def build_driver(app_package: str, app_activity: str):
@@ -63,7 +71,12 @@ def build_driver(app_package: str, app_activity: str):
     options.app_activity = app_activity
     options.no_reset = True
     options.auto_grant_permissions = True
-    options.app_wait_activity = "*"
+    # Default UiAutomator2 session timeout is only 60s of inactivity - any
+    # pause longer than that (slow LLM call, laptop sleep, network stall)
+    # silently kills the whole Appium session, and every step after that
+    # fails with "session is either terminated or not started". Bump this
+    # generously; it costs nothing while the loop is actively running.
+    options.new_command_timeout = 300
 
     appium_url = f"http://{APPIUM_HOST}:{APPIUM_PORT}"
     print(f"[explore_mobile] Connecting to Appium at {appium_url}...")
@@ -72,7 +85,6 @@ def build_driver(app_package: str, app_activity: str):
 
     print("[explore_mobile] Connected.")
     return driver
-
 
 def main():
     parser = argparse.ArgumentParser(description="Mobile UI Exploration Pipeline")
