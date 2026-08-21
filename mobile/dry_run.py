@@ -1,10 +1,13 @@
 """
-Dry-runs explore_mobile.py's full flow against FakeDriver, with two scenarios:
+Dry-runs explore_mobile.py's full flow against FakeDriver, with three scenarios:
 
-  1. STUB mode  — proves the loop, memory log, and screenshot paths all work.
-  2. "Live" mode with a scripted fake LLM — proves the fixed call_llm()
-     (response_format split) correctly delivers a JSON array to
-     test_generator.py instead of getting mangled into a single action dict.
+  1. STUB mode          — proves the loop, memory log, and screenshot paths all work.
+  2. Scripted fake LLM  — proves the fixed call_llm() (response_format split)
+                           correctly delivers a JSON array to test_generator.py
+                           instead of getting mangled into a single action dict.
+  3. Back-action LLM    — proves the LLM can retreat from a screen via 'back'
+                           and continue exploring a sibling path afterward,
+                           instead of exploration just stopping at a dead end.
 """
 import json
 import os
@@ -103,6 +106,62 @@ def run_live_scenario():
     print("\n[dry_run] PASS: fixed call_llm() correctly delivers array-shaped test-case JSON.")
 
 
+def run_back_action_scenario():
+    print("\n========== SCENARIO 3: back action (sideways exploration) ==========")
+    os.environ["STUB_LLM"] = "false"
+    os.environ["MAX_STEPS"] = "6"
+    llm_client.STUB_MODE = False
+
+    # Script: go into Settings, toggle the switch, BACK out to the main
+    # screen, then type into the search box that was sitting there the
+    # whole time (unreachable if 'back' didn't exist - old code would
+    # have stopped dead the moment it hit "done" on the Settings screen
+    # or looped and self-terminated).
+    scripted_actions = [
+        {"action": "tap",  "elementId": None, "resource_id": "com.example.fakeapp:id/btn_settings",  "value": "", "reason": "go into settings"},
+        {"action": "tap",  "elementId": None, "resource_id": "com.example.fakeapp:id/switch_notify",  "value": "", "reason": "toggle notifications"},
+        {"action": "back", "elementId": None, "resource_id": "",                                       "value": "", "reason": "settings screen exhausted, retreat to try a sibling path"},
+        {"action": "type", "elementId": None, "resource_id": "com.example.fakeapp:id/input_search",   "value": "hello world", "reason": "explore the search box back on the main screen"},
+        {"action": "done", "elementId": None, "resource_id": "",                                       "value": "", "reason": "explored both branches"},
+    ]
+
+    call_count = {"n": 0}
+
+    def fake_call_llm(prompt, response_format="action"):
+        if response_format == "raw":
+            return "[]"
+        idx = call_count["n"]
+        call_count["n"] += 1
+        action = scripted_actions[min(idx, len(scripted_actions) - 1)]
+        print(f"  [fake LLM] step {idx} -> action: {action['action']} ({action['reason']})")
+        return llm_client.parse_action(action)
+
+    llm_client.call_llm = fake_call_llm
+    explore_mobile.call_llm = fake_call_llm
+    test_generator.call_llm = fake_call_llm
+
+    explore_mobile.build_driver = lambda pkg, act: fake_driver.FakeDriver()
+    sys.argv = ["explore_mobile.py", "--app-package", "com.example.fakeapp", "--app-activity", ".MainActivity"]
+    explore_mobile.main()
+
+    with open(explore_mobile.MEMORY_LOG_PATH) as f:
+        log_data = json.load(f)
+
+    print(f"\n[dry_run] steps logged: {len(log_data)} (expected 4: tap, tap, back, type)")
+    for s in log_data:
+        print(f"    step {s['step']}: {s['action']:5s} -> {s['target']:35s} | {s['from_url']} -> {s['to_url']}")
+
+    assert len(log_data) == 4, f"expected 4 steps, got {len(log_data)}"
+    assert log_data[2]["action"] == "back", "step 2 should be the back action"
+    assert log_data[2]["to_url"] == "com.example.fakeapp/.MainActivity", "back should return to MainActivity"
+    assert log_data[3]["action"] == "type", "step 3 should successfully type after backing out"
+    assert log_data[3]["from_url"] == "com.example.fakeapp/.MainActivity", "type should happen back on the main screen"
+    assert "error" not in log_data[3], f"type step should succeed, got error: {log_data[3].get('error')}"
+
+    print("\n[dry_run] PASS: 'back' action correctly retreats and lets exploration continue sideways.")
+
+
 if __name__ == "__main__":
     run_stub_scenario()
     run_live_scenario()
+    run_back_action_scenario()

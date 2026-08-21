@@ -41,6 +41,12 @@ def generate_test_cases(memory_log: list, output_path: str) -> list:
         raw_response = call_llm(prompt, response_format="raw")
     except Exception as e:
         print(f"[test_generator] LLM call failed: {e}")
+        print(
+            "[test_generator] No test cases could be generated this run "
+            "(the LLM call itself failed - see error above). Writing an "
+            "empty file so the path isn't silently missing."
+        )
+        _save_test_cases([], output_path)
         return []
 
     if isinstance(raw_response, list):
@@ -78,8 +84,10 @@ def generate_test_cases(memory_log: list, output_path: str) -> list:
 def _parse_test_cases_json(raw_str: str) -> list:
     """
     Attempts JSON.parse on raw LLM output.
-    Strips markdown fences and retries once on failure.
-    Mirrors _parseTestCasesJSON() in testGenerator.js.
+    Strips markdown fences, then falls back to bracket-extraction if a
+    preamble/postamble sentence is still wrapped around the JSON.
+    Mirrors _parseTestCasesJSON() in testGenerator.js, extended for
+    chattier local models that don't strictly follow "JSON only".
     """
     # Attempt 1: direct parse
     try:
@@ -93,10 +101,28 @@ def _parse_test_cases_json(raw_str: str) -> list:
     try:
         parsed = json.loads(cleaned)
         return parsed if isinstance(parsed, list) else [parsed]
-    except json.JSONDecodeError as e:
-        print(f"[test_generator] JSON parse failed after stripping fences: {e}")
-        print(f"[test_generator] Raw response was: {raw_str[:500]}")
-        return []
+    except json.JSONDecodeError:
+        pass
+
+    # Attempt 3: bracket-extraction. Some models (especially smaller local
+    # ones like llama3.1) add a plain-English sentence before or after the
+    # JSON despite being told not to - e.g. "Here are the test cases:\n[...]".
+    # Markdown-fence stripping alone doesn't remove that. This grabs
+    # everything between the first '[' and the last ']', which survives
+    # that kind of chatty wrapping.
+    start = cleaned.find("[")
+    end = cleaned.rfind("]")
+    if start != -1 and end != -1 and end > start:
+        candidate = cleaned[start:end + 1]
+        try:
+            parsed = json.loads(candidate)
+            return parsed if isinstance(parsed, list) else [parsed]
+        except json.JSONDecodeError as e:
+            print(f"[test_generator] Bracket-extraction parse also failed: {e}")
+
+    print(f"[test_generator] JSON parse failed after all attempts")
+    print(f"[test_generator] Raw response was: {raw_str[:800]}")
+    return []
 
 
 def _save_test_cases(test_cases: list, output_path: str) -> None:
