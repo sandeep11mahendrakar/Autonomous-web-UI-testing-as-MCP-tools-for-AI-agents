@@ -1,46 +1,7 @@
-# ======================
-# Node.js (web)
-# ======================
-web/node_modules/
-web/package-lock.json
-
-# Logs & generated files
-web/logs/*.json
-web/logs/*.html
-web/logs/*.txt
-web/logs/screenshots/*.png
-
-# ======================
-# Python (mobile)
-# ======================
+﻿node_modules/
 __pycache__/
-**/__pycache__/
 *.pyc
-*.pyo
-*.pyd
-
-# Virtual environment
-mobile/venv/
-venv/
-.venv/
-
-# Mobile logs & generated files
-mobile/logs/*.json
-mobile/logs/*.txt
-mobile/logs/screenshots/*.png
-
-# Python egg / dist
-*.egg-info/
-dist/
-build/
-
-# ======================
-# Environment / secrets
-# ======================
+vision/temp_screenshots/
+vision/storage/outputs/*.json
+vision/.env
 .env
-
-# ======================
-# OS files
-# ======================
-.DS_Store
-Thumbs.db
