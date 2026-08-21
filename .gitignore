@@ -5,3 +5,7 @@ vision/temp_screenshots/
 vision/storage/outputs/*.json
 vision/.env
 .env
+
+
+vision/services/yolo-service/screenparser_best.pt
+vision/services/yolo-service/yolov8n.pt
