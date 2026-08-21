@@ -7,15 +7,20 @@ Responsibility:
         response_format="action" -> normalised action dict (exploration steps)
         response_format="raw"    -> raw text response, untouched (test-case JSON arrays)
   - parse_action(response)        → dict   safe parse with fallback
-  - execute_action(driver, action, elements) → performs tap/type on device
+  - execute_action(driver, action, elements) → performs tap/type/back/swipe on device
 
 Environment variables:
-  STUB_LLM=true          — run without real LLM (returns done action / [] for raw)
-  LLM_PROVIDER=openai     — which LLM backend to use (openai | gemini)
-  OPENAI_API_KEY=...      — required when LLM_PROVIDER=openai
-  OPENAI_MODEL=...        — optional, defaults to gpt-4o-mini
-  GEMINI_API_KEY=...      — required when LLM_PROVIDER=gemini
-  GEMINI_MODEL=...        — optional, defaults to gemini-2.0-flash
+  STUB_LLM=true         — run without a real LLM call. This is NOT a demo flag:
+                          dry_run.py depends on it to exercise the whole pipeline
+                          (loop, memory log, screenshots) against a fake driver
+                          with zero external services. Keep it.
+  LLM_PROVIDER=gemini    — which LLM backend to use (openai | gemini | ollama)
+  OPENAI_API_KEY=...     — required when LLM_PROVIDER=openai
+  OPENAI_MODEL=...       — optional, defaults to gpt-4o-mini
+  GEMINI_API_KEY=...     — required when LLM_PROVIDER=gemini
+  GEMINI_MODEL=...       — optional, defaults to gemini-flash-latest
+  OLLAMA_HOST=...        — optional, defaults to http://localhost:11434
+  OLLAMA_MODEL=...       — optional, defaults to llama3.1
 """
 
 import json
@@ -26,7 +31,7 @@ import time
 # by the time this module runs, os.environ already has the values.
 
 STUB_MODE = os.environ.get("STUB_LLM", "false").lower() == "true"
-LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "openai").lower()
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "gemini").lower()
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
@@ -65,10 +70,12 @@ def call_llm(prompt: str, response_format: str = "action"):
         raw_text = _call_openai_raw(prompt)
     elif LLM_PROVIDER == "gemini":
         raw_text = _call_gemini_raw(prompt)
+    elif LLM_PROVIDER == "ollama":
+        raw_text = _call_ollama_raw(prompt)
     else:
         raise RuntimeError(
             f"[llm_client] Unknown LLM_PROVIDER='{LLM_PROVIDER}'. "
-            "Set STUB_LLM=true, or LLM_PROVIDER=openai / gemini."
+            "Set STUB_LLM=true, or LLM_PROVIDER=openai / gemini / ollama."
         )
 
     if response_format == "raw":
@@ -134,9 +141,11 @@ def execute_action(driver, action: dict, elements: list) -> None:
     Mirrors executeAction() in llmClient.js.
 
     Supported actions:
-      tap   — find element by resource_id or elementId, tap it
+      tap   — find element by resource_id, elementId, or on-screen position, tap it
       type  — find element, clear it, type value
       swipe — simple upward swipe (for scrolling)
+      back  — presses the Android back button, so exploration can retreat from
+              a dead-end screen and try a sibling path instead of stopping
       done  — no-op
 
     Args:
@@ -150,6 +159,11 @@ def execute_action(driver, action: dict, elements: list) -> None:
     action_type = action.get("action", "done")
 
     if action_type == "done":
+        return
+
+    if action_type == "back":
+        driver.back()
+        time.sleep(0.5)
         return
 
     if action_type == "swipe":
@@ -207,9 +221,8 @@ def _call_openai_raw(prompt: str) -> str:
 def _call_gemini_raw(prompt: str) -> str:
     """Calls Gemini generateContent API and returns the raw text content.
 
-    NOTE: the old `google-generativeai` package and `gemini-2.0-flash` model
-    are both fully retired (as of mid-2026). This uses the current unified
-    `google-genai` SDK instead: pip install google-genai
+    Uses the current unified `google-genai` SDK (the old `google-generativeai`
+    package and `gemini-2.0-flash` model are both retired): pip install google-genai
 
     Retries a few times on transient 503 UNAVAILABLE ("high demand") errors
     before giving up, since those are Google-side blips, not real failures -
@@ -262,6 +275,73 @@ def _call_gemini_raw(prompt: str) -> str:
             raise
 
 
+def _call_ollama_raw(prompt: str) -> str:
+    """
+    Calls a locally-running Ollama server and returns the raw text content.
+
+    Fully local, fully free, no rate limits and no internet dependency -
+    good fit for an exploration loop that makes many frequent LLM calls,
+    since it never hits a 503 "overloaded" response the way a free-tier
+    hosted API can. The tradeoff is response quality/speed depends on your
+    machine and the model size you pick.
+
+    Setup (one-time):
+      1. Install Ollama: https://ollama.com/download
+      2. Pull a model, e.g.:  ollama pull llama3.1
+      3. Ollama runs its own local server automatically after install
+         (http://localhost:11434) - no separate "ollama serve" step needed
+         on most installs, but run it manually if the request below fails.
+
+    Environment variables:
+      OLLAMA_HOST=http://localhost:11434  - optional, defaults shown
+      OLLAMA_MODEL=llama3.1               - optional, defaults shown
+    """
+    import urllib.error
+    import urllib.request
+
+    host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+    model_name = os.environ.get("OLLAMA_MODEL", "llama3.1")
+
+    payload = json.dumps({
+        "model": model_name,
+        "prompt": prompt,
+        "stream": False,
+        "options": {"temperature": 0.2},
+    }).encode("utf-8")
+
+    request = urllib.request.Request(
+        f"{host}/api/generate",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
+    # Local inference on modest hardware can be slow, and the test-case
+    # generation prompt (built from the whole exploration log) is much
+    # bigger than a single exploration-step prompt - a fixed short timeout
+    # was cutting that call off before it finished. Configurable via env
+    # in case your hardware needs even longer.
+    timeout_seconds = int(os.environ.get("OLLAMA_TIMEOUT", 300))
+    try:
+        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+            body = json.loads(response.read().decode("utf-8"))
+            return body.get("response", "")
+    except TimeoutError:
+        raise RuntimeError(
+            f"[llm_client] Ollama call timed out after {timeout_seconds}s. "
+            f"Local inference on this prompt took too long - try a smaller "
+            f"model (e.g. OLLAMA_MODEL=llama3.2), or raise the limit with "
+            f"OLLAMA_TIMEOUT=<seconds>."
+        )
+    except urllib.error.URLError as e:
+        raise RuntimeError(
+            f"[llm_client] Could not reach Ollama at {host}. "
+            f"Make sure Ollama is installed and running, and that you've "
+            f"pulled the model with: ollama pull {model_name}\n"
+            f"Original error: {e}"
+        )
+
+
 def _normalise_action(d: dict) -> dict:
     """Ensures all expected keys exist with safe defaults."""
     return {
@@ -273,12 +353,57 @@ def _normalise_action(d: dict) -> dict:
     }
 
 
+def _parse_bounds(bounds_str: str):
+    """
+    Parses an Android bounds string like '[100,200][900,300]' into a
+    center point (x, y). Returns None if the string can't be parsed.
+    """
+    try:
+        parts = bounds_str.replace("][", ",").strip("[]").split(",")
+        x1, y1, x2, y2 = (int(p) for p in parts)
+        return ((x1 + x2) // 2, (y1 + y2) // 2)
+    except (ValueError, AttributeError):
+        return None
+
+
+class _CoordinateElement:
+    """
+    Best-effort stand-in for a WebElement, used when an element has no
+    resource_id and no matching text — common for plain Buttons/Views in
+    real apps that don't set android:id. Interacts via on-screen
+    coordinates (derived from the view hierarchy's bounds) instead of a
+    proper element handle.
+
+    clear() is a no-op here — there's no reliable coordinate-based way to
+    clear a field — so send_keys() may append rather than replace existing
+    text. This only kicks in as a last resort after resource_id/text
+    lookups have already failed.
+    """
+    def __init__(self, driver, x, y):
+        self.driver = driver
+        self.x = x
+        self.y = y
+
+    def click(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": self.x, "y": self.y})
+
+    def clear(self):
+        pass
+
+    def send_keys(self, value):
+        self.click()  # tap first to focus the field
+        self.driver.execute_script("mobile: type", {"text": value})
+
+
 def _find_element(driver, action: dict, elements: list):
     """
-    Tries to locate an Appium WebElement using resource_id first,
-    then falls back to elementId-based bounds tap.
+    Tries to locate an Appium WebElement, in order of reliability:
+      1. resource_id, via AppiumBy.ID
+      2. elementId lookup -> that element's own resource_id
+      3. elementId lookup -> that element's visible text, via UiSelector
+      4. elementId lookup -> that element's on-screen bounds (coordinate tap)
 
-    Returns WebElement or None.
+    Returns a WebElement, a _CoordinateElement, or None.
     """
     from appium.webdriver.common.appiumby import AppiumBy
 
@@ -289,21 +414,30 @@ def _find_element(driver, action: dict, elements: list):
         except Exception:
             pass
 
-    # Fallback: look up element in our list by elementId and use bounds
     element_id = action.get("elementId")
+    match = None
     if element_id is not None:
         match = next((el for el in elements if el["elementId"] == element_id), None)
-        if match and match.get("resource_id"):
-            try:
-                return driver.find_element(AppiumBy.ID, match["resource_id"])
-            except Exception:
-                pass
-        if match and match.get("text"):
-            try:
-                return driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR,
-                    f'new UiSelector().text("{match["text"]}")')
-            except Exception:
-                pass
+
+    if match and match.get("resource_id"):
+        try:
+            return driver.find_element(AppiumBy.ID, match["resource_id"])
+        except Exception:
+            pass
+
+    if match and match.get("text"):
+        try:
+            return driver.find_element(
+                AppiumBy.ANDROID_UIAUTOMATOR,
+                f'new UiSelector().text("{match["text"]}")',
+            )
+        except Exception:
+            pass
+
+    if match and match.get("bounds"):
+        center = _parse_bounds(match["bounds"])
+        if center:
+            return _CoordinateElement(driver, *center)
 
     return None
 

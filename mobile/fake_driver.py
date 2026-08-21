@@ -3,7 +3,7 @@ Fake Appium driver for dry-running explore_mobile.py's logic without a real
 device/emulator/Appium server. Simulates a tiny 3-screen app:
 
   Screen A (MainActivity) -- tap 'Go to Settings' --> Screen B (SettingsActivity)
-  Screen B -- tap 'Back' --> Screen A
+  Screen B -- tap 'Back' (or driver.back()) --> Screen A
 
 Only implements the subset of the Appium API that explore_mobile.py,
 view_hierarchy_parser.py, and llm_client.py actually touch.
@@ -80,11 +80,21 @@ class FakeDriver:
             self.current_activity = ".MainActivity"
         print(f"  [FakeDriver] now on screen {self.screen} ({self.current_activity})")
 
+    def back(self):
+        """Simulates the Android system back button (driver.back())."""
+        if self.screen == "B":
+            self.screen = "A"
+            self.current_activity = ".MainActivity"
+        print(f"  [FakeDriver] back() -> screen {self.screen} ({self.current_activity})")
+
     def get_window_size(self):
         return {"width": 1080, "height": 1920}
 
     def swipe(self, start_x, start_y, end_x, end_y, duration):
         print("  [FakeDriver] swipe (no-op on fake app)")
+
+    def execute_script(self, script, params=None):
+        print(f"  [FakeDriver] execute_script({script}, {params}) (no-op on fake app)")
 
     def quit(self):
         print("  [FakeDriver] quit()")
