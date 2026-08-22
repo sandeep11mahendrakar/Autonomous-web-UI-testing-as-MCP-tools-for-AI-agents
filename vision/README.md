@@ -92,9 +92,40 @@ copy .env.example .env
 
 ## Run demo
 
+One-shot test generation (existing mode — unchanged):
+
 ```bash
 node runVision.js https://demoqa.com
 ```
+
+Autonomous multi-page visual exploration (new mode):
+
+```bash
+node runVision.js --explore https://demoqa.com
+# optional overrides:
+#   EXPLORE_MAX_STEPS=25 EXPLORE_MAX_STATES=12 EXPLORE_MAX_DEPTH=8
+#   EXPLORE_MAX_ACTIONS_PER_STATE=4 node runVision.js --explore <url>
+```
+
+The explorer starts from one URL, then repeatedly: screenshot -> YOLO+OCR ->
+visual DOM -> LLM picks ONE action from the CURRENT state's detected elements ->
+execute -> post-action screenshot -> re-detect -> state fingerprint comparison.
+It navigates across real pages, goes back from repeated states, records the full
+history, and finally converts the DISCOVERED workflows into replayable test cases
+(`storage/outputs/test_cases_<run_id>_exploration.json`, executable with
+`src/executeTests.js`).
+
+Outputs per run:
+- `storage/screenshots/<run_id>/state_NNN_*.png` — screenshot + merged evidence per state
+- `storage/outputs/<run_id>_exploration_history.json` — full states + transitions
+- `storage/outputs/<run_id>_exploration_result.json` — summary
+- `storage/outputs/test_cases_<run_id>_exploration.json` — discovered workflows
+
+Known exploration limitations: ScreenParser can misclassify banner/footer text as
+links (pseudo-links get tried and honestly recorded); dynamic/animated regions can
+change fingerprints between captures; coordinate replay depends on pages looking
+the same as during exploration; some interactions (file choosers, iframes, native
+dialogs) are not supported.
 
 ## Visual evidence & screenshot traceability
 

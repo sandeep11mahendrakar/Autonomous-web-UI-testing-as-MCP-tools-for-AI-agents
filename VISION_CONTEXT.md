@@ -141,6 +141,49 @@ Multi-step workflows: the generator now produces 2–6-step sequences
 (fill→fill→submit, choice workflows, navigation, scroll) instead of single clicks;
 4–6 tests per page.
 
+### Autonomous multi-page exploration mode (FINAL)
+
+`node runVision.js --explore <url>` (normal one-shot mode unchanged).
+
+Closed exploration loop, fully Vision-driven (screenshot/YOLO/OCR only):
+```
+capture -> YOLO+OCR+merge -> candidate table from CURRENT state only
+-> LLM picks ONE action (element id only; coordinates are bound to the table,
+   the LLM can never supply stale/invented coordinates)
+-> Playwright executes -> post-action screenshot -> re-detect
+-> state fingerprint (URL + normalized-text hash + element-signature hash)
+-> repeated? mark tried + browser goBack : adopt new state
+-> repeat until termination criteria
+-> discovered workflows converted to replayable test cases (no invented steps)
+```
+
+- Limits (env-overridable): `EXPLORE_MAX_STEPS=25`, `EXPLORE_MAX_STATES=12`,
+  `EXPLORE_MAX_DEPTH=8`, `EXPLORE_MAX_ACTIONS_PER_STATE=4`.
+- Anti-loop protections: fingerprint dedup, per-state action caps, per-(type,text)
+  failure blacklist (a click producing no page change or a non-http destination
+  scores 2 = immediate blacklist; other failures score 1), anti-laziness reprompt
+  refusing `done` while untried candidates remain, transient-LLM-error retry.
+- Non-http destinations (about:blank/ad redirects) are rejected automatically.
+- Outputs per run: `storage/outputs/<run_id>_exploration_history.json`,
+  `<run_id>_exploration_result.json`, `test_cases_<run_id>_exploration.json`
+  (executor-compatible), plus per-state screenshots/merged evidence.
+
+**Validated results (DemoQA, 2026-08-22):**
+- Homepage: **9 states / 8 unique URLs** (/, /elements, /checkbox, /webtables,
+  /upload-download, /buttons, /text-box, /links), 8 actions (7 clicks + 1 fill),
+  termination `max_depth_reached`; discovered 8-step cross-page workflow replayed
+  by the permanent executor: **PASS (input_value verification)**.
+- Forms: 7 states, 6 successful form fills, repeated/dead-end handling exercised,
+  termination `max_actions_per_state_reached`; discovered fill-workflow replay: **PASS**.
+- Evidence: 22 + 23 artifacts in respective run folders.
+
+Exploration limitations (documented, not hidden): ScreenParser banner/footer
+pseudo-links waste attempts (mitigated by the failure blacklist, not eliminated);
+rotating ad creatives change text/position between captures; fingerprinting treats
+every visible text change as a new state (fill-heavy pages generate many states);
+replay assumes pages render as during exploration; file choosers/iframes/native
+dialogs unsupported.
+
 ### Key files
 `runVision.js`, `src/llm.js`, `src/visualDom.js`, `src/testGenerator.js`,
 `src/executeTests.js`, `gateway/app.js`, `services/*/{browser.js, detect.py, ocr.py, merge.js}`.

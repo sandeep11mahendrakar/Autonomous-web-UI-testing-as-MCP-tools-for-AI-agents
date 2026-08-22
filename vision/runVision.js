@@ -24,7 +24,8 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 
-const TARGET_URL = process.argv[2] || 'https://demoqa.com';
+const EXPLORE_MODE = process.argv[2] === '--explore';
+const TARGET_URL = (EXPLORE_MODE ? process.argv[3] : process.argv[2]) || 'https://demoqa.com';
 const GATEWAY = `http://127.0.0.1:${process.env.VISION_GATEWAY_PORT || 5000}`;
 const VISION_ROOT = __dirname;
 
@@ -93,15 +94,27 @@ function killProcessTree(proc) {
     procs.push(gatewayProc);
     await waitFor(`${GATEWAY}/vision/health`, 'Vision gateway');
 
-    console.log('\n[run] All services healthy. Generating tests...\n');
-    const response = await axios.post(
-      `${GATEWAY}/vision/generate-tests`,
-      { url: TARGET_URL },
-      { timeout: 180000 }
-    );
+    console.log(`\n[run] All services healthy. ${EXPLORE_MODE ? 'Starting autonomous exploration...' : 'Generating tests...'}\n`);
 
-    console.log(JSON.stringify(response.data, null, 2));
-    console.log(`\n[run] Done. Results saved to ${response.data.saved_to || 'storage/outputs/'}`);
+    if (EXPLORE_MODE) {
+      const { runExploration } = require('./src/explorer');
+      const result = await runExploration({ url: TARGET_URL });
+      console.log('\n[run] Exploration summary:');
+      console.log(JSON.stringify(result.totals, null, 2));
+      console.log(`[run] Termination: ${result.termination_reason}`);
+      console.log(`[run] Visited URLs:\n  ${result.visited_urls.join('\n  ')}`);
+      console.log(`[run] Test cases from history: ${result.test_cases_file}`);
+      console.log(`[run] Evidence: ${result.screenshots_dir}`);
+    } else {
+      const response = await axios.post(
+        `${GATEWAY}/vision/generate-tests`,
+        { url: TARGET_URL },
+        { timeout: 180000 }
+      );
+
+      console.log(JSON.stringify(response.data, null, 2));
+      console.log(`\n[run] Done. Results saved to ${response.data.saved_to || 'storage/outputs/'}`);
+    }
   } catch (err) {
     console.error('[run] Error:', err.message);
     exitCode = 1;
