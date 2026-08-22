@@ -310,9 +310,11 @@ async function main() {
   return errors > 0 ? 1 : 0;
 }
 
-main()
-  .then((code) => process.exit(code))
-  .catch((err) => {
-    console.error('[execute] Fatal error:', err.message);
-    process.exit(1);
-  });
+if (require.main === module) {
+  main()
+    .then((code) => process.exit(code))
+    .catch((err) => {
+      console.error('[execute] Fatal error:', err.message);
+      process.exit(1);
+    });
+}
