@@ -15,6 +15,14 @@ const { buildTestPrompt } = require('./visualDom');
 
 const OUTPUT_DIR = path.join(__dirname, '..', 'storage', 'outputs');
 
+// Test-case JSON is long (evidence + inferred_behavior per test); the generic
+// chat budget is too small and truncates the array mid-JSON.
+const GENERATION_MAX_TOKENS =
+  Number(process.env.GROQ_GEN_MAX_TOKENS) ||
+  Math.max(Number(process.env.GROQ_MAX_TOKENS) || 700, 3000);
+
+const GENERATION_ATTEMPTS = 2;
+
 function saveTestCases(testCases, sourceFile) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   const outFile = path.join(
@@ -33,27 +41,44 @@ async function generateTestCases(visualDOM) {
   console.log(`[testGenerator] Building prompt from ${visualDOM.elements.length} elements...`);
   const prompt = buildTestPrompt(visualDOM);
 
-  let rawResponse;
-  try {
-    rawResponse = await callLLM(prompt);
-  } catch (err) {
-    console.error('[testGenerator] LLM call failed:', err.message);
-    return {
-      error: 'llm_failed',
-      detail: err.message,
-      test_cases: [],
-    };
+  // Up to 2 attempts: truncated/unparseable LLM responses otherwise lose all
+  // generated tests. Quota errors are not retried.
+  let testCases = [];
+  let llmError = null;
+
+  for (let attempt = 1; attempt <= GENERATION_ATTEMPTS; attempt++) {
+    let rawResponse;
+    try {
+      rawResponse = await callLLM(prompt, { maxTokens: GENERATION_MAX_TOKENS });
+    } catch (err) {
+      llmError = err;
+      console.error(`[testGenerator] LLM call failed (attempt ${attempt}):`, err.message);
+      if (err.status === 429 || (err.message || '').includes('quota')) break;
+      continue;
+    }
+
+    let parsed = extractJSON(rawResponse);
+    if (!Array.isArray(parsed)) {
+      if (parsed && typeof parsed === 'object') parsed = [parsed];
+      else parsed = [];
+    }
+
+    testCases = parsed.filter((tc) => tc.id && tc.objective && Array.isArray(tc.steps));
+    if (testCases.length) break;
+
+    llmError = new Error('no valid test cases parsed from LLM response');
+    console.warn(
+      `[testGenerator] Attempt ${attempt}: 0 valid test cases parsed${attempt < GENERATION_ATTEMPTS ? ' — retrying' : ''}.`
+    );
   }
 
-  let testCases = extractJSON(rawResponse);
-  if (!Array.isArray(testCases)) {
-    if (testCases && typeof testCases === 'object') testCases = [testCases];
-    else testCases = [];
-  }
-
-  testCases = testCases.filter((tc) => tc.id && tc.objective && Array.isArray(tc.steps));
   if (!testCases.length) {
     console.warn('[testGenerator] No valid test cases parsed.');
+    return {
+      error: llmError && llmError.status ? 'llm_failed' : 'no_valid_test_cases',
+      detail: llmError ? llmError.message : 'LLM returned no parseable test cases',
+      test_cases: [],
+    };
   }
 
   const savedPath = saveTestCases(testCases, visualDOM.saved_to);
