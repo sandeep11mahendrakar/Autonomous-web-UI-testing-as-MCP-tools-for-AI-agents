@@ -57,3 +57,6 @@ vision/services/yolo-service/yolov8n.pt
 # ======================
 .DS_Store
 Thumbs.db
+
+# Unified demo runs
+runs/
