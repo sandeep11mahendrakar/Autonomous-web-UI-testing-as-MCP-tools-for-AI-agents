@@ -226,7 +226,40 @@ NOT overall system accuracy (detector/OCR/action quality are reported separately
 
 ---
 
+### Unified A+B demo runner (FINAL)
+
+`node runBoth.js [url]` (interactive URL prompt when no argument is given).
+
+Starts Architecture A (`web/explore.js`) and Architecture B
+(`vision/runVision.js` one-shot + `src/executeTests.js`) CONCURRENTLY against
+the same URL under one shared run ID, with strictly separated output trees:
+
+```
+runs/<run_id>/
+├── run_manifest.json   per-architecture status, timings, artifact lists
+├── dom/                Architecture A artifacts (memory_log, screenshots, ...)
+└── vision/             Architecture B artifacts (evidence, visual DOM,
+                        test cases, execution results)
+```
+
+- Orchestrator only — neither architecture's internals were modified.
+- B's executor is bound to the visual-DOM run created during the SAME unified
+  run; stale test cases from previous runs can never be executed.
+- One architecture failing never blocks the other; manifest records
+  SUCCESS / PARTIAL_FAILURE / FAILED honestly.
+- Ports 5000-5004 pre-checked/freed before B starts; process trees killed on
+  exit; no orphaned processes.
+- API keys: env `GROQ_API_KEY` only (or the existing untracked .env files);
+  never printed, never hard-coded.
+- Validated clean run `run_20260822_145821`: A success (memory log +
+  screenshots; shallow 2-step log is A's known limitation), B success
+  (5/5 tests generated from its own run and executed, 100% pass).
+- Related fix: `web/src/llmClient.js` model is now configurable
+  (`GROQ_MODEL_A`, fallback `GROQ_MODEL`, default `openai/gpt-oss-120b`) —
+  Groq decommissioned the previously hard-coded `llama-3.3-70b-versatile`.
+
 ## 5. ARCHITECTURE A — FINAL STATUS (`web/`)
+
 
 Verified on the integrated branch:
 - Entry point: `web/explore.js <url>`; modules: `src/domExtractor.js`,
