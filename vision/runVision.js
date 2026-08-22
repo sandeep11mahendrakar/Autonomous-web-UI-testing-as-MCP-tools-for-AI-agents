@@ -57,6 +57,18 @@ function spawnProcess(command, args, options = {}) {
   return child;
 }
 
+// On Windows the direct children are cmd.exe shells (shell: true), so killing
+// them alone leaves the real node/python service processes alive and holding
+// ports 5000-5004. Kill the full process tree instead.
+function killProcessTree(proc) {
+  if (!proc || proc.killed || proc.exitCode !== null) return;
+  if (process.platform === 'win32' && proc.pid) {
+    spawn('taskkill', ['/pid', String(proc.pid), '/T', '/F'], { stdio: 'ignore' });
+  } else {
+    proc.kill();
+  }
+}
+
 (async () => {
   const procs = [];
   let exitCode = 0;
@@ -95,9 +107,15 @@ function spawnProcess(command, args, options = {}) {
     exitCode = 1;
   } finally {
     console.log('\n[run] Shutting down services...');
-    for (const proc of procs) {
-      if (!proc.killed) proc.kill();
-    }
+    await Promise.all(procs.map((proc) => new Promise((resolve) => {
+      killProcessTree(proc);
+      // Resolve once exited (or after a grace period if already dead).
+      if (proc.exitCode !== null) resolve();
+      else {
+        const timer = setTimeout(resolve, 3000);
+        proc.once('exit', () => { clearTimeout(timer); resolve(); });
+      }
+    })));
     process.exit(exitCode);
   }
 })();
