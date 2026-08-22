@@ -70,21 +70,38 @@ async function snap(page, relPath) {
 // ---------------------------------------------------------------------------
 
 const GATEWAY_URL = process.env.VISION_GATEWAY_URL || 'http://127.0.0.1:5000';
+const YOLO_URL = process.env.YOLO_SERVICE_URL || 'http://127.0.0.1:5001';
 let REDETECT_ENABLED = false;
+let serviceHandle = null;
 
 async function probeRedetectAvailability() {
   try {
     await axios.get(`${GATEWAY_URL}/vision/health`, { timeout: 2000 });
     REDETECT_ENABLED = true;
+    console.log('[execute] Vision services already running — re-detection enabled.');
   } catch {
-    REDETECT_ENABLED = false;
-    console.warn('[execute] Vision services not reachable — post-action re-detection disabled.');
+    // Nothing alive: start the Vision services ourselves (clean lifecycle).
+    console.log('[execute] Vision services not running — starting them for closed-loop execution...');
+    const { ensureVisionServices, shutdownVisionServices } = require('./serviceManager');
+    const handle = await ensureVisionServices();
+    if (handle.ok) {
+      serviceHandle = handle;
+      REDETECT_ENABLED = true;
+      console.log(
+        `[execute] Vision services started (${handle.started.length} spawned, ` +
+        `${handle.alreadyRunning} already healthy) — re-detection enabled.`
+      );
+    } else {
+      REDETECT_ENABLED = false;
+      console.warn('[execute] Failed to start Vision services — re-detection disabled.');
+    }
+    global.__shutdownVisionServices = () => shutdownVisionServices(handle);
   }
 }
 
 /**
  * Re-run YOLO+OCR+merge on a post-action screenshot via the gateway and
- * return a compact description of the NEW visual state.
+ * return the NEW visual state: full resolvable elements plus counters.
  */
 async function redetectState(absScreenshotPath) {
   if (!REDETECT_ENABLED) return null;
@@ -102,11 +119,91 @@ async function redetectState(absScreenshotPath) {
         .slice(0, 10)
         .map((el) => `${el.type}:${el.text}`)
         .join(' | '),
+      elements_full: (res.data.elements || []).map((el) => ({
+        id: el.id,
+        type: el.type,
+        text: el.text || '',
+        conf: el.confidence ? Number(el.confidence.yolo.toFixed(2)) : null,
+        cx: Math.round((el.bbox.x1 + el.bbox.x2) / 2),
+        cy: Math.round((el.bbox.y1 + el.bbox.y2) / 2),
+        bbox: el.bbox,
+      })),
     };
   } catch (err) {
     console.warn(`[execute] Re-detection failed: ${err.message}`);
     return null;
   }
+}
+
+/** Merged visual-DOM evidence image for a re-detected state. */
+async function renderMergedEvidence(absShot, elementsFull) {
+  try {
+    const annotations = (elementsFull || []).slice(0, 60).map((e) => ({
+      bbox: [
+        e.bbox?.x1 ?? e.cx - 20, e.bbox?.y1 ?? e.cy - 10,
+        e.bbox?.x2 ?? e.cx + 20, e.bbox?.y2 ?? e.cy + 10,
+      ],
+      lines: [`${e.type} ${e.id}`, e.text || ''],
+      color: [255, 200, 0],
+    }));
+    const res = await axios.post(
+      `${YOLO_URL}/render_boxes`,
+      { image_path: absShot, annotations },
+      { timeout: 30000 }
+    );
+    return res.data.annotated_image_b64 || null;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Target resolution against the CURRENT visual state
+// ---------------------------------------------------------------------------
+
+const normTxt = (t) => String(t || '').replace(/\s+/g, ' ').trim().toLowerCase();
+
+/**
+ * Resolve a step's target on the CURRENT detected elements.
+ * 1) type + OCR-text match (primary evidence)
+ * 2) single controlled fallback: nearest same-type element within
+ *    PROXIMITY_PX of the recorded coordinates
+ * Never returns invented coordinates — only centers of detected elements.
+ */
+function resolveTarget(elements, step, proximityPx = 90) {
+  if (!Array.isArray(elements) || !elements.length) {
+    return { resolved: false, reason: 'no_elements_in_current_state' };
+  }
+  const wantType = normTxt(step.target?.type || step.element_type || '');
+  const wantText = normTxt(step.target?.text || '');
+
+  let best = null;
+  let bestScore = 0;
+  for (const el of elements) {
+    let score = 0;
+    if (wantType && normTxt(el.type) === wantType) score += 2;
+    if (wantText && el.text) {
+      const et = normTxt(el.text);
+      if (et.includes(wantText)) score += 3;
+      else if (wantText.includes(et)) score += 2;
+    }
+    if (score > bestScore) { bestScore = score; best = el; }
+  }
+  if (bestScore >= 3) {
+    return { resolved: true, via: 'text_match', element: best };
+  }
+
+  // Controlled re-localization attempt #2: proximity of same/any type.
+  const near = elements
+    .filter((el) => !wantType || normTxt(el.type) === wantType)
+    .map((el) => ({ el, d: Math.hypot(el.cx - step.x, el.cy - step.y) }))
+    .filter((x) => x.d <= proximityPx)
+    .sort((a, b) => a.d - b.d)[0];
+  if (near) {
+    return { resolved: true, via: 'proximity', element: near.el };
+  }
+
+  return { resolved: false, reason: `target not found in current state (wanted type="${wantType}" text="${wantText}")` };
 }
 
 /** Inspect whatever interactive element sits at viewport coordinates (x,y). */
@@ -242,21 +339,87 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
   let status = 'PASS';
   let failureReason = null;
   let scrollBefore = null;
+  let stalePrevented = 0;
+  let unresolvedTargets = 0;
+
+  // Current visual state (resolvable elements). Seeded from the pipeline's
+  // initial visual DOM when available, else detected from the fresh capture.
+  let currentElements = Array.isArray(initialState?.elements_full)
+    ? initialState.elements_full
+    : null;
 
   for (let i = 0; i < testCase.steps.length; i++) {
     const step = normaliseStep(testCase.steps[i], baseUrl);
     const stepStartedAt = Date.now();
 
+    // ------------------------------------------------------------------
+    // Closed-loop target resolution: coordinates must come from the
+    // CURRENT visual state, never blindly from a previous one.
+    // ------------------------------------------------------------------
+    let execStep = { ...step };
+    let resolvedElement = null;
+    let resolutionVia = null;
+    let stalePreventedThisStep = false;
+
+    if (REDETECT_ENABLED && ['click', 'fill'].includes(step.action)) {
+      if (!currentElements) {
+        // One controlled detection of the current screen before acting.
+        const absBefore = beforeScreenshot
+          ? path.join(VISION_ROOT, beforeScreenshot)
+          : null;
+        const detected = absBefore ? await redetectState(absBefore) : null;
+        if (detected?.elements_full) {
+          currentElements = detected.elements_full;
+        }
+      }
+      const resolution = currentElements
+        ? resolveTarget(currentElements, step)
+        : { resolved: false, reason: 're_detection_unavailable' };
+
+      if (!resolution.resolved) {
+        unresolvedTargets += 1;
+        executedSteps.push({
+          index: i + 1,
+          ...step,
+          ok: false,
+          error: 'unresolved_target',
+          reason: resolution.reason,
+          state_id: lastState?.state_id || null,
+          duration_ms: Date.now() - stepStartedAt,
+        });
+        status = 'FAIL';
+        failureReason =
+          `Unresolved target at step ${i + 1} (${step.action}): ${resolution.reason}. ` +
+          `No stale coordinates were clicked.`;
+        console.warn(`[execute]   ${failureReason}`);
+        break;
+      }
+
+      resolvedElement = {
+        id: resolution.element.id,
+        type: resolution.element.type,
+        text: resolution.element.text || '',
+        conf: resolution.element.conf,
+      };
+      resolutionVia = resolution.via;
+      execStep.x = resolution.element.cx;
+      execStep.y = resolution.element.cy;
+      if (execStep.x !== step.x || execStep.y !== step.y) {
+        stalePrevented += 1;
+        stalePreventedThisStep = true;
+      }
+    }
+
     // Pre-action observable state.
     const pointProbeBefore = ['click', 'fill'].includes(step.action)
-      ? await probePoint(page, step.x, step.y).catch(() => null)
+      ? await probePoint(page, execStep.x, execStep.y).catch(() => null)
       : null;
     if (step.action === 'scroll') {
       scrollBefore = await getScrollY(page);
     }
 
     try {
-      await executeAction(page, step);
+      await executeAction(page, execStep);
       await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
       await page.waitForTimeout(500);
 
@@ -269,10 +432,10 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
         absShot = path.join(VISION_ROOT, relShot);
       } catch (_) { /* evidence capture must never break execution */ }
 
-      const pointProbeAfter = ['click', 'fill'].includes(step.action)
-        ? await probePoint(page, step.x, step.y).catch(() => null)
+      const pointProbeAfter = ['click', 'fill'].includes(execStep.action)
+        ? await probePoint(page, execStep.x, execStep.y).catch(() => null)
         : null;
-      const sig = deriveStepSignal(step, pointProbeBefore, pointProbeAfter);
+      const sig = deriveStepSignal(execStep, pointProbeBefore, pointProbeAfter);
       if (sig) signals.push({ step: i + 1, ...sig });
 
       if (absShot) {
@@ -285,10 +448,27 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
             url: page.url(),
             elements: detected.elements,
             ocr_words: detected.ocr_words,
+            merged_evidence: null,
           };
+
+          // Merged YOLO+OCR evidence image for the NEW state.
+          if (detected.elements_full?.length) {
+            try {
+              const b64 = await renderMergedEvidence(absShot, detected.elements_full);
+              if (b64) {
+                fs.writeFileSync(absShot.replace(/\.png$/, '_merged.png'), Buffer.from(b64, 'base64'));
+                entry.merged_evidence = afterScreenshot.replace(/\.png$/, '_merged.png');
+              }
+            } catch (_) {}
+          }
+
           if (lastState && typeof lastState.elements === 'number') {
             entry.elements_delta = detected.elements - lastState.elements;
           }
+          states.push(entry);
+          lastState = detected;
+          currentElements = detected.elements_full || currentElements;
+
           if (step.action === 'scroll' && scrollBefore !== null) {
             const scrollAfter = await getScrollY(page);
             if (scrollAfter !== scrollBefore) {
@@ -300,18 +480,21 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
             }
             scrollBefore = scrollAfter;
           }
-          states.push(entry);
-          lastState = detected;
         }
       }
 
       executedSteps.push({
         index: i + 1,
-        ...step,
+        ...execStep,
         ok: true,
         before_screenshot: i === 0 ? beforeScreenshot : null,
         after_screenshot: afterScreenshot,
         signal: sig || null,
+        resolved_element: resolvedElement,
+        resolution_via: resolutionVia,
+        re_detected: Boolean(currentElements),
+        stale_coordinates_prevented: stalePreventedThisStep,
+        state_id_before: lastState?.state_id || null,
         duration_ms: Date.now() - stepStartedAt,
       });
     } catch (err) {
@@ -332,14 +515,20 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
   const urlChanged = urlAfter !== urlBefore;
   const needUrlChange = requiresUrlChange(testCase);
 
+  // How strong is the EXPECTATION? A strong expectation must never be
+  // satisfied by weak (body-text) evidence.
+  const strength = needUrlChange ? 'strong' : 'weak_or_neutral';
+
   // ------------------------------------------------------------------
   // Verification: strongest available observable evidence first.
   // ------------------------------------------------------------------
   let verification = { method: null, detail: null };
+  let verificationStrength = 'none';
 
   if (status !== 'PASS') {
     verification = { method: 'skipped', detail: failureReason };
   } else if (needUrlChange) {
+    verificationStrength = 'strong';
     if (urlChanged) {
       verification = { method: 'url_change', detail: `navigated to ${urlAfter}` };
     } else {
@@ -351,13 +540,14 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
     if (urlChanged && !needUrlChange) {
       warnings.push(`Unexpected navigation to ${urlAfter}`);
     }
-    const rank = { input_value: 3, checked_state: 3, scroll_position: 2 };
+    const rank = { input_value: 3, checked_state: 3, scroll_position: 2, visual_state_change: 2 };
     const best = signals
       .filter((s) => rank[s.method])
       .sort((a, b) => rank[b.method] - rank[a.method])[0] || null;
 
     if (best) {
       verification = { method: best.method, detail: best.detail };
+      verificationStrength = rank[best.method] >= 3 ? 'strong' : 'moderate';
     } else {
       // Weak fallback only as a last resort — flagged, never silent.
       const textLength = await getBodyTextLength(page);
@@ -366,11 +556,21 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
         failureReason = `No semantic signal and page body text too short (${textLength} chars)`;
         verification = { method: 'none', detail: failureReason };
       } else {
-        verification = {
-          method: 'body_text_fallback',
-          detail: 'no stronger observable signal available; body renders non-trivially',
-        };
-        warnings.push('Verification used weak body-text fallback (no semantic signal)');
+        const semanticHint = /value|fill|select|check|submit|validation|confirmation|appear|dropdown|modal|toggled|selected|accepted|enter/i
+          .test(testCase.expected_result || '');
+        if (semanticHint && states.length === 0) {
+          status = 'FAIL';
+          failureReason =
+            'Semantic expectation could not be verified: no observable state change detected (body-text evidence is not sufficient)';
+          verification = { method: 'none', detail: failureReason };
+        } else {
+          verification = {
+            method: 'body_text_fallback',
+            detail: 'no stronger observable signal available; body renders non-trivially',
+          };
+          verificationStrength = 'weak';
+          warnings.push('Verification used weak body-text fallback (no semantic signal)');
+        }
       }
     }
   }
@@ -402,6 +602,9 @@ async function runTestCase(page, testCase, baseUrl, beforeScreenshot, initialSta
     status,
     failure_reason: failureReason,
     verification,
+    verification_strength: verificationStrength,
+    stale_coordinates_prevented: stalePrevented,
+    unresolved_targets: unresolvedTargets,
     warnings,
     before_screenshot: beforeScreenshot,
     failure_screenshot: null,
@@ -441,6 +644,15 @@ async function main() {
       url: vdom.source_url || baseUrl,
       elements: vdom.element_count ?? null,
       ocr_words: vdom.raw?.ocr_words_found ?? null,
+      elements_full: (vdom.elements || []).map((el) => ({
+        id: el.id,
+        type: el.type,
+        text: el.text || '',
+        conf: el.confidence ? Number(el.confidence.yolo.toFixed(2)) : null,
+        cx: Math.round((el.bbox.x1 + el.bbox.x2) / 2),
+        cy: Math.round((el.bbox.y1 + el.bbox.y2) / 2),
+        bbox: el.bbox,
+      })),
     };
     stateCounter = 1; // state_001 belongs to the pipeline capture
   } catch (_) { /* standalone execution without a pipeline run */ }
@@ -451,6 +663,11 @@ async function main() {
   const cleanup = async () => {
     try { await context.close(); } catch {}
     try { await browser.close(); } catch {}
+    // Shut down any Vision services this run started (never external ones).
+    if (typeof global.__shutdownVisionServices === 'function') {
+      await global.__shutdownVisionServices();
+      console.log('[execute] Vision services started by this run were shut down.');
+    }
   };
   process.on('SIGINT', async () => {
     console.log('\n[execute] Interrupted — shutting down browser...');
@@ -562,6 +779,10 @@ async function main() {
       states_observed: statesSeen,
       verification_methods: verificationMethods,
       weak_verifications: unsupportedVerifications,
+      stale_coordinates_prevented: results.reduce(
+        (n, r) => n + (r.stale_coordinates_prevented || 0), 0),
+      unresolved_targets: results.reduce(
+        (n, r) => n + (r.unresolved_targets || 0), 0),
       warnings: warningCount,
     },
     results,

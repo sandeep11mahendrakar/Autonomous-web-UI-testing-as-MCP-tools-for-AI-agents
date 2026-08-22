@@ -440,6 +440,10 @@ async function runExploration({ url, runId }) {
       x: ['click', 'fill'].includes(s.action) ? s.x : null,
       y: ['click', 'fill'].includes(s.action) ? s.y : null,
       value: s.value || '',
+      // Target hint so replay can re-resolve on the CURRENT visual state.
+      ...(s.elementType || s.elementText ? {
+        target: { type: s.elementType || '', text: s.elementText || '' },
+      } : {}),
       ...(s.action === 'navigate' && s.url ? { url: s.url } : {}),
     })),
     expected_result: 'All recorded actions execute without errors and the final page renders non-trivially.',

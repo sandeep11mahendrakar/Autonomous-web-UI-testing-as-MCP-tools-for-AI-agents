@@ -112,30 +112,58 @@ node src/executeTests.js <test_cases.json> <base_url> [output_path]
 
 Execution is no longer open-loop. For every executed action:
 ```
-pre-probe (element at click/fill point)
-  → Playwright action
+current-state screenshot → YOLO+OCR → visual DOM
+  → target RE-RESOLVED on the CURRENT state (type + OCR text match;
+    one controlled proximity fallback; never stale coordinates)
+  → Playwright action at the resolved centre
   → post-action screenshot      storage/screenshots/<run_id>/state_NNN_after_<action>.png
   → YOLO+OCR+merge RE-DETECTION of that screenshot via gateway /vision/process
-  → new visual state recorded   {state_id, screenshot, url, elements, ocr_words, elements_delta}
+  → new visual state recorded   {state_id, screenshot, url, elements, ocr_words,
+                                 elements_delta, merged evidence image}
   → semantic verification signal collected
-  → assertion → PASS/FAIL with named verification method
+  → assertion → PASS/FAIL with named verification method + strength
 ```
 
-Verification methods (strongest-first), recorded per test in a `verification`
-field and summarised per run:
+Service lifecycle: the executor AUTO-STARTS all Vision services (including
+gateway) via `src/serviceManager.js` when none are running — no dependency on a
+previous `runVision.js` process. Only services it spawned are shut down
+(Windows-safe process-tree kill); pre-existing processes are left untouched.
+No orphaned processes or listeners remain after a run.
+
+Per-step target resolution: generated steps carry `target {type, text}` hints;
+the executor re-finds the element in the freshly detected state and uses ITS
+centre coordinates. If the target cannot be found, the step FAILS with
+`unresolved_target` — stale coordinates are never clicked. Steps record
+`resolved_element`, `resolution_via`, `re_detected`,
+`stale_coordinates_prevented`, `state_id_before`; tests record
+`stale_coordinates_prevented` / `unresolved_targets` totals.
+
+Verification methods (strongest-first), recorded per test with a
+`verification` field plus `verification_strength` (strong / moderate / weak / none):
 `input_value` (field provably holds typed value) · `checked_state` (radio/checkbox
 toggled — labels resolved to their controls via HTMLLabelElement.control) ·
-`scroll_position` · `url_change` · `body_text_fallback` (weak; always flagged as
-a warning, never silently counted as strong evidence).
+`scroll_position` · `visual_state_change` · `url_change` · `body_text_fallback`
+(weak; always flagged as a warning). A strong semantic expectation that finds no
+observable signal is FAILED — body-text evidence can never silently satisfy it.
 
 Confidence policy for candidate elements: HIGH ≥0.6 normal; MEDIUM 0.3–0.6 allowed
 with conservative expectations only; LOW <0.3 or no OCR text excluded.
 
 Evidence artifacts per run (`vision/storage/screenshots/<run_id>/`, gitignored):
-initial/YOLO/OCR/merged annotated images for the captured state, before-test,
-per-action post-action, and failure screenshots. All JSON outputs reference exact
-relative paths; previous runs are never overwritten. Annotated images are rendered
-from existing detection data by the YOLO service (`/render_boxes`) — no extra detector.
+initial/YOLO/OCR/merged annotated images for the captured state, per-action
+post-action screenshots AND merged evidence for every re-detected state, and
+failure screenshots. All JSON outputs reference exact relative paths; previous
+runs are never overwritten. Annotated images are rendered from existing detection
+data by the YOLO service (`/render_boxes`) — no extra detector.
+
+**Closed-loop validated runs (2026-08-22):**
+- Forms: 6/6 multi-step tests PASS, 12 states re-detected, 13 merged evidence
+  images, 2 stale-coordinate corrections, verification: input_value ×1,
+  checked_state ×2, scroll_position ×2, fallback ×1 (flagged).
+- Homepage cross-page workflow replay: 8 states re-detected across 7 URLs;
+  every step resolved from its fresh state (`elem-3 "Elements"` → /elements,
+  `elem-15 "Check Box"` → /checkbox, … `elem-22 "Links"` → /links);
+  final fill verified strong (input_value). PASS.
 
 Multi-step workflows: the generator now produces 2–6-step sequences
 (fill→fill→submit, choice workflows, navigation, scroll) instead of single clicks;

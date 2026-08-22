@@ -6,7 +6,7 @@
  * Keeps token usage low by summarising only meaningful elements.
  */
 
-const MAX_ELEMENTS = 40;
+const MAX_ELEMENTS = 30;
 
 function buildTestPrompt(visualDOM) {
   const elements = (visualDOM.elements || [])
@@ -34,7 +34,7 @@ PAGE TEXT SUMMARY:
 ${(visualDOM.raw && visualDOM.raw.full_text ? visualDOM.raw.full_text : '').slice(0, 800)}
 
 DETECTED ELEMENTS (id, type, text, centre coordinates, detection confidence):
-${JSON.stringify(compact, null, 2)}
+${JSON.stringify(compact)}
 
 EVIDENCE DISCIPLINE — every test case MUST separate three things:
 1. "evidence": ONLY observable visual facts from the data above (element type, text, position, confidence). Quote the element ids you rely on.
@@ -74,8 +74,9 @@ OUTPUT SCHEMA — each test case is a JSON object with exactly these fields:
 - "objective": what to verify
 - "evidence": array of at most 4 strings — the visual facts used (each under ~12 words)
 - "inferred_behavior": string — your hypothesis in one short sentence
-- "steps": array of { "action": "click"|"fill"|"navigate"|"scroll", "x": number|null, "y": number|null, "value": string }
+- "steps": array of { "action": "click"|"fill"|"navigate"|"scroll", "x": number|null, "y": number|null, "value": string, "target": {"type": string, "text": string} }
   Use element centre coordinates for click/fill. Use null coordinates for navigate and scroll. For scroll, y is the pixel amount to scroll down (e.g. 600).
+  For every click/fill step, "target" MUST copy the element's type and text EXACTLY as given in DETECTED ELEMENTS (e.g. {"type":"button","text":"Submit"}). The executor uses target to re-find the element on the CURRENT screen after earlier steps may have navigated — coordinates alone become stale.
 - "expected_result": string — runtime-verifiable outcome
 - "expect_navigation": boolean
 - "expected_text": string or null
