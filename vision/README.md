@@ -41,6 +41,7 @@ vision/
 │   ├── llm.js            Vision-specific LLM client (Groq)
 │   ├── visualDom.js      Prompt builder from visual DOM
 │   └── testGenerator.js  Test case generation orchestration
+│   └── executeTests.js   Coordinate-based test executor
 ├── runVision.js          One-shot demo entry point
 ├── package.json
 ├── .env.example
@@ -74,6 +75,24 @@ copy .env.example .env
 ```bash
 node runVision.js https://demoqa.com
 ```
+
+## Execute generated tests
+
+Re-run saved test cases against their source URL without regenerating them
+(no LLM call, no services needed):
+
+```bash
+cd vision
+node src/executeTests.js storage/outputs/test_cases_<name>.json https://demoqa.com
+# optional third arg: custom report path (default storage/outputs/execution_results.json)
+```
+
+Each test navigates to the base URL, executes its steps via coordinate-based
+Playwright actions (`click`/`fill`/`navigate`), and verifies outcomes using
+URL-change and body-text heuristics. A summary with per-test status,
+failure reasons, executed steps and timings is written to
+`storage/outputs/execution_results.json`.
+
 
 Or start each service manually in separate terminals:
 
