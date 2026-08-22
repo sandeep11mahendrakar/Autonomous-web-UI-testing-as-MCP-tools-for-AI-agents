@@ -46,6 +46,23 @@ def load_image(data):
     return None
 
 
+def draw_annotation(img, bbox, lines, color=(0, 220, 0)):
+    """Draw one bounding box with multi-line label text onto img (in place)."""
+    x1, y1, x2, y2 = [int(v) for v in bbox[:4]]
+    cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
+    ty = max(y1 - 6, 14)
+    for line in lines:
+        if not line:
+            continue
+        # dark outline + white text so labels stay readable on any background
+        cv2.putText(img, str(line), (x1 + 2, ty),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 3, cv2.LINE_AA)
+        cv2.putText(img, str(line), (x1 + 2, ty),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1, cv2.LINE_AA)
+        ty += 16
+    return img
+
+
 @app.route("/health")
 def health():
     return jsonify({"status": "ok", "service": "yolo", "model": os.path.basename(MODEL_PATH)})
@@ -84,14 +101,68 @@ def detect():
             )
 
     height, width = results[0].orig_shape[:2]
-    return jsonify(
-        {
-            "count": len(detections),
-            "detections": detections,
-            "image_size": {"width": width, "height": height},
-            "inference_ms": inference_ms,
-        }
-    )
+
+    response = {
+        "count": len(detections),
+        "detections": detections,
+        "image_size": {"width": width, "height": height},
+        "inference_ms": inference_ms,
+    }
+
+    # Optional visual evidence: same detections rendered onto the image.
+    if data.get("annotate"):
+        annotated = img.copy()
+        for det in detections:
+            draw_annotation(
+                annotated,
+                det["bbox"],
+                [det["label"], f"{det['confidence']:.2f}"],
+            )
+        ok, buf = cv2.imencode(".png", annotated)
+        if ok:
+            response["annotated_image_b64"] = base64.b64encode(buf).decode("ascii")
+
+    return jsonify(response)
+
+
+@app.route("/render_boxes", methods=["POST"])
+def render_boxes():
+    """Render arbitrary annotations onto an image.
+
+    Body: { image_path | image_b64, annotations: [ { bbox: [x1,y1,x2,y2],
+            lines: ["label", "0.82", ...], color: [B,G,R](optional) } ] }
+    Returns: { annotated_image_b64 }
+    Used for YOLO/OCR/merged visual-DOM evidence without touching originals.
+    """
+    data = request.get_json(force=True) or {}
+    try:
+        img = load_image(data)
+    except FileNotFoundError:
+        return jsonify({"error": f"File not found: {data.get('image_path')}"}), 404
+    if img is None:
+        return jsonify({"error": "Provide a readable image via image_path or image_b64"}), 400
+
+    annotated = img.copy()
+    count = 0
+    for ann in data.get("annotations") or []:
+        bbox = ann.get("bbox")
+        if not bbox or len(bbox) < 4:
+            continue
+        color = ann.get("color") or (0, 220, 0)
+        try:
+            color = tuple(int(c) for c in color[:3])
+        except (TypeError, ValueError):
+            color = (0, 220, 0)
+        draw_annotation(annotated, bbox, ann.get("lines") or [], color)
+        count += 1
+
+    ok, buf = cv2.imencode(".png", annotated)
+    if not ok:
+        return jsonify({"error": "Failed to encode annotated image"}), 500
+    return jsonify({
+        "annotated_image_b64": base64.b64encode(buf).decode("ascii"),
+        "rendered": count,
+    })
 
 
 if __name__ == "__main__":

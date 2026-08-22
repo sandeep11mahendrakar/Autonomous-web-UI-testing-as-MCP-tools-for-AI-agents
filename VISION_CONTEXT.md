@@ -1,199 +1,265 @@
-﻿# Vision Architecture — FINAL Project Context
+﻿# Capstone Project — FINAL Combined Context (Vision Architecture B focus)
 
-This document is the authoritative handoff for the Vision Architecture (Architecture B)
-of the Capstone Project. Updated after FINAL TECHNICAL VALIDATION on 2026-08-22.
-All metrics below are measured from actual pipeline runs and saved result files.
+This document is the authoritative handoff for the combined Capstone repository
+("AI-Assisted Test Case Generation for Mobile and Web UI/UX Applications", team 101,
+PES University). Updated 2026-08-22 after final integration, validation, and release
+branch creation. All metrics are measured from actual pipeline runs and saved result files.
 
 ---
 
-## 1. PROJECT IDENTITY
+## 1. REPOSITORY / GIT STATE (FINAL)
 
 - **Active working repository:** `C:\Users\sandeep\pes\vs code\Capstone-Project`
-- **Remote URL:** `https://github.com/Neonishh/Capstone-Project.git`
-- **Delivery branch:** `vision-architecture-final` (created from local `main`; do all Vision work here)
-- **Final Vision commit:** see §16 GIT CHECKPOINT
+- **Remote:** `https://github.com/Neonishh/Capstone-Project.git`
+- **FINAL INTEGRATED BRANCH:** `capstone-final-integrated`
+- **Final integrated commit:** `a317bfe0be0b405b419bed653e8d112b9afe3218`
+  (`feat: integrate web vision architecture` — merge of Vision work into team main)
+- Remote branch exists and is synchronized with local (verified via ls-remote).
+- **Pull Request #5:** `capstone-final-integrated` → `main`, title
+  "feat: integrate Vision Architecture with Web and Mobile". Open, mergeable, NOT merged.
+- **origin/main was NOT modified** by the integration work; it remains at
+  `5ddae6404624d508df04fd7040467e01c556399a`.
+- `vision-architecture-final` branch was deleted (local + remote) after verifying via
+  `git merge-base --is-ancestor` that all of its content is contained in the final branch.
+- Remaining remote branches: `main`, `mobile-exploration`, `web-branch`,
+  `feature/web-exploration-arch-a`, `integration/web-vision-mobile`,
+  `arch-b-vision` (old obsolete prototype, left untouched deliberately),
+  `capstone-final-integrated`.
 
-### Two local clones — IMPORTANT
+### IMPORTANT: local vs remote main distinction
 
-| Path | Role |
-|------|------|
-| `C:\Users\sandeep\pes\vs code\Capstone-Project` | **ACTIVE / CORRECT** — contains the current Vision implementation |
-| `C:\Users\sandeep\pes\CAPSTONE\Capstone-Project` | **OLDER COPY** — do not use |
+The LOCAL `main` ref in this clone has diverged from origin/main (it holds old unpushed
+Vision commits, ahead 4 / behind 4). This is a pre-existing local-only artifact and is NOT
+the team state. The team's true main is `origin/main` @ `5ddae64`. Do not push local main;
+reset it to origin/main only if explicitly requested.
+
+### IMPORTANT: correct branch for current work
+
+- `vision-architecture-final` was the standalone completed Vision branch — now DELETED.
+- `capstone-final-integrated` is the FINAL COMBINED branch (team main + Vision + Mobile).
+- All current combined work belongs on `capstone-final-integrated`.
+- Do not confuse this clone with the older local copy:
+  `C:\Users\sandeep\CAPSTONE\Capstone-Project` → actually
+  `C:\Users\sandeep\pes\CAPSTONE\Capstone-Project`. NEVER use it.
 
 ---
 
-## 2. CAPSTONE OVERVIEW
+## 2. FINAL PROJECT STRUCTURE
 
-The Capstone project is **"AI-Assisted Test Case Generation for Mobile and Web UI/UX
-Applications"** by team 101 at PES University.
+```
+capstone-final-integrated /
+├── web/       = Architecture A (DOM + memory log, selector-based)
+├── vision/    = Architecture B / Web Vision (screenshot + ScreenParser YOLO + OCR)
+├── mobile/    = Mobile architecture (Appium-based exploration, offline dry-run framework)
+├── database/  = database components (capstone.db)
+├── docs/      = documentation / dashboard (Phase-1 reports, PPTs)
+└── VISION_CONTEXT.md  ← this file
+```
 
-### Architecture A — DOM + Memory Log (text-based LLM)
-Playwright extracts DOM elements; a text LLM generates selector-based action plans.
-Implemented in `web/`. Independent of Architecture B.
-
-### Architecture B — Vision Architecture ← this document
-Screenshot → ScreenParser YOLO UI detection → Tesseract OCR → merge into a visual DOM
-→ Groq LLM generates coordinate-based test cases → permanent Playwright executor runs
-them via pixel coordinates only. Implemented in `vision/`.
+All three architectures coexist independently. No cross-wiring.
 
 ---
 
-## 3. ARCHITECTURE (FINAL)
+## 3. VISION ARCHITECTURE B — FINAL IMPLEMENTATION
+
+### Pipeline (actual, verified)
 
 ```
 Website URL
-    ↓
-[browser-service]  :5004  screenshot PNG (1280×900, headless Chromium)
-    ↓ (parallel)
-[yolo-service]     :5001  ScreenParser UI detections (bounding boxes + labels)
-[ocr-service]      :5002  Tesseract words with bounding boxes
-    ↓
-[merge-service]    :5003  visual DOM JSON
-    ↓
-[gateway]          :5000  /vision/process, /vision/generate-tests
-    ↓
-[src/testGenerator.js] → prompt built by [src/visualDom.js]
-    ↓
-[src/llm.js]       Groq openai/gpt-oss-120b
-    ↓
-test_cases_*.json  (coordinate-based test cases)
-    ↓
-[src/executeTests.js]  permanent Playwright executor
-    ↓
-execution_results*.json
+  → browser screenshot        (vision/services/browser-service/browser.js :5004)
+  → ScreenParser YOLO11-L     (vision/services/yolo-service/detect.py :5001)
+  → OCR / Tesseract           (vision/services/ocr-service/ocr.py :5002)
+  → YOLO+OCR merge            (vision/services/merge-service/merge.js :5003)
+  → Visual DOM JSON           (saved to vision/storage/outputs/)
+  → LLM                       (vision/src/llm.js → Groq openai/gpt-oss-120b)
+  → JSON coordinate test cases (vision/src/testGenerator.js, prompt from visualDom.js)
+  → permanent Playwright executor (vision/src/executeTests.js)
+  → execution results JSON    (vision/storage/outputs/execution_results*.json)
 ```
 
 One-shot runner: `node runVision.js <url>` (spawns all services, generates tests,
-shuts down via Windows-safe process-tree kill).
+kills the full Windows process tree on shutdown).
 
-Permanent executor:
+Executor:
 ```
 node src/executeTests.js <test_cases.json> <base_url> [output_path]
 ```
 
-### Test-case schema (final)
-```json
-{
-  "id": "TC01",
-  "objective": "...",
-  "evidence": ["visual facts used"],
-  "inferred_behavior": "LLM hypothesis (may be wrong)",
-  "steps": [{ "action": "click|fill|navigate", "x": N, "y": N, "value": "..." }],
-  "expected_result": "runtime-verifiable outcome",
-  "expect_navigation": false,
-  "expected_text": null
-}
+### Components & configuration
+- **Detector:** docling-project/ScreenParser (YOLO11-L, 55 UI classes).
+  Local weights `screenparser_best.pt` (~146 MB, GITIGNORED — re-download from
+  Hugging Face on fresh clones). Config: `YOLO_CONF=0.15`, `YOLO_IMGSZ=640`.
+- **OCR:** Tesseract (`TESSERACT_CMD`, default Windows path), `OCR_MIN_CONF=40`,
+  Otsu threshold + psm 11.
+- **Merge:** centre-in-box OR IoU>0.1 word matching; per-element yolo/ocr/combined
+  confidence; row-sorted text.
+- **LLM:** Groq `openai/gpt-oss-120b`; evidence-based prompt in `visualDom.js`
+  separates observable facts ("evidence") from hypotheses ("inferred_behavior") and
+  runtime-verifiable outcomes; explicit rule: never infer a navigation target not
+  present in evidence. Generation budget max(GROQ_MAX_TOKENS, 4500) with one retry
+  on parse failure.
+- **Test schema:** id, objective, evidence[], inferred_behavior, steps[]
+  ({action: click|fill|navigate|scroll, x, y, value}), expected_result,
+  expect_navigation, expected_text. Backward compatible with older files.
+- **Executor:** one browser/context, fresh page per test, honors `expect_navigation`
+  (falls back to URL-text heuristic for legacy files), guaranteed cleanup
+  (try/finally + SIGINT handler), single test failure never aborts the suite.
+- **Process cleanup:** runVision.js kills process trees via `taskkill /T /F` on
+  Windows (fixes port leakage on 5000–5004).
+- **Env:** see `vision/.env.example`; secrets live only in untracked `vision/.env`.
+
+### Closed-loop execution & evidence (FINAL)
+
+Execution is no longer open-loop. For every executed action:
 ```
-`evidence` / `inferred_behavior` separate observable facts from hypotheses.
-`expect_navigation` is honored by the executor (falls back to text heuristic for old files).
-Schema remains backward compatible with earlier generated files.
+pre-probe (element at click/fill point)
+  → Playwright action
+  → post-action screenshot      storage/screenshots/<run_id>/state_NNN_after_<action>.png
+  → YOLO+OCR+merge RE-DETECTION of that screenshot via gateway /vision/process
+  → new visual state recorded   {state_id, screenshot, url, elements, ocr_words, elements_delta}
+  → semantic verification signal collected
+  → assertion → PASS/FAIL with named verification method
+```
 
-### Executor verification heuristics
-- `expect_navigation: true` (or legacy URL-change text) → PASS iff URL changed
-- otherwise → PASS iff rendered body text > 100 chars
-- unexpected mid-test navigation → warning, not failure
-- optional `expected_text` miss → warning, not failure
-- per-test isolation (fresh page each test), single browser, guaranteed shutdown,
-  one failed test does not stop the suite
+Verification methods (strongest-first), recorded per test in a `verification`
+field and summarised per run:
+`input_value` (field provably holds typed value) · `checked_state` (radio/checkbox
+toggled — labels resolved to their controls via HTMLLabelElement.control) ·
+`scroll_position` · `url_change` · `body_text_fallback` (weak; always flagged as
+a warning, never silently counted as strong evidence).
 
----
+Confidence policy for candidate elements: HIGH ≥0.6 normal; MEDIUM 0.3–0.6 allowed
+with conservative expectations only; LOW <0.3 or no OCR text excluded.
 
-## 4. MODEL & CONFIGURATION (FINAL)
+Evidence artifacts per run (`vision/storage/screenshots/<run_id>/`, gitignored):
+initial/YOLO/OCR/merged annotated images for the captured state, before-test,
+per-action post-action, and failure screenshots. All JSON outputs reference exact
+relative paths; previous runs are never overwritten. Annotated images are rendered
+from existing detection data by the YOLO service (`/render_boxes`) — no extra detector.
 
-- **Model:** `docling-project/ScreenParser` (YOLO11-L, 55 UI classes, ~146 MB)
-- **Local file:** `vision/services/yolo-service/screenparser_best.pt` (gitignored;
-  re-download from Hugging Face if missing)
-- **Config (.env):** `YOLO_MODEL_PATH=screenparser_best.pt`, `YOLO_CONF=0.15`,
-  `YOLO_IMGSZ=640`
-- OCR: Tesseract, `OCR_MIN_CONF=40`
-- LLM: Groq `openai/gpt-oss-120b`, generation budget max(GROQ_MAX_TOKENS, 3000),
-  temperature 0.2
+Multi-step workflows: the generator now produces 2–6-step sequences
+(fill→fill→submit, choice workflows, navigation, scroll) instead of single clicks;
+4–6 tests per page.
 
----
-
-## 5. FINAL VALIDATION RESULTS (all measured 2026-08-22)
-
-Result files in `vision/storage/outputs/`:
-
-| Page | Result file | YOLO | OCR words | Merged | Gen | Exec | Pass | Fail | Rate | Runtime |
-|------|-------------|------|-----------|--------|-----|------|------|------|------|---------|
-| DemoQA homepage | execution_results_home_v2.json | 31 | 37 | 31 | 8 | 8 | 8 | 0 | 100% | 20.6s |
-| DemoQA Forms | execution_results_forms_v2.json | 57 | 65 | 57 | 8 | 8 | 7 | 1 | 87.5% | 21.3s |
-| DemoQA Elements | execution_results_elements.json | 24 | 40 | 24 | 7 | 7 | 5 | 2 | 71.4% | 17.5s |
-| DemoQA Widgets | execution_results_widgets.json | 21 | 31 | 21 | 9 | 9 | 8 | 1 | 88.9% | 21.1s |
-| DemoQA Alerts/Frame&Windows | execution_results_alerts.json | 19 | 34 | 19 | 7 | 7 | 4 | 3 | 57.1% | 21.2s |
-| DemoQA Interactions | execution_results_interactions.json | 15 | 29 | 15 | 6 | 6 | 3 | 3 | 50.0% | 15.4s |
-| **TOTAL** | | | | | **45** | **45** | **35** | **10** | **77.8%** | |
-
-### Failure analysis — every failure has ONE root cause
-
-All 10 failures across 6 pages are the same category:
-**ScreenParser low-confidence misclassification of non-navigational banner/footer
-text fragments as `Link`.** The recurring offenders are `"practice."` (ad banner,
-conf 0.57–0.61) and footer fragments `"RIGHTS"` (conf 0.26–0.43) /
-`"RESERVED."` (conf 0.33–0.36). Because they ARE detected as links, the LLM
-correctly applies its link rule and sets `expect_navigation: true`; at runtime these
-elements never navigate, so the executor honestly reports FAIL.
-
-Attribution check performed per failure:
-- LLM generation: correct — followed stated evidence rules, cited element ids/confidence
-- Executor: correct — assertion matched the declared expectation
-- OCR / merge / coordinate mapping: not implicated (text and coordinates were accurate)
-- Root cause: ScreenParser detection + inherently ambiguous UI
-
-No failures were caused by carousel/animation issues anymore (fixed by the
-evidence-based prompt rules). No executor crashes or suite aborts occurred.
+### Key files
+`runVision.js`, `src/llm.js`, `src/visualDom.js`, `src/testGenerator.js`,
+`src/executeTests.js`, `gateway/app.js`, `services/*/{browser.js, detect.py, ocr.py, merge.js}`.
 
 ---
 
-## 6. WHAT IS COMPLETE ✅
+## 4. VISION VALIDATION RESULTS
 
-- All 5 microservices + gateway implemented and stable
-- ScreenParser integrated; COCO YOLOv8n fully removed
-- Evidence-based LLM prompt (observable facts vs inferred behavior vs runtime checks;
-  conservative button rules; link rules; animated-content rules; explicit
-  "never infer a navigation target not present in evidence")
-- Permanent coordinate-based executor (`src/executeTests.js`) committed
-- Generation retry + larger generation token budget (truncated-response bug fixed)
-- Windows-safe service shutdown (process-tree kill) in `runVision.js`
-- Validation across **6 pages** with recorded metrics (see §5)
-- Secrets untracked; `.env.example` maintained; README updated
+### Final closed-loop validation (2026-08-22, integrated branch)
 
-## OPTIONAL FUTURE IMPROVEMENTS (not required)
+| Page | Elements | Tests | Exec | Pass | Fail | Multi-step | Fills | Scrolls | States re-detected | Verification methods used |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Forms | 57 | 5 | 5 | 4 | 1 | 4/5 | 6 | 1 | 15 | input_value×2, checked_state×1, scroll_position×1, url_change×1, fallback×1 |
+| Elements | 29 | 5 | 5 | 4 | 1 | 5/5 | 1 | 3 | 10 | url_change×1, scroll_position×2, fallback×2 |
+| Widgets | 21 | 5 | 5 | 4 | 1 | 5/5 | 0 | 4 | 10 | url_change×2, scroll_position×2, fallback×1 |
 
-- Suppress/filter known banner-footer pseudo-links (e.g. drop detections matching
-  `practice.|RIGHTS|RESERVED.` or conf<0.65 Link detections in header/footer bands)
-  — would lift pass rate but was deliberately NOT done to avoid overfitting
-- Modal/dropdown-aware executor verification beyond body-text heuristic
-- NMS tuning for duplicate nested detections
-- Multi-page crawling/exploration
-- Arch A vs Arch B comparison metrics; unit tests for merge logic
-- Cleanup of stale temp_screenshots/outputs
+- All screenshot references verified on disk: 88 JSON references, 0 missing.
+- Failure causes (exact, one per run):
+  - Forms TC04 — footer "RESERVED." pseudo-link asserted navigation (ScreenParser
+    misclassification, conf ~0.33).
+  - Elements TC01 — same category; low-confidence link expected URL change.
+  - Widgets TC02 — "practice." ad-banner fragment detected as Link at conf 0.6
+    (HIGH tier, so legitimately treated as navigational; actually a banner).
+- Radio-coordinate investigation: clicks land correctly; the earlier missing
+  `checked_state` signal was caused by probes hitting the wrapping `<label>`;
+  fixed generally by resolving labels to their controls (`HTMLLabelElement.control`).
 
-## KNOWN LIMITATIONS
+### Earlier single-shot validation (superseded by the closed-loop runs above)
+| Page | Gen | Exec | Pass | Fail | Rate |
+|---|---|---|---|---|---|
+| Homepage | 10 | 10 | 10 | 0 | 100% |
+| Homepage (earlier) | 8–9 | 8–9 | 8–9 | 0–1 | up to 100% |
+| Alerts/Frames/Windows (single-shot era) | 7 | 7 | 4 | 3 | 57.1% |
+| Interactions (single-shot era) | 6 | 6 | 3 | 3 | 50.0% |
 
-1. ScreenParser occasionally labels decorative/banner/footer text as interactive
-   elements (Link/Button) at moderate confidence — the sole remaining failure cause.
-2. Verification heuristics remain simple (URL-change + body-text length).
-3. Detection of very small controls can be missed at conf 0.15 threshold.
-4. Ports must be free before runs; `runVision.js` now kills its own process tree,
-   but externally started services still occupy ports until killed manually.
+Observed overall range across all validation: ~50–100% per page depending on how
+many ambiguous banner/footer pseudo-links ScreenParser produces for that layout.
+Do NOT claim universal reliability; pass rate = execution+verification success,
+NOT overall system accuracy (detector/OCR/action quality are reported separately).
 
 ---
 
-## 16. GIT CHECKPOINT (FINAL)
+## 5. ARCHITECTURE A — FINAL STATUS (`web/`)
 
-- **Delivery branch:** `vision-architecture-final` (pushed to origin)
-- **Branch contains:** permanent executor commit, evidence-based prompt/generation
-  fixes, final reliability fixes, and this updated context file
-- **Model file gitignored** — re-download `screenparser_best.pt` after fresh clone
-- **Secrets live in `vision/.env`** (untracked). Never commit it.
+Verified on the integrated branch:
+- Entry point: `web/explore.js <url>`; modules: `src/domExtractor.js`,
+  `src/preprocess.js`, `src/llmClient.js`, `src/memoryLog.js`, `src/testGenerator.js`.
+- DemoQA smoke run works (stub mode): starts, loads page, extracts 8 homepage
+  elements, exits cleanly. All modules pass `node --check`.
+- DOM extraction works (tag filtering, visibility checks, selector building).
+- Known limitations:
+  - `testGenerator.js` is not wired into `explore.js`'s entry point (manual invocation required)
+  - visited-state/repetition handling is mostly prompt-based ("alreadyUsed" flags)
+    plus step caps (MAX_STEPS_PER_FLOW=12); no hard programmatic state detection
+  - no committed automated test framework for A
+  - full autonomous real-LLM exploration still needs end-to-end validation
+    (long-running; headless:false)
 
-## TRAPS TO REMEMBER
+## 6. MOBILE — FINAL STATUS (`mobile/`)
 
-1. Two local clones exist — use ONLY the `vs code` clone.
-2. Playwright Chromium must be installed separately (`npx playwright install chromium`).
-3. Kill leftover processes on ports 5000–5004 before manual service starts.
-4. Do not cross-wire Architecture A (`web/`) with Architecture B (`vision/`);
-   keep `vision/src/llm.js` separate from `web/src/llmClient.js`.
-5. Do not revert ScreenParser to COCO YOLOv8n; do not switch back to CSS selectors.
+- Present and intact in the integrated project (team's newer version incl.
+  dry_run.py, fake_driver.py, .env.example, refactored src/).
+- Offline validation PASSED on the integrated branch: all 9 Python files compile;
+  `python mobile/dry_run.py` exits 0 with all scenarios passing (stub loop +
+  memory-log, scripted-LLM JSON test generation 2 steps → 1 case, back-action
+  sideways exploration 4/4 steps).
+- Requires `pip install -r mobile/requirements.txt` (incl. Appium-Python-Client)
+  and `PYTHONIOENCODING=utf-8` on Windows consoles. No physical device needed for
+  the offline framework.
+
+## 7. INTEGRATION VERIFICATION
+
+- Vision + Web + Mobile coexist on `capstone-final-integrated` @ `a317bfe`.
+- Tree comparison vs team main: ONLY `.gitignore` differs (intentional fix);
+  `web/`, `mobile/`, `database/`, `docs/` byte-identical — nothing overwritten.
+- Tree comparison vs vision-final: identical except stale COCO `yolov8n.pt`
+  (6.5 MB) removed intentionally.
+- `.gitignore` corruption (UTF-16 mojibake tail) fixed during integration; now covers
+  node_modules, `vision/.env`, temp_screenshots, storage outputs, both .pt weights.
+- No tracked secrets anywhere (grep-verified); only `.env.example` files tracked.
+- Largest tracked file: `mobile/ApiDemos.apk` (4.8 MB, pre-existing team asset).
+- No references to `arch-b-vision`, old paths, or deleted files remain in tracked code.
+- No known integration conflicts remain.
+
+## 8. GITHUB / PR STATE
+
+- **PR #5**: title `feat: integrate Vision Architecture with Web and Mobile`
+  - source: `capstone-final-integrated`  target: `main`
+  - status: OPEN, MERGEABLE, NOT merged
+  - head SHA: `a317bfe0be0b405b419bed653e8d112b9afe3218`
+
+## 9. REMAINING WORK
+
+COMPLETED (do not redo):
+- Vision Architecture B implementation, executor, evidence-based prompting,
+  reliability fixes, multi-page validation, integration into team structure,
+  release branch, PR #5.
+
+REMAINING (genuine):
+- Team review and merge of PR #5 into main
+- Further Architecture A completion (wire in test generator; stronger
+  visited-state handling; full autonomous exploration validation)
+- Final project-wide evaluation
+- Architecture A vs B comparison metrics
+- Broader reliability/coverage evaluation across more sites/pages
+- Final report / slides / dashboard deliverables if required
+- Any additional integration requested by the team
+
+## 10. CONTINUATION INSTRUCTIONS FOR ANOTHER AI
+
+1. Read THIS FILE first.
+2. Work on branch `capstone-final-integrated` (or a new branch off it). Never modify
+   `main` directly; never force-push.
+3. Active repo: `C:\Users\sandeep\pes\vs code\Capstone-Project`. Never touch the
+   older clone at `C:\Users\sandeep\pes\CAPSTONE\Capstone-Project`.
+4. Do not recreate or replace the completed Vision architecture — it is done and
+   validated. Modify `vision/` only for genuine compatibility needs.
+5. Check PR #5 status before making any integration decisions (it may already be merged).
+6. Remember: model weights and .env files are gitignored; re-provision them locally
+   when setting up a fresh environment (ScreenParser from Hugging Face, keys in .env).
+7. Kill stray processes on ports 5000–5004 before manual Vision service starts;
+   `runVision.js` cleans up after itself automatically.

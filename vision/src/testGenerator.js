@@ -15,11 +15,11 @@ const { buildTestPrompt } = require('./visualDom');
 
 const OUTPUT_DIR = path.join(__dirname, '..', 'storage', 'outputs');
 
-// Test-case JSON is long (evidence + inferred_behavior per test); the generic
-// chat budget is too small and truncates the array mid-JSON.
+// Workflow-style test cases (multi-step, with evidence fields) are long;
+// a too-small budget truncates the JSON array mid-response.
 const GENERATION_MAX_TOKENS =
   Number(process.env.GROQ_GEN_MAX_TOKENS) ||
-  Math.max(Number(process.env.GROQ_MAX_TOKENS) || 700, 3000);
+  Math.max(Number(process.env.GROQ_MAX_TOKENS) || 700, 4500);
 
 const GENERATION_ATTEMPTS = 2;
 
@@ -86,6 +86,7 @@ async function generateTestCases(visualDOM) {
 
   return {
     architecture: 'B',
+    run_id: visualDOM.run_id || null,
     source_url: visualDOM.source_url || null,
     element_count: visualDOM.elements.length,
     test_case_count: testCases.length,

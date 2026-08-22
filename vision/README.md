@@ -10,10 +10,10 @@ URL
   v
 Playwright screenshot  (services/browser-service)
   |
-  +--> YOLO detection   (services/yolo-service, Python + ultralytics)
+  +--> ScreenParser UI detection (services/yolo-service, Python + ultralytics)
   |        |
   |        v
-  |    bounding boxes
+  |    bounding boxes + 55 semantic UI classes
   |
   +--> OCR text boxes   (services/ocr-service, Python + Tesseract)
            |
@@ -21,10 +21,10 @@ Playwright screenshot  (services/browser-service)
        Merge into visual DOM  (services/merge-service)
            |
            v
-       LLM generates JSON test cases  (src/llm.js -> Groq API)
+       LLM generates coordinate-based workflow test cases  (src/llm.js -> Groq API)
            |
            v
-       storage/outputs/test_cases_*.json
+       storage/outputs/<run_id>_test_cases... + permanent executor (src/executeTests.js)
 ```
 
 ## Folder layout
@@ -51,13 +51,33 @@ vision/
 This folder is completely independent of Architecture A (`web/`).
 Both can be demonstrated separately.
 
+## Detector: ScreenParser (not COCO YOLO)
+
+UI detection uses **`docling-project/ScreenParser`** — a YOLO11-Large model
+fine-tuned on ~1.45 million real web/mobile screenshots with **55 semantic UI
+classes** (Button, Link, Text Input, Checkbox, Radiobox, Select, Table, ...).
+The original COCO-pretrained YOLOv8n was removed: its everyday-object classes
+do not map to web UI elements.
+
+Model weights are gitignored. Install locally:
+
+```bash
+python -c "from huggingface_hub import hf_hub_download; print(hf_hub_download('docling-project/ScreenParser','best.pt'))"
+# copy the downloaded best.pt to:
+#   vision/services/yolo-service/screenparser_best.pt
+```
+
+Config in `.env`: `YOLO_MODEL_PATH=screenparser_best.pt`, `YOLO_CONF=0.15`,
+`YOLO_IMGSZ=640`.
+
 ## Prerequisites
 
 1. Node.js >= 18
-2. Python 3.10+ with pip
-3. Tesseract OCR installed at `C:\Program Files\Tesseract-OCR\tesseract.exe`
-   (or set `TESSERACT_CMD` in `.env`)
-4. A valid `GROQ_API_KEY` in `.env`
+2. Python 3.10+ with pip (`pip install -r services/yolo-service/requirements.txt`
+   and `services/ocr-service/requirements.txt`)
+3. Tesseract OCR at `C:\Program Files\Tesseract-OCR\tesseract.exe` (or set `TESSERACT_CMD`)
+4. Playwright Chromium: `npx playwright install chromium`
+5. A valid `GROQ_API_KEY` in `.env` (copy from `.env.example`)
 
 ## Setup
 
@@ -75,6 +95,29 @@ copy .env.example .env
 ```bash
 node runVision.js https://demoqa.com
 ```
+
+## Visual evidence & screenshot traceability
+
+Every pipeline run creates an evidence folder that never overwrites previous runs:
+
+```
+vision/storage/screenshots/<run_id>/
+├── state_001_initial.png        original page screenshot (untouched)
+├── state_001_yolo.png           YOLO detections: boxes + class + confidence
+├── state_001_ocr.png            OCR words: text + confidence per box
+├── state_001_merged.png         merged visual DOM: YOLO class + element id + OCR text
+├── state_NNN_before_TCxx.png    executor: page state before a test
+├── state_NNN_after_click.png    executor: page state after each click/fill/navigate
+└── state_NNN_failure_TCxx.png   executor: final failed state (never cleaned up)
+```
+
+- `<run_id>` is `run_<timestamp>` for pipeline runs (`runVision.js` / gateway) and
+  `exec_<timestamp>` if the executor runs standalone.
+- The visual DOM JSON references the initial/YOLO/OCR/merged images via its
+  `screenshots` field and carries the `run_id`; execution results reference each
+  test's `before_screenshot`, per-step `after_screenshot`, and `failure_screenshot`.
+- Annotated images are generated from existing detection data by the YOLO service
+  (`/render_boxes`) — no extra detector or dependency.
 
 ## Execute generated tests
 
@@ -123,10 +166,22 @@ curl -X POST http://127.0.0.1:5000/vision/generate-tests ^
 Body accepts `{ "url": "..." }`, `{ "image_path": "..." }`,
 or `{ "image_b64": "..." }`.
 
-## Notes on YOLO classes
+## Execution output & what the pass rate means
 
-YOLOv8n is trained on COCO. It does not have native "button" or "input" labels.
-We map visually similar COCO objects (keyboard, cell phone, book, laptop,
-tv, mouse) to approximate UI types. This is a documented limitation of the
-current approach — the report acknowledges that YOLO provides bounding-box
-geometry while OCR supplies semantic text.
+`storage/outputs/<run_id>_execution_results*.json` contains per-test results
+with a `verification` field describing exactly which evidence backed each
+verdict:
+
+| verification method | meaning |
+|---|---|
+| `url_change` | page URL changed (navigation assertions) |
+| `input_value` | a text field provably holds the typed value |
+| `checked_state` | a radio/checkbox toggled after the click |
+| `scroll_position` | window scroll position changed |
+| `body_text_fallback` | weak check: body renders non-trivially — flagged as a warning, not strong evidence |
+| `none` / `skipped` | assertion could not be verified (test already failed) |
+
+The reported **pass rate is an execution+verification success rate**, NOT overall
+system accuracy. Detector quality, OCR quality and action-selection quality are
+reported separately (`element_count`, `ocr_words_found`, `states_observed`,
+per-step signals), so a single PASS number is never presented as "accuracy".
