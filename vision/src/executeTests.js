@@ -91,6 +91,18 @@ function expectsUrlChange(expectedResult) {
     /chang|navigat|different|away/i.test(expectedResult || '');
 }
 
+/**
+ * Decide whether a test requires the URL to change.
+ * Generated tests may state this explicitly via "expect_navigation";
+ * older test files fall back to the expected_result text heuristic.
+ */
+function requiresUrlChange(testCase) {
+  if (typeof testCase.expect_navigation === 'boolean') {
+    return testCase.expect_navigation;
+  }
+  return expectsUrlChange(testCase.expected_result);
+}
+
 async function getBodyTextLength(page) {
   return page.evaluate(() => (document.body ? document.body.innerText.length : 0));
 }
@@ -136,10 +148,11 @@ async function runTestCase(page, testCase, baseUrl) {
   const urlChanged = urlAfter !== urlBefore;
 
   if (status === 'PASS') {
-    if (!urlChanged && expectsUrlChange(testCase.expected_result)) {
+    const needUrlChange = requiresUrlChange(testCase);
+    if (!urlChanged && needUrlChange) {
       status = 'FAIL';
       failureReason = `Expected URL to change but stayed on ${urlAfter}`;
-    } else if (urlChanged && !expectsUrlChange(testCase.expected_result)) {
+    } else if (urlChanged && !needUrlChange) {
       // Navigation happened although the test did not assert it.
       // This alone is not evidence of failure (e.g. carousel/banner clicks);
       // record it as a warning and fall back to body-text verification.
@@ -159,10 +172,32 @@ async function runTestCase(page, testCase, baseUrl) {
     }
   }
 
+  // Optional static-text expectation (set by the LLM only for non-animated
+  // content). A miss is recorded as a warning — the primary pass/fail
+  // decision stays with the URL/body heuristics above.
+  if (
+    status === 'PASS' &&
+    typeof testCase.expected_text === 'string' &&
+    testCase.expected_text.trim()
+  ) {
+    const bodyText = await page.evaluate(() =>
+      document.body ? document.body.innerText : ''
+    );
+    if (!bodyText.toLowerCase().includes(testCase.expected_text.toLowerCase())) {
+      warnings.push(`Expected text "${testCase.expected_text}" not found in rendered body`);
+    }
+  }
+
   return {
     id: testCase.id,
     objective: testCase.objective || '',
     expected_result: testCase.expected_result || '',
+    evidence: testCase.evidence || null,
+    inferred_behavior: testCase.inferred_behavior || null,
+    expect_navigation: typeof testCase.expect_navigation === 'boolean'
+      ? testCase.expect_navigation
+      : null,
+    expected_text: testCase.expected_text || null,
     status,
     failure_reason: failureReason,
     warnings,
@@ -214,6 +249,12 @@ async function main() {
           id: testCase.id,
           objective: testCase.objective || '',
           expected_result: testCase.expected_result || '',
+          evidence: testCase.evidence || null,
+          inferred_behavior: testCase.inferred_behavior || null,
+          expect_navigation: typeof testCase.expect_navigation === 'boolean'
+            ? testCase.expect_navigation
+            : null,
+          expected_text: testCase.expected_text || null,
           status: 'ERROR',
           failure_reason: `Setup/navigation failed: ${err.message}`,
           warnings: [],
