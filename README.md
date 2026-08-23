@@ -35,3 +35,29 @@ runs/<run_id>/
 
 If one architecture fails, the other still runs to completion and the failure is
 recorded in the manifest (`overall_status`: SUCCESS / PARTIAL_FAILURE / FAILED).
+
+## LLM Provider Configuration
+
+Each architecture has its OWN independently configurable LLM provider. The two
+configurations never mix: Architecture A reads only `ARCH_A_*` variables,
+Architecture B reads only `ARCH_B_*` variables.
+
+```bash
+# Architecture A (web/)
+ARCH_A_LLM_PROVIDER=groq
+ARCH_A_LLM_MODEL=openai/gpt-oss-120b
+ARCH_A_LLM_API_KEY=<your_arch_a_key>
+
+# Architecture B (vision/) — can use a completely different provider/model
+ARCH_B_LLM_PROVIDER=openrouter
+ARCH_B_LLM_MODEL=openai/gpt-oss-20b:free
+ARCH_B_LLM_API_KEY=<your_openrouter_key>
+```
+
+- Supported providers: `groq`, `openrouter` (any OpenAI-compatible endpoint via
+  `<PREFIX>LLM_BASE_URL` override).
+- Legacy variables (`GROQ_API_KEY`, `GROQ_MODEL_A/B`, `GROQ_MODEL`) are still
+  honoured when the `ARCH_*_LLM_*` equivalents are absent.
+- API keys live only in untracked `.env` files (`web/.env.example`,
+  `vision/.env.example` document all options). Keys are never printed.
+- `STUB_LLM=true` runs both architectures fully offline without any key.

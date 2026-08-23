@@ -33,11 +33,23 @@ async function getDOMElements(page) {
         selector = '#' + el.id;
       } else if (el.getAttribute('name')) {
         selector = `[name="${el.getAttribute('name')}"]`;
+      } else if (el.tagName === 'A' && el.getAttribute('href')) {
+        // Links: href attribute selectors survive DOM reshuffling far better
+        // than positional ones.
+        const href = el.getAttribute('href');
+        selector = 'a[href="' + href.replace(/"/g, '\\"') + '"]';
       } else if (el.className && typeof el.className === 'string' && el.className.trim()) {
         const classes = el.className.trim().split(/\s+/).join('.');
         selector = el.tagName.toLowerCase() + '.' + classes;
       } else {
-        selector = el.tagName.toLowerCase() + ':nth-of-type(' + (index + 1) + ')';
+        // :nth-of-type() is relative to same-tag SIBLINGS under the element's
+        // own parent — NOT the flattened document-wide node index.
+        const parent = el.parentElement;
+        const sameTagSiblings = parent
+          ? Array.prototype.filter.call(parent.children, c => c.tagName === el.tagName)
+          : [el];
+        const pos = Array.prototype.indexOf.call(sameTagSiblings, el) + 1;
+        selector = el.tagName.toLowerCase() + ':nth-of-type(' + pos + ')';
       }
 
       const href = el.tagName === 'A' ? (el.getAttribute('href') || '') : '';
@@ -46,6 +58,18 @@ async function getDOMElements(page) {
       const ariaLabel = el.getAttribute('aria-label') || '';
       const text = (el.innerText || el.value || el.textContent || '')
         .replace(/\s+/g, ' ').trim().slice(0, 100);
+
+      // Collection-relevant semantics for the Fusion-era observation schema.
+      const disabled = el.disabled === true || el.getAttribute('disabled') !== null;
+      const required = el.required === true || el.getAttribute('required') !== null;
+      let formInfo = null;
+      if (el.form) {
+        formInfo = {
+          id: el.form.id || null,
+          method: (el.form.method || '').toLowerCase(),
+          action: el.form.action || '',
+        };
+      }
 
       results.push({
         elementId: index,
@@ -59,6 +83,9 @@ async function getDOMElements(page) {
         placeholder,
         ariaLabel,
         name: el.getAttribute('name') || null,
+        disabled,
+        required,
+        form: formInfo,
       });
     });
 

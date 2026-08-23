@@ -1,20 +1,27 @@
 'use strict';
 
-const Groq = require('groq-sdk');
-
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-if (!GROQ_API_KEY) {
-  throw new Error('Missing GROQ_API_KEY. Add it to your .env file in web/.env');
-}
-const groq = new Groq({ apiKey: GROQ_API_KEY });
-
-// Groq decommissioned `llama-3.3-70b-versatile`; default to a current model
-// and keep Architecture A independently configurable via GROQ_MODEL_A.
-const MODEL       = process.env.GROQ_MODEL_A || process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
-const MAX_TOKENS  = 400;
-const TEMPERATURE = 0.2;
+// Architecture A LLM configuration — independently configurable provider.
+// Resolution order (prefix ARCH_A_):
+//   ARCH_A_LLM_PROVIDER  (groq | openrouter; default groq)
+//   ARCH_A_LLM_API_KEY   > GROQ_API_KEY
+//   ARCH_A_LLM_MODEL     > GROQ_MODEL_A > GROQ_MODEL > provider default
+const { resolveLLMConfig, chatCompletion } = require('../../lib/llmProvider');
 
 const STUB_MODE = process.env.STUB_LLM === 'true';
+
+// Validated lazily inside callLLM() so importing this module never crashes
+// offline tooling, unit tests or stub-mode runs.
+const LLM_CONFIG = resolveLLMConfig({
+  env: process.env,
+  prefix: 'ARCH_A_',
+  legacyApiKey: process.env.GROQ_API_KEY,
+  legacyModel: process.env.GROQ_MODEL_A || process.env.GROQ_MODEL || undefined,
+});
+
+// Reasoning models spend budget on reasoning tokens; a small max_tokens
+// yields EMPTY or truncated content. Keep a sane minimum.
+const MAX_TOKENS  = Number(process.env.GROQ_MAX_TOKENS_A) || 1500;
+const TEMPERATURE = 0.2;
 
 async function callLLM(prompt) {
   if (STUB_MODE) {
@@ -22,30 +29,42 @@ async function callLLM(prompt) {
     return { action: 'done', elementId: null, selector: '', value: '', reason: 'stub' };
   }
 
-  console.log(`[llmClient] Calling Groq → ${MODEL} ...`);
+  console.log(`[llmClient] Calling ${LLM_CONFIG.provider} → ${LLM_CONFIG.model || '(no model set)'} ...`);
 
   // Retry up to 3 times on transient failures
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const completion = await groq.chat.completions.create({
-        model:       MODEL,
-        max_tokens:  MAX_TOKENS,
-        temperature: TEMPERATURE,
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are a web UI exploration agent for automated testing. ' +
-              'You MUST respond with a single raw JSON object only. ' +
-              'Absolutely NO markdown, NO code blocks, NO backticks, NO explanation. ' +
-              'Just the JSON object starting with { and ending with }.'
-          },
-          { role: 'user', content: prompt }
-        ]
-      });
+      const rawText = (
+        await chatCompletion(LLM_CONFIG, {
+          maxTokens: MAX_TOKENS,
+          temperature: TEMPERATURE,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are a web UI exploration agent for automated testing. ' +
+                'You MUST respond with a single raw JSON object only. ' +
+                'Absolutely NO markdown, NO code blocks, NO backticks, NO explanation. ' +
+                'Just the JSON object starting with { and ending with }.'
+            },
+            { role: 'user', content: prompt }
+          ],
+        })
+      ).trim();
 
-      const rawText = completion.choices[0].message.content.trim();
       console.log('[llmClient] Raw response:', rawText.slice(0, 150));
+
+      // Empty content = reasoning consumed the whole budget (or a transient
+      // provider issue). Retry within the same attempt loop instead of
+      // returning garbage for parseAction to choke on.
+      if (!rawText) {
+        if (attempt < 3) {
+          console.warn('[llmClient] Empty response — retrying...');
+          await new Promise(r => setTimeout(r, 2000));
+          continue;
+        }
+        throw new Error('Empty LLM response after 3 attempts');
+      }
 
       try {
         return JSON.parse(rawText);
@@ -56,6 +75,8 @@ async function callLLM(prompt) {
 
     } catch (err) {
       console.error(`[llmClient] Attempt ${attempt} failed:`, err.message);
+      // Quota/auth errors: retrying only burns quota or repeats the failure.
+      if (err.status === 429 || err.status === 401 || err.status === 403) throw err;
       if (attempt < 3) {
         console.log('[llmClient] Retrying in 2 seconds...');
         await new Promise(r => setTimeout(r, 2000));

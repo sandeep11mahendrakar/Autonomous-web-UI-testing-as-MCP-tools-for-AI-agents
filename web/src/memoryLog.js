@@ -43,12 +43,21 @@ function storeStep(logArray, stepData) {
     throw new TypeError('logArray must be an array');
   }
 
-  // Normalise + validate required fields with safe defaults
+  // Normalise + validate required fields with safe defaults.
+  // Legacy keys (step/from_url/action/target/...) are preserved for backward
+  // compatibility; new structured keys support the Fusion observation schema.
   const entry = {
     step: typeof stepData.step === 'number' ? stepData.step : logArray.length,
+    state_id: stepData.state_id || null,
+    parent_state_id: stepData.parent_state_id || null,
     from_url: stepData.from_url || '',
     from_title: stepData.from_title || '',
     action: stepData.action || 'unknown',
+    action_details: stepData.action_details || {
+      type: stepData.action || 'unknown',
+      target: typeof stepData.target === 'string' ? stepData.target : '',
+      value: stepData.value || '',
+    },
     target: stepData.target || '',
     target_element_details: stepData.target_element_details
       ? {
@@ -60,8 +69,14 @@ function storeStep(logArray, stepData) {
           selector: stepData.target_element_details.selector || '',
         }
       : null,
+    result: {
+      url_after: stepData.to_url || '',
+      success: stepData.success !== undefined ? Boolean(stepData.success) : true,
+      error: stepData.error || null,
+    },
     to_url: stepData.to_url || '',
     to_title: stepData.to_title || '',
+    elements_observed: stepData.elements_observed ?? null,
     screenshot_before: stepData.screenshot_before || '',
     screenshot_after: stepData.screenshot_after || '',
     timestamp: stepData.timestamp || new Date().toISOString(),
@@ -107,4 +122,38 @@ function loadLog(filePath) {
   }
 }
 
-module.exports = { storeStep, saveLog, loadLog };
+/**
+ * saveStates(states, filePath) — persist the exploration state records.
+ * Each state: {state_id, parent_state_id, url, title, fingerprint,
+ *              elements_observed, leading_action, timestamp}
+ */
+function saveStates(states, filePath) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(states, null, 2), 'utf8');
+  console.log(`[memoryLog] Saved ${states.length} state(s) → ${filePath}`);
+}
+
+/**
+ * saveTransitions(transitions, filePath) — persist the edge list:
+ * {from_state, action:{type,target,value}, to_state, result, url_after, timestamp}
+ */
+function saveTransitions(transitions, filePath) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(transitions, null, 2), 'utf8');
+  console.log(`[memoryLog] Saved ${transitions.length} transition(s) → ${filePath}`);
+}
+
+/**
+ * saveSummary(summary, filePath) — run-level machine-readable summary
+ * (totals, termination reason, limits, unique URLs).
+ */
+function saveSummary(summary, filePath) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(summary, null, 2), 'utf8');
+  console.log(`[memoryLog] Saved exploration summary → ${filePath}`);
+}
+
+module.exports = { storeStep, saveLog, loadLog, saveStates, saveTransitions, saveSummary };

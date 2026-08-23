@@ -94,7 +94,7 @@ function tier(conf) {
 }
 
 /** Candidate action table from the CURRENT visual DOM only. */
-function buildCandidates(vdom, triedKeys, failCounts) {
+function buildCandidates(vdom, triedKeys, failCounts, fingerprint) {
   const list = (vdom.elements || [])
     .filter((el) => CANDIDATE_TYPES.has(el.type))
     .filter((el) => !(el.confidence && el.confidence.yolo < 0.3 && !el.text)) // LOW without OCR text excluded
@@ -102,6 +102,8 @@ function buildCandidates(vdom, triedKeys, failCounts) {
       const x = Math.round((el.bbox.x1 + el.bbox.x2) / 2);
       const y = Math.round((el.bbox.y1 + el.bbox.y2) / 2);
       const familyKey = `${el.type}|${normText(el.text)}`;
+      // Key format MUST match the store side: `${fingerprint}|${_key}`.
+      const triedKey = `${fingerprint}|${el.type}|${normText(el.text)}|${x},${y}`;
       return {
         elementId: el.id,
         type: el.type,
@@ -109,7 +111,7 @@ function buildCandidates(vdom, triedKeys, failCounts) {
         conf: el.confidence ? Number(el.confidence.yolo.toFixed(2)) : null,
         tier: tier(el.confidence ? el.confidence.yolo : 0),
         x, y,
-        alreadyTried: triedKeys.has(`${el.type}|${normText(el.text)}|${x},${y}`),
+        alreadyTried: triedKeys.has(triedKey),
         // Elements whose (type,text) family repeatedly failed exploration
         // (repeated/invalid outcomes) are excluded across ALL pages.
         familyFailures: failCounts.get(familyKey) || 0,
@@ -119,9 +121,14 @@ function buildCandidates(vdom, triedKeys, failCounts) {
     .filter((c) => c.tier !== 'LOW' || c.text)
     .filter((c) => c.familyFailures < 2);
 
+  // Never re-offer a candidate that already failed on this state while an
+  // untried one remains — repeated no-progress clicks are not acceptable.
+  const untried = list.filter((c) => !c.alreadyTried);
+  const finalList = untried.length ? untried : list;
+
   const rank = { HIGH: 0, MEDIUM: 1 };
-  list.sort((a, b) => (rank[a.tier] - rank[b.tier]) || a.alreadyTried - b.alreadyTried);
-  return list.slice(0, 15);
+  finalList.sort((a, b) => (rank[a.tier] - rank[b.tier]) || a.alreadyTried - b.alreadyTried);
+  return finalList.slice(0, 15);
 }
 
 async function selectActionLLM(candidates, contextSummary) {
@@ -139,11 +146,12 @@ ${contextSummary}
 RULES:
 1. Coordinates are FIXED by the table — choose an elementId; never invent coordinates.
 2. Prefer elements with alreadyTried=false. NEVER repeat an alreadyTried element on this screen unless nothing else remains.
-3. "fill": pick a text input; value must match its placeholder/label meaning.
-4. Links/buttons labelled like site sections usually navigate (good for exploring NEW pages).
-5. Use "scroll" when content below the fold is plausible and few unexplored candidates remain.
-6. Choose "done" ONLY when no unexplored meaningful action remains.${forbidDone ? '\n7. IMPORTANT: untried candidates ARE available — "done" is NOT acceptable right now. Pick one untried element.' : ''}
-8. Respond ONLY with raw JSON: {"action":"click"|"fill"|"scroll"|"navigate"|"submit"|"done","elementId":"<id from table or null>","value":"<text for fill>","reason":"<one sentence>"}`;
+3. "fill": pick a text input; value must match its placeholder/label meaning. If the screen shows example credentials (e.g. standard_user / secret_sauce), use EXACTLY those values.
+4. FORM COMPLETION: if a form has several required fields (e.g., username AND password), each new "fill" must target a DIFFERENT still-empty field. Never re-fill the same field while another required field of the same form is untouched. Fill ALL fields BEFORE clicking submit/login. If two similar stacked single-line inputs exist (typical login form), the TOP input is the username and the BOTTOM input is the password — give each its OWN matching credential from the on-screen text (never the same value in both).
+5. Links/buttons labelled like site sections usually navigate (good for exploring NEW pages).
+6. Use "scroll" when content below the fold is plausible and few unexplored candidates remain.
+7. Choose "done" ONLY when no unexplored meaningful action remains.${forbidDone ? '\n8. IMPORTANT: untried candidates ARE available — "done" is NOT acceptable right now. Pick one untried element.' : ''}
+9. Respond ONLY with raw JSON: {"action":"click"|"fill"|"scroll"|"navigate"|"submit"|"done","elementId":"<id from table or null>","value":"<text for fill>","reason":"<one sentence>"}`;
 
   const decide = async (forbidDone) => {
     const raw = await callLLM(buildPrompt(forbidDone), { maxTokens: 400 });
@@ -280,7 +288,20 @@ async function runExploration({ url, runId }) {
         break;
       }
 
-      const candidates = buildCandidates(current.vdom, triedActions, failCounts);
+      // Browser-position guard: the live page MUST match the state we are
+      // deciding for. A mismatch means a previous action/goBack desynced the
+      // browser from our state table — re-align before choosing anything.
+      const liveUrl = page.url();
+      if (current.state.url && liveUrl !== current.state.url) {
+        console.warn(
+          `[explore] Position desync: browser at ${liveUrl}, state table expects ${current.state.url} — re-aligning.`
+        );
+        warnings.push(`Position desync recovered: ${liveUrl} -> ${current.state.url}`);
+        await page.goto(current.state.url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+        await page.waitForTimeout(1500);
+      }
+
+      const candidates = buildCandidates(current.vdom, triedActions, failCounts, fp);
       if (!candidates.length) {
         terminationReason = 'no_candidates_remaining';
         break;
@@ -319,6 +340,7 @@ async function runExploration({ url, runId }) {
       };
       triedActions.add(`${fp}|${cand._key}`);
       actionsPerState.set(fp, usedCount + 1);
+      const urlBeforeAction = page.url();
 
       const transition = {
         from_state: current.state.state_id,
@@ -387,7 +409,9 @@ async function runExploration({ url, runId }) {
         recordFailure(2); // non-http destination = definitive dead end
         warnings.push(`Rejected non-http destination ${next.state.url} after ${decision.action}`);
         console.log(`[explore] ${transition.from_state} --${decision.action}--> non-http state rejected, going back`);
-        await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+        if (page.url() !== urlBeforeAction) {
+          await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+        }
         await page.waitForTimeout(1000);
         continue;
       }
@@ -400,7 +424,17 @@ async function runExploration({ url, runId }) {
         // landed somewhere already visited is weaker (could be timing noise).
         recordFailure(transition.state_similarity.same_url ? 2 : 1);
         console.log(`[explore] ${transition.from_state} --${decision.action}--> repeated state, going back`);
-        await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+        // goBack is ONLY valid when the action actually NAVIGATED somewhere
+        // (URL changed) and landed on an already-visited page — then going
+        // back restores the pre-action page. When the click produced no
+        // navigation at all (same URL), the browser never left this page and
+        // a goBack would unwind OLDER history, silently desyncing the browser
+        // from the state table (root cause of the stalled /elements run).
+        if (!transition.state_similarity.same_url && page.url() !== urlBeforeAction) {
+          await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+        } else if (!transition.state_similarity.same_url) {
+          // URL already back to the pre-action page by itself; nothing to do.
+        }
         await page.waitForTimeout(1000);
         continue; // stay on the same visual state; candidate now marked tried
       }
@@ -492,4 +526,4 @@ async function runExploration({ url, runId }) {
   return result;
 }
 
-module.exports = { runExploration };
+module.exports = { runExploration, buildCandidates };

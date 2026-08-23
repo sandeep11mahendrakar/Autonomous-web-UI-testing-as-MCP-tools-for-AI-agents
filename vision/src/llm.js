@@ -15,22 +15,25 @@
 
 require('dotenv').config();
 
-const Groq = require('groq-sdk');
+// Architecture B LLM configuration — independently configurable provider.
+// Resolution order (prefix ARCH_B_):
+//   ARCH_B_LLM_PROVIDER  (groq | openrouter; default groq)
+//   ARCH_B_LLM_API_KEY   > GROQ_API_KEY
+//   ARCH_B_LLM_MODEL     > GROQ_MODEL_B > GROQ_MODEL > provider default
+const { resolveLLMConfig, chatCompletion } = require('../../lib/llmProvider');
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-if (!GROQ_API_KEY) {
-  throw new Error('Missing GROQ_API_KEY. Add it to your .env file in vision/.env');
-}
+const STUB_MODE = process.env.STUB_LLM === 'true';
 
-const groq = new Groq({ apiKey: GROQ_API_KEY });
-
-const MODEL =
-  process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+const LLM_CONFIG = resolveLLMConfig({
+  env: process.env,
+  prefix: 'ARCH_B_',
+  legacyApiKey: process.env.GROQ_API_KEY,
+  legacyModel: process.env.GROQ_MODEL_B || process.env.GROQ_MODEL || undefined,
+});
 
 // Visual DOM prompts are short; a modest token budget avoids quota issues.
 const MAX_TOKENS = Number(process.env.GROQ_MAX_TOKENS) || 700;
 const TEMPERATURE = Number(process.env.GROQ_TEMPERATURE) || 0.2;
-const STUB_MODE = process.env.STUB_LLM === 'true';
 
 // ---------------------------------------------------------------------------
 // Generic LLM call
@@ -46,43 +49,41 @@ async function callLLM(prompt, options = {}) {
     throw new Error('callLLM: prompt must be a non-empty string');
   }
 
-  const model = options.model || MODEL;
   const maxTokens = Number(options.maxTokens) || MAX_TOKENS;
   const temperature =
     typeof options.temperature === 'number' ? options.temperature : TEMPERATURE;
 
-  console.log(`[llm] Calling Groq -> ${model} ...`);
+  console.log(`[llm] Calling ${LLM_CONFIG.provider} -> ${options.model || LLM_CONFIG.model || '(no model set)'} ...`);
 
   // One retry for transient failures only; do not retry quota errors.
   const maxAttempts = 2;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const completion = await groq.chat.completions.create({
-        model,
-        max_tokens: maxTokens,
-        temperature,
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are an AI agent for automated web application testing. ' +
-              'Follow the user prompt exactly. ' +
-              'When JSON output is requested, return valid JSON only.',
-          },
-          { role: 'user', content: prompt },
-        ],
-      });
+      const rawText = (
+        await chatCompletion(LLM_CONFIG, {
+          model: options.model,
+          maxTokens,
+          temperature,
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are an AI agent for automated web application testing. ' +
+                'Follow the user prompt exactly. ' +
+                'When JSON output is requested, return valid JSON only.',
+            },
+            { role: 'user', content: prompt },
+          ],
+        })
+      ).trim();
 
-      const rawText =
-        completion?.choices?.[0]?.message?.content ?? '';
-
-      if (typeof rawText !== 'string' || rawText.trim() === '') {
+      if (rawText === '') {
         throw new Error('LLM returned an empty response');
       }
 
-      console.log('[llm] Raw response:', rawText.trim().slice(0, 200));
-      return rawText.trim();
+      console.log('[llm] Raw response:', rawText.slice(0, 200));
+      return rawText;
     } catch (err) {
       const status = err.status || err.statusCode || null;
       const message = err.message || String(err);

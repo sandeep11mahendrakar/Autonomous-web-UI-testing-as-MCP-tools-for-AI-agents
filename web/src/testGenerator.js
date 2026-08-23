@@ -15,8 +15,11 @@ const fs = require('fs');
 const path = require('path');
 const { buildTestCasePrompt } = require('./preprocess');
 const { callLLM } = require('./llmClient');
+const { reconstructWorkflows } = require('./exploreHelpers');
 
-const TEST_CASES_PATH = path.join(__dirname, '..', 'logs', 'test_cases.json');
+// Honors ARCH_A_OUTPUT_DIR so unified runs collect into runs/<id>/dom.
+const OUTPUT_DIR = process.env.ARCH_A_OUTPUT_DIR || path.join(__dirname, '..', 'logs');
+const TEST_CASES_PATH = path.join(OUTPUT_DIR, 'test_cases.json');
 
 /**
  * generateTestCases(memoryLog)
@@ -31,21 +34,25 @@ const TEST_CASES_PATH = path.join(__dirname, '..', 'logs', 'test_cases.json');
  * @param {Array} memoryLog  - Full completed exploration log
  * @returns {Promise<Array>} - Parsed test case array (may be empty on LLM error)
  */
-async function generateTestCases(memoryLog) {
-  if (!memoryLog || memoryLog.length === 0) {
+async function generateTestCases(input) {
+  const memoryLog = Array.isArray(input) ? input : (input && input.memoryLog) || [];
+  const transitions = (!Array.isArray(input) && input && input.transitions) || [];
+
+  if (!memoryLog.length) {
     console.warn('[testGenerator] Memory log is empty — cannot generate test cases.');
     return [];
   }
 
-  console.log(`[testGenerator] Building test case prompt from ${memoryLog.length} steps...`);
-  const prompt = buildTestCasePrompt(memoryLog);
+  console.log(`[testGenerator] Building test case prompt from ${memoryLog.length} steps / ${transitions.length} transitions...`);
+  const prompt = buildTestCasePrompt({ memoryLog, transitions });
 
-  let rawResponse;
+  let rawResponse = null;
   try {
     rawResponse = await callLLM(prompt);
   } catch (err) {
+    // LLM unavailable (rate limit, network, missing key) — fall through to
+    // the deterministic grounded fallback instead of producing nothing.
     console.error('[testGenerator] LLM call failed:', err.message);
-    return [];
   }
 
   // rawResponse may be an already-parsed object (if callLLM returns object)
@@ -55,7 +62,7 @@ async function generateTestCases(memoryLog) {
   if (Array.isArray(rawResponse)) {
     // callLLM already parsed it
     testCases = rawResponse;
-  } else {
+  } else if (rawResponse !== null && rawResponse !== undefined) {
     const rawStr = typeof rawResponse === 'string'
       ? rawResponse
       : JSON.stringify(rawResponse);
@@ -73,6 +80,14 @@ async function generateTestCases(memoryLog) {
   });
 
   // Save to disk
+  // Deterministic fallback: if the LLM produced nothing usable, reconstruct
+  // test cases DIRECTLY from recorded successful workflows — 100% grounded,
+  // zero extra LLM calls.
+  if (!testCases.length && transitions.length) {
+    console.warn('[testGenerator] No valid LLM test cases — using deterministic grounded fallback.');
+    testCases = _deterministicTestCases(memoryLog, transitions);
+  }
+
   _saveTestCases(testCases);
 
   // Print summary
@@ -82,6 +97,30 @@ async function generateTestCases(memoryLog) {
   });
 
   return testCases;
+}
+
+/**
+ * _deterministicTestCases(memoryLog, transitions)
+ * Reconstructs consecutive successful transitions into multi-step replayable
+ * test cases. Every selector/URL/value comes verbatim from recorded history —
+ * nothing can be invented.
+ */
+function _deterministicTestCases(memoryLog, transitions) {
+  const workflows = reconstructWorkflows(transitions);
+
+  return workflows.map((wf, i) => ({
+    id: `TC${String(i + 1).padStart(3, '0')}`,
+    objective: `Replay the recorded workflow (${wf.map(t => t.action.type).join(' → ')}), ending at ${wf[wf.length - 1].url_after}`,
+    source: 'deterministic_fallback',
+    steps: wf.map((t, j) => ({
+      stepNum: j + 1,
+      action: t.action.type,
+      selector: t.action.target,
+      value: t.action.value || '',
+      description: `${t.action.type} ${t.action.target}${t.action.value ? ` with "${t.action.value}"` : ''}`,
+    })),
+    expected_result: `All ${wf.length} steps execute without errors; final page loads at ${wf[wf.length - 1].url_after}`,
+  }));
 }
 
 /**
@@ -108,8 +147,8 @@ function _parseTestCasesJSON(rawStr) {
       return Array.isArray(parsed) ? parsed : [parsed];
     } catch (err2) {
       console.error('[testGenerator] JSON parse failed after stripping fences:', err2.message);
-      // Save raw response for debugging
-      const debugPath = path.join(__dirname, '..', 'logs', 'test_cases_raw_response.txt');
+      // Save raw response for debugging (inside this run's output dir)
+      const debugPath = path.join(OUTPUT_DIR, 'test_cases_raw_response.txt');
       try {
         fs.mkdirSync(path.dirname(debugPath), { recursive: true });
         fs.writeFileSync(debugPath, rawStr, 'utf8');
@@ -133,4 +172,4 @@ function _saveTestCases(testCases) {
   console.log(`[testGenerator] Saved → ${TEST_CASES_PATH}`);
 }
 
-module.exports = { generateTestCases };
+module.exports = { generateTestCases, _deterministicTestCases };

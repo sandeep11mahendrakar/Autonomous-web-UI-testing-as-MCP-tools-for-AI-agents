@@ -105,33 +105,42 @@ async function probeRedetectAvailability() {
  */
 async function redetectState(absScreenshotPath) {
   if (!REDETECT_ENABLED) return null;
-  try {
-    const res = await axios.post(
-      `${GATEWAY_URL}/vision/process`,
-      { image_path: absScreenshotPath },
-      { timeout: 90000 }
-    );
-    return {
-      elements: res.data.element_count ?? null,
-      ocr_words: res.data.raw?.ocr_words_found ?? null,
-      top_texts: (res.data.elements || [])
-        .filter((el) => el.text)
-        .slice(0, 10)
-        .map((el) => `${el.type}:${el.text}`)
-        .join(' | '),
-      elements_full: (res.data.elements || []).map((el) => ({
-        id: el.id,
-        type: el.type,
-        text: el.text || '',
-        conf: el.confidence ? Number(el.confidence.yolo.toFixed(2)) : null,
-        cx: Math.round((el.bbox.x1 + el.bbox.x2) / 2),
-        cy: Math.round((el.bbox.y1 + el.bbox.y2) / 2),
-        bbox: el.bbox,
-      })),
-    };
-  } catch (err) {
-    console.warn(`[execute] Re-detection failed: ${err.message}`);
-    return null;
+  // Services may still be warming up (YOLO model load) right after spawn —
+  // retry with backoff before giving up.
+  const attempts = 3;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const res = await axios.post(
+        `${GATEWAY_URL}/vision/process`,
+        { image_path: absScreenshotPath },
+        { timeout: 90000 }
+      );
+      return {
+        elements: res.data.element_count ?? null,
+        ocr_words: res.data.raw?.ocr_words_found ?? null,
+        top_texts: (res.data.elements || [])
+          .filter((el) => el.text)
+          .slice(0, 10)
+          .map((el) => `${el.type}:${el.text}`)
+          .join(' | '),
+        elements_full: (res.data.elements || []).map((el) => ({
+          id: el.id,
+          type: el.type,
+          text: el.text || '',
+          conf: el.confidence ? Number(el.confidence.yolo.toFixed(2)) : null,
+          cx: Math.round((el.bbox.x1 + el.bbox.x2) / 2),
+          cy: Math.round((el.bbox.y1 + el.bbox.y2) / 2),
+          bbox: el.bbox,
+        })),
+      };
+    } catch (err) {
+      console.warn(`[execute] Re-detection failed (attempt ${attempt}/${attempts}): ${err.message}`);
+      if (attempt < attempts) {
+        await new Promise((r) => setTimeout(r, 4000 * attempt));
+        continue;
+      }
+      return null;
+    }
   }
 }
 

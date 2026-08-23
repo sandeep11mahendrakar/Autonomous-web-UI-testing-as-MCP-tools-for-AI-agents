@@ -60,3 +60,6 @@ Thumbs.db
 
 # Unified demo runs
 runs/
+
+# Review-then-delete staging area (moved temp files, never committed)
+_TEMP_BIN/

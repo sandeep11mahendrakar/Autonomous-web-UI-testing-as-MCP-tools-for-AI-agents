@@ -1,5 +1,7 @@
 'use strict';
 
+const { reconstructWorkflows } = require('./exploreHelpers');
+
 const MAX_ELEMENTS = 50;
 const ALLOWED_TAGS = new Set(['BUTTON', 'INPUT', 'A', 'SELECT', 'TEXTAREA']);
 
@@ -49,9 +51,10 @@ function preprocessDOM(rawElements) {
   return filtered;
 }
 
-function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown') {
+function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageText = '') {
   const recentSteps = memoryLog.slice(-5).map(s => ({
     step: s.step,
+    state_id: s.state_id,
     action: s.action,
     selector: s.target_element_details ? s.target_element_details.selector : '',
     text: s.target_element_details ? s.target_element_details.text : '',
@@ -71,34 +74,56 @@ function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown') {
     inputType: el.inputType || '',
     placeholder: el.placeholder || '',
     href: el.href || '',
+    disabled: el.disabled || false,
     alreadyUsed: usedSelectors.has(el.selector),
   }));
+  const untried = compactElements.filter(el => !el.alreadyUsed).length;
+
+  const demoqaGoals = [
+    '- If this is "Elements": navigate into Text Box, fill the form, submit it.',
+    '- If this is "Forms": navigate into Practice Form, fill all fields, submit.',
+    '- If this is "Alerts": click Browser Windows or Alerts to trigger them.',
+    '- If this is "Widgets": interact with Accordian or Tabs.',
+    '- If this is "Interactions": try Sortable or Droppable.',
+  ];
+  const isDemoQAFlow = /element|form|alert|widget|interaction|book/i.test(flowName);
+  const goalLines = isDemoQAFlow
+    ? demoqaGoals
+    : [
+      '- If a login form is present and the PAGE TEXT shows example usernames/passwords, use EXACTLY those values (never invent credentials).',
+      '- Fill EVERY required field of a form you can see (e.g., username AND password) before submitting it.',
+      '- After submitting, continue exploring newly reachable links/buttons; revisit forms with different values if an error appeared.',
+      '- Prefer actions that navigate to new URLs over re-interacting with already-used elements.',
+    ];
+
+  const pageTextBlock = pageText
+    ? `\nPAGE TEXT (on-screen hints, credentials, labels):\n${pageText.replace(/\s+/g, ' ').trim().slice(0, 700)}\n`
+    : '';
 
   return `You are an AI web exploration agent. You are currently exploring the "${flowName}" section of a website.
 
 CURRENT PAGE ELEMENTS:
-${JSON.stringify(compactElements, null, 2)}
-
+${JSON.stringify(compactElements)}
+${pageTextBlock}
 RECENT STEPS TAKEN:
-${recentSteps.length > 0 ? JSON.stringify(recentSteps, null, 2) : 'None — this is the first step in this flow.'}
+${recentSteps.length > 0 ? JSON.stringify(recentSteps) : 'None — this is the first step in this flow.'}
+
+EXPLORATION STATE: ${untried} of ${compactElements.length} elements on this page have NOT been interacted with yet.
 
 YOUR GOAL for this flow ("${flowName}"):
-- If this is "Elements": navigate into Text Box, fill the form, submit it.
-- If this is "Forms": navigate into Practice Form, fill all fields, submit.
-- If this is "Alerts": click Browser Windows or Alerts to trigger them.
-- If this is "Widgets": interact with Accordian or Tabs.
-- If this is "Interactions": try Sortable or Droppable.
+${goalLines.join('\n')}
 
 STRICT RULES:
 1. NEVER pick an element where alreadyUsed is true.
-2. NEVER pick an element with empty text, empty id, empty placeholder, and empty href.
-3. For anchor <a> tags, ALWAYS use action "navigate" with the full href as the url field. NEVER use "click" for links.
-4. Only use "click" for BUTTON and INPUT elements.
-5. If you just navigated to a new page, pick the most meaningful element on that new page.
-6. If nothing useful remains or the flow goal is complete, return action "done".
-7. Return ONLY raw JSON — no markdown, no explanation.
+2. NEVER pick a disabled element.
+3. NEVER pick an element with empty text, empty id, empty placeholder, and empty href.
+4. For anchor <a> tags, ALWAYS use action "navigate" with the full href as the url field. NEVER use "click" for links.
+5. Only use "click" for BUTTON and INPUT elements.
+6. If you just navigated to a new page, pick the most meaningful element on that new page.
+7. If nothing useful remains or the flow goal is complete, return action "done".
 8. Do NOT navigate back to the homepage — stay focused on completing the current flow.
 9. If the current page has input fields, fill them ALL before submitting.
+10. Respond ONLY with raw JSON — no markdown, no explanation, even if the answer feels obvious.
 
 Respond with EXACTLY:
 {
@@ -111,21 +136,45 @@ Respond with EXACTLY:
 }`;
 }
 
-function buildTestCasePrompt(memoryLog) {
+/**
+ * Build a multi-step workflow test-case prompt from recorded exploration
+ * history. Steps are strictly grounded: every selector/URL/value must come
+ * from a recorded transition — nothing may be invented.
+ *
+ * @param {Array|Object} history - memory log array, or {memoryLog, transitions}
+ */
+function buildTestCasePrompt(history) {
+  const memoryLog = Array.isArray(history) ? history : (history.memoryLog || []);
+  const transitions = (!Array.isArray(history) && history.transitions) || [];
   const trimmedLog = memoryLog.map(s => ({
     step: s.step,
+    state_id: s.state_id,
     action: s.action,
-    target: s.target,
-    selector: s.target_element_details ? s.target_element_details.selector : '',
+    selector: s.target_element_details ? s.target_element_details.selector : (s.action_details ? s.action_details.target : ''),
+    value: (s.action_details && s.action_details.value) || '',
     from_url: s.from_url,
     to_url: s.to_url,
-    value: s.value || '',
   }));
 
-  return `You are a QA engineer. Based on the following web UI exploration log, generate structured functional test cases.
+  // Reconstruct recorded workflows: consecutive successful transitions
+  // chained by state continuity. These are REAL observed sequences.
+  const workflows = reconstructWorkflows(transitions);
 
-EXPLORATION LOG:
-${JSON.stringify(trimmedLog, null, 2)}
+  const workflowText = workflows.length
+    ? JSON.stringify(workflows.map(wf => wf.map(t => ({
+        action: t.action.type,
+        selector: t.action.target,
+        value: t.action.value || ''
+      }))))
+    : 'None reconstructed — rely on the chronological log above.';
+
+  return `You are a QA engineer. Based on the following web UI exploration history, generate structured functional test cases.
+
+EXPLORATION LOG (chronological):
+${JSON.stringify(trimmedLog)}
+
+RECORDED WORKFLOWS (real observed action sequences — prefer these):
+${workflowText}
 
 Generate 3 to 5 functional test cases covering key user flows discovered above.
 
@@ -145,7 +194,11 @@ Each test case must follow this EXACT JSON schema:
   "expected_result": "What should happen after all steps complete"
 }
 
-Return ONLY a valid JSON array. No markdown, no extra text.`;
+STRICT GROUNDING RULES:
+- Every selector MUST appear verbatim in the exploration log/workflows. Never invent a selector.
+- Every navigate URL MUST be one of the URLs visited during exploration.
+- Prefer multi-step workflows (navigate -> fill -> select -> submit) over single actions.
+- Return ONLY a valid JSON array. No markdown, no extra text.`;
 }
 
 module.exports = { preprocessDOM, buildExplorationPrompt, buildTestCasePrompt };

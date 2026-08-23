@@ -33,6 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const net = require('net');
+const { selectExplorationTestCases, archBOutcome } = require('./lib/archBStage');
 
 const ROOT = __dirname;
 const WEB_DIR = path.join(ROOT, 'web');
@@ -79,6 +80,28 @@ function buildChildEnv() {
   }
   env.GROQ_API_KEY_SET = env.GROQ_API_KEY ? 'true' : 'false';
   return env;
+}
+
+/**
+ * Architecture-B child env. Groq rate limits (TPD) are PER MODEL, so a single
+ * shared model can starve one architecture when the other burns the pool.
+ * Set GROQ_MODEL_B (legacy) or ARCH_B_LLM_* variables to route B's LLM calls
+ * to a different model/provider/quota pool. A reads only ARCH_A_ and GROQ_A
+ * variables; B reads only ARCH_B_ and GROQ_ variables — the configurations
+ * can never mix because each architecture's client resolves its own prefix.
+ */
+function buildVisionEnv(childEnv) {
+  const modelB = process.env.GROQ_MODEL_B;
+  return modelB ? { ...childEnv, GROQ_MODEL: modelB } : childEnv;
+}
+
+/** Provider/model summary for logs — NEVER includes API keys. */
+function logLLMConfig(label, env, prefix) {
+  const provider = (env[prefix + 'LLM_PROVIDER'] || 'groq').toLowerCase();
+  const model = env[prefix + 'LLM_MODEL'] ||
+    (prefix === 'ARCH_A_' ? (env.GROQ_MODEL_A || env.GROQ_MODEL) : (env.GROQ_MODEL_B || env.GROQ_MODEL)) ||
+    '(provider default)';
+  log('RUN', `${label} LLM: provider=${provider} model=${model} key=${env[prefix + 'LLM_API_KEY'] || env.GROQ_API_KEY ? 'set' : 'NOT SET'}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -195,20 +218,28 @@ function copyDir(src, dest) {
 }
 
 function collectArchitectureA(domDir) {
+  // SAFETY NET only: A now direct-writes into domDir via ARCH_A_OUTPUT_DIR.
+  // Never overwrite fresh run artifacts with older copies from web/logs.
   const copied = [];
   const srcLog = path.join(WEB_DIR, 'logs');
-  if (fs.existsSync(path.join(srcLog, 'memory_log.json'))) {
-    fs.copyFileSync(path.join(srcLog, 'memory_log.json'), path.join(domDir, 'memory_log.json'));
-    copied.push('memory_log.json');
-  }
-  if (fs.existsSync(path.join(srcLog, 'test_cases.json'))) {
-    fs.copyFileSync(path.join(srcLog, 'test_cases.json'), path.join(domDir, 'test_cases.json'));
-    copied.push('test_cases.json');
-  }
+  const copyIfMissing = (srcName, destName) => {
+    const src = path.join(srcLog, srcName);
+    const dest = path.join(domDir, destName);
+    if (fs.existsSync(src) && !fs.existsSync(dest)) {
+      fs.copyFileSync(src, dest);
+      copied.push(destName);
+    }
+  };
+  copyIfMissing('memory_log.json', 'memory_log.json');
+  copyIfMissing('test_cases.json', 'test_cases.json');
+  copyIfMissing('states.json', 'states.json');
+  copyIfMissing('transitions.json', 'transitions.json');
+  copyIfMissing('exploration_summary.json', 'exploration_summary.json');
   const shots = path.join(srcLog, 'screenshots');
-  if (fs.existsSync(shots)) {
-    copyDir(shots, path.join(domDir, 'screenshots'));
-    copied.push(`screenshots/ (${fs.readdirSync(path.join(domDir, 'screenshots')).length} files)`);
+  const destShots = path.join(domDir, 'screenshots');
+  if (fs.existsSync(shots) && !fs.existsSync(destShots)) {
+    copyDir(shots, destShots);
+    copied.push(`screenshots/ (${fs.readdirSync(destShots).length} files)`);
   }
   return copied;
 }
@@ -262,7 +293,10 @@ async function askUrl() {
   log('RUN', `Output tree: ${path.relative(process.cwd(), runDir)}`);
 
   const childEnv = buildChildEnv();
+  const visionEnv = buildVisionEnv(childEnv);
   log('RUN', `GROQ_API_KEY available: ${childEnv.GROQ_API_KEY_SET}`);
+  logLLMConfig('ARCH-A', childEnv, 'ARCH_A_');
+  logLLMConfig('ARCH-B', visionEnv, 'ARCH_B_');
 
   await freeVisionPorts();
 
@@ -274,79 +308,66 @@ async function askUrl() {
 
   const runStartedAt = Date.now();
 
-  // ----- Architecture B: generate, then execute with the permanent executor.
+  // ----- Architecture B: AUTONOMOUS MULTI-PAGE exploration, then execution.
+  // --explore makes B capture every page it navigates to (states, evidence,
+  // per-state re-detection) and convert discovered workflows into a
+  // replayable test_cases_<run_id>_exploration.json. The one-shot homepage
+  // mode is NOT used here — it would only ever capture the landing page.
   const archBPromise = (async () => {
     const gen = await teeSpawn(
-      'ARCH-B', 'node', ['runVision.js', url], VISION_DIR, childEnv, archBTimeout,
+      'ARCH-B', 'node', ['runVision.js', '--explore', url], VISION_DIR, visionEnv, archBTimeout,
       path.join(visionDir, 'run_generate.log')
     );
     if (gen.status !== 'success') {
-      return { ...gen, stage: 'generation', collected: [] };
+      return { ...gen, stage: 'exploration', collected: [] };
     }
-    // Execute ONLY the test cases belonging to the Vision run created in THIS
-    // unified run. Never fall back to stale files from previous runs.
+    // Execute ONLY the exploration test cases produced during THIS unified
+    // run. Never fall back to stale files from previous runs; a zero/invalid
+    // case file is reported honestly instead of executed.
     const outDir = path.join(VISION_DIR, 'storage', 'outputs');
-    const vdomFile = fs.readdirSync(outDir)
-      .map((f) => {
-        const m = f.match(/^(run_\d+)_visual_dom\.json$/);
-        if (!m) return null;
-        const full = path.join(outDir, f);
-        return { runId: m[1], full, t: fs.statSync(full).mtimeMs };
-      })
-      .filter((x) => x && x.t >= runStartedAt - 5000)
-      .sort((a, b) => b.t - a.t)[0];
-
-    if (!vdomFile) {
+    const sel = selectExplorationTestCases(outDir, runStartedAt - 5000);
+    if (!sel.selected || !sel.valid) {
       return {
         status: 'partial_success',
-        stage: 'generation-produced-no-visual-dom',
-        duration_ms: gen.duration_ms,
-        collected: [],
-      };
-    }
-    const tcPath = path.join(outDir, `test_cases_${vdomFile.runId}_visual_dom.json`);
-    if (!fs.existsSync(tcPath)) {
-      // Visual DOM exists but the LLM produced no usable test cases for this run.
-      return {
-        status: 'partial_success',
-        stage: 'generation-produced-no-test-cases',
-        vision_run_id: vdomFile.runId,
+        stage: 'exploration-produced-no-test-cases',
         duration_ms: gen.duration_ms,
         collected: [],
       };
     }
     const exec = await teeSpawn(
       'ARCH-B', 'node',
-      ['src/executeTests.js', tcPath, url],
-      VISION_DIR, childEnv, archBTimeout,
+      ['src/executeTests.js', sel.selected.full, url],
+      VISION_DIR, visionEnv, archBTimeout,
       path.join(visionDir, 'run_execute.log')
     );
-    const status = exec.status === 'success'
-      ? 'success'
-      : (exec.status === 'timeout' ? 'timeout' : 'partial_success'); // generation ok, execution issues
-    return {
-      status, stage: 'execution', vision_run_id: vdomFile.runId, exit_code: exec.exitCode,
-      duration_ms: gen.duration_ms + exec.duration_ms, collected: [],
-    };
+    return archBOutcome({ gen, sel, exec });
   })();
 
   // ----- Architecture A: exploration (its own entry point, unchanged).
+  // A writes directly into the unified run tree via ARCH_A_OUTPUT_DIR.
   const archAPromise = (async () => {
+    const aEnv = { ...childEnv, ARCH_A_OUTPUT_DIR: domDir };
     const res = await teeSpawn(
-      'ARCH-A', 'node', ['explore.js', url], WEB_DIR, childEnv, archATimeout,
+      'ARCH-A', 'node', ['explore.js', url], WEB_DIR, aEnv, archATimeout,
       path.join(domDir, 'run_explore.log')
     );
     if (res.status === 'success') {
-      // Use A's own modules to finish its documented pipeline (test cases).
-      try {
-        execSync(
-          'node -e "const {generateTestCases}=require(\'./src/testGenerator\');' +
-          'const {loadLog}=require(\'./src/memoryLog\');' +
-          'generateTestCases(loadLog(\'logs/memory_log.json\'))"',
-          { cwd: WEB_DIR, env: childEnv, stdio: 'inherit', timeout: 120000, shell: true }
-        );
-      } catch (err) {
-        log('ARCH-A', `Test-case generation step failed: ${err.message.slice(0, 120)}`);
+      // Test generation already runs inside explore.js; this is only a
+      // safety-net re-invocation if explore.js could not finish it.
+      if (!fs.existsSync(path.join(domDir, 'test_cases.json'))) {
+        try {
+          execSync(
+            'node -e "const {generateTestCases}=require(\'./src/testGenerator\');' +
+            'const {loadLog}=require(\'./src/memoryLog\');' +
+            'const fs=require(\'fs\');let tr=[];try{tr=JSON.parse(fs.readFileSync(\'transitions.json\',\'utf8\'))}catch(_){};' +
+            'generateTestCases({memoryLog:loadLog(\'memory_log.json\'),transitions:tr})' +
+            '.then(tc=>console.log(\'generated\',tc.length))' +
+            '.catch(e=>{console.error(e.message);process.exit(1)})"',
+            { cwd: WEB_DIR, env: aEnv, stdio: 'inherit', timeout: 120000, shell: true }
+          );
+        } catch (err) {
+          log('ARCH-A', `Test-case generation step failed: ${err.message.slice(0, 120)}`);
+        }
       }
     }
     return res;
