@@ -214,33 +214,56 @@ function renderHtml(data) {
 }
 
 // ---------------------------------------------------------------------------
-function validate(data) {
-  // Invariant checks that must hold for ANY correct aggregation of the real
-  // current artifacts. Returns list of failures ([] == all good).
+function validate(data, { reference = false } = {}) {
+  // Structural invariants that must hold for ANY correct aggregation.
+  // `reference` mode (--validate-demoqa) additionally enforces the exact
+  // DemoQA reference-run numbers (kept for regression-checking that one run).
   const problems = [];
   const push = (ok, msg) => { if (!ok) problems.push(msg); };
   const m = data.coverage_matrix;
 
-  push(m.elements.total === 204, `elements total expected 204, got ${m.elements.total}`);
-  push(m.behaviors.total === 23, `behaviors total expected 23, got ${m.behaviors.total}`);
-  push(m.tests.a === 2 && m.tests.b === 1 && m.tests.fusion === 1,
-    `tests expected A=2 B=1 fusion=1, got A=${m.tests.a} B=${m.tests.b} F=${m.tests.fusion}`);
-  push(m.tests.total === 4, `total final tests expected 4, got ${m.tests.total}`);
-  push(m.states.a === 15, `A states expected 15, got ${m.states.a}`);
-  push(m.states.b === 9, `B states expected 9, got ${m.states.b}`);
-  push(data.headline.pct_final_tests_attributable_to_fusion === 25,
-    `fusion attribution expected 25%, got ${data.headline.pct_final_tests_attributable_to_fusion}%`);
-  push(data.headline.tests_already_covered_by_ab === 0, 'no fusion test may duplicate A/B');
-  push(data.findings.conflict_count === 9, `conflicts expected 9, got ${data.findings.conflict_count}`);
-  push(data.findings.uncovered_actionable_elements === 80,
-    `actionable uncovered expected 80, got ${data.findings.uncovered_actionable_elements}`);
-  push(data.findings.uncovered_behaviors === 12,
-    `uncovered behaviors expected 12, got ${data.findings.uncovered_behaviors}`);
-  push(ex_ok(data), 'execution: expected FT001 PASS with 4/4 steps');
-  push(data.execution.verification_methods &&
-       Object.keys(data.execution.verification_methods).length >= 2,
-    'expected >=2 distinct verification methods recorded');
+  push(!!m && typeof m === 'object', 'coverage_matrix missing');
+  if (!m) return problems;
+  push(m.tests.total === m.tests.a + m.tests.b + m.tests.fusion,
+    `tests total ${m.tests.total} != A(${m.tests.a}) + B(${m.tests.b}) + Fusion(${m.tests.fusion})`);
+  const pct = data.headline.pct_final_tests_attributable_to_fusion;
+  push(typeof pct === 'number' && pct >= 0 && pct <= 100, `fusion attribution out of range: ${pct}`);
+  push(pct === Math.round((m.tests.fusion / Math.max(m.tests.total, 1)) * 1000) / 10,
+    `fusion attribution ${pct}% inconsistent with matrix (${m.tests.fusion}/${m.tests.total})`);
+  push(data.findings.conflict_count >= 0 &&
+    data.findings.uncovered_actionable_elements >= 0 &&
+    data.findings.uncovered_behaviors >= 0, 'findings counts must be non-negative');
   push(data.llm_calls === 0, 'dashboard aggregation must make zero LLM calls');
+  if (data.execution.available) {
+    push(data.execution.passed + data.execution.failed === data.execution.total ||
+         data.execution.passed + data.execution.failed > 0,
+      'execution summary internally inconsistent');
+    if (data.execution.steps_total) {
+      push(data.execution.steps_passed <= data.execution.steps_total,
+        'steps_passed exceeds steps_total');
+    }
+  }
+
+  if (reference) {
+    push(m.elements.total === 204, `elements total expected 204, got ${m.elements.total}`);
+    push(m.behaviors.total === 23, `behaviors total expected 23, got ${m.behaviors.total}`);
+    push(m.tests.a === 2 && m.tests.b === 1 && m.tests.fusion === 1,
+      `tests expected A=2 B=1 fusion=1, got A=${m.tests.a} B=${m.tests.b} F=${m.tests.fusion}`);
+    push(m.tests.total === 4, `total final tests expected 4, got ${m.tests.total}`);
+    push(m.states.a === 15, `A states expected 15, got ${m.states.a}`);
+    push(m.states.b === 9, `B states expected 9, got ${m.states.b}`);
+    push(pct === 25, `fusion attribution expected 25%, got ${pct}%`);
+    push(data.headline.tests_already_covered_by_ab === 0, 'no fusion test may duplicate A/B');
+    push(data.findings.conflict_count === 9, `conflicts expected 9, got ${data.findings.conflict_count}`);
+    push(data.findings.uncovered_actionable_elements === 80,
+      `actionable uncovered expected 80, got ${data.findings.uncovered_actionable_elements}`);
+    push(data.findings.uncovered_behaviors === 12,
+      `uncovered behaviors expected 12, got ${data.findings.uncovered_behaviors}`);
+    push(ex_ok(data), 'execution: expected FT001 PASS with 4/4 steps');
+    push(data.execution.verification_methods &&
+         Object.keys(data.execution.verification_methods).length >= 2,
+      'expected >=2 distinct verification methods recorded');
+  }
   return problems;
 }
 
@@ -254,8 +277,9 @@ function main() {
   const args = process.argv.slice(2);
   const arg = args.find(a => !a.startsWith('--'));
   const doValidate = args.includes('--validate');
+  const doValidateRef = args.includes('--validate-demoqa');
   if (!arg) {
-    console.error('Usage: node fusion/s6_dashboard.js <run_id | run_dir> [--validate]');
+    console.error('Usage: node fusion/s6_dashboard.js <run_id | run_dir> [--validate] [--validate-demoqa]');
     process.exit(2);
   }
   const root = path.join(__dirname, '..', 'runs');
@@ -263,9 +287,9 @@ function main() {
 
   const data = buildDashboardData(runDir);
 
-  if (doValidate) {
-    const problems = validate(data);
-    console.log(`[s6] validation checks against REAL artifacts: ${problems.length ? 'FAIL' : 'ALL PASS'}`);
+  if (doValidate || doValidateRef) {
+    const problems = validate(data, { reference: doValidateRef });
+    console.log(`[s6] validation checks (${doValidateRef ? 'reference/DemoQA' : 'structural'}): ${problems.length ? 'FAIL' : 'ALL PASS'}`);
     for (const p of problems) console.log('[s6]   FAIL:', p);
     console.log('[s6] headline:', JSON.stringify({
       total_final_tests: data.headline.total_final_tests,

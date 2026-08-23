@@ -58,6 +58,7 @@ function buildCandidates(elements, triedKeys, fingerprint) {
       href: el.href || '',
       placeholder: el.placeholder || '',
       name: el.name || null,
+      isDropdown: !!el.isDropdown,
       alreadyTried: triedKeys.has(`${fingerprint}|${el.selector}`),
       _rank: tagRank[el.tag] ?? 5,
     }))
