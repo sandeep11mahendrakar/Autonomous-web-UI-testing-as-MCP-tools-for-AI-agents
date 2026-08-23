@@ -39,7 +39,11 @@ async function getDOMElements(page) {
         const href = el.getAttribute('href');
         selector = 'a[href="' + href.replace(/"/g, '\\"') + '"]';
       } else if (el.className && typeof el.className === 'string' && el.className.trim()) {
-        const classes = el.className.trim().split(/\s+/).join('.');
+        // Escape CSS-special characters inside class names (Tailwind classes
+        // like `focus:outline-none` or `bg-black/50` otherwise produce
+        // selectors querySelectorAll() rejects).
+        const escapeClass = (c) => c.replace(/([:./\\[\]()#,%>"'=~|^$*+?{}])/g, '\\$1');
+        const classes = el.className.trim().split(/\s+/).map(escapeClass).join('.');
         selector = el.tagName.toLowerCase() + '.' + classes;
       } else {
         // :nth-of-type() is relative to same-tag SIBLINGS under the element's
@@ -62,6 +66,19 @@ async function getDOMElements(page) {
       // Collection-relevant semantics for the Fusion-era observation schema.
       const disabled = el.disabled === true || el.getAttribute('disabled') !== null;
       const required = el.required === true || el.getAttribute('required') !== null;
+
+      // Custom-dropdown detection (react-select et al.): these widgets reject
+      // direct text entry and need click-to-open + option-click instead of
+      // fill(). Native selects count too. Cheap heuristics only.
+      let isDropdown = false;
+      try {
+        isDropdown = el.tagName === 'SELECT'
+          || /^react-select/i.test(el.id || '')
+          || el.getAttribute('role') === 'combobox'
+          || el.getAttribute('aria-haspopup') !== null
+          || !!el.closest('[class*="select" i], [class*="dropdown" i], [class*="combo" i]');
+      } catch (_) {}
+
       let formInfo = null;
       if (el.form) {
         formInfo = {
@@ -85,6 +102,7 @@ async function getDOMElements(page) {
         name: el.getAttribute('name') || null,
         disabled,
         required,
+        isDropdown,
         form: formInfo,
       });
     });

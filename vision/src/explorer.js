@@ -45,6 +45,9 @@ const LIMITS = {
   MAX_DEPTH: Number(process.env.EXPLORE_MAX_DEPTH) || 8,
   MAX_STATES: Number(process.env.EXPLORE_MAX_STATES) || 12,
   MAX_ACTIONS_PER_STATE: Number(process.env.EXPLORE_MAX_ACTIONS_PER_STATE) || 4,
+  // Anti-laziness floor: "done" is not accepted before this many successful
+  // transitions while untried candidates remain (bstackdemo quit after 4).
+  MIN_STEPS: Number(process.env.EXPLORE_MIN_STEPS) || 6,
 };
 
 const CANDIDATE_TYPES = new Set([
@@ -52,6 +55,11 @@ const CANDIDATE_TYPES = new Set([
   'tab', 'menu', 'list_item', 'search_field', 'bottom_navigation',
 ]);
 const ACTION_TYPES = new Set(['click', 'fill', 'scroll', 'navigate', 'submit', 'done']);
+
+// Authenticated-seed support (runBoth.js --auth user pass).
+const SEEDED_CREDS = (process.env.SEED_USERNAME && process.env.SEED_PASSWORD)
+  ? { username: process.env.SEED_USERNAME, password: process.env.SEED_PASSWORD }
+  : null;
 
 function hashStr(s) {
   let h = 5381;
@@ -150,8 +158,8 @@ RULES:
 4. FORM COMPLETION: if a form has several required fields (e.g., username AND password), each new "fill" must target a DIFFERENT still-empty field. Never re-fill the same field while another required field of the same form is untouched. Fill ALL fields BEFORE clicking submit/login. If two similar stacked single-line inputs exist (typical login form), the TOP input is the username and the BOTTOM input is the password — give each its OWN matching credential from the on-screen text (never the same value in both).
 5. Links/buttons labelled like site sections usually navigate (good for exploring NEW pages).
 6. Use "scroll" when content below the fold is plausible and few unexplored candidates remain.
-7. Choose "done" ONLY when no unexplored meaningful action remains.${forbidDone ? '\n8. IMPORTANT: untried candidates ARE available — "done" is NOT acceptable right now. Pick one untried element.' : ''}
-9. Respond ONLY with raw JSON: {"action":"click"|"fill"|"scroll"|"navigate"|"submit"|"done","elementId":"<id from table or null>","value":"<text for fill>","reason":"<one sentence>"}`;
+7. Choose "done" ONLY when no unexplored meaningful action remains.${SEEDED_CREDS ? `\n8. SEEDED CREDENTIALS for this site: username="${SEEDED_CREDS.username}" password="${SEEDED_CREDS.password}". Use EXACTLY these values when filling login/signup fields.` : ''}${forbidDone ? `\n${SEEDED_CREDS ? 9 : 8}. IMPORTANT: untried candidates ARE available — "done" is NOT acceptable right now. Pick one untried element.` : ''}
+Respond ONLY with raw JSON: {"action":"click"|"fill"|"scroll"|"navigate"|"submit"|"done","elementId":"<id from table or null>","value":"<text for fill>","reason":"<one sentence>"}`;
 
   const decide = async (forbidDone) => {
     const raw = await callLLM(buildPrompt(forbidDone), { maxTokens: 400 });
@@ -327,10 +335,42 @@ async function runExploration({ url, runId }) {
         }
       }
       if (decision.action === 'done' || !decision.candidate) {
-        terminationReason = decision.action === 'done'
-          ? 'llm_done'
-          : 'no_valid_candidate_selected';
-        break;
+        const untriedNow = candidates.filter((c) => !c.alreadyTried);
+        const belowFloor = transitions.length < LIMITS.MIN_STEPS;
+        if (decision.action === 'done' && untriedNow.length && belowFloor) {
+          // Anti-laziness floor: refuse early "done" — one LLM retry, then a
+          // deterministic untried candidate. Never quit an element-rich page
+          // after a handful of steps again.
+          console.log(`[explore] Anti-laziness floor: ${transitions.length}/${LIMITS.MIN_STEPS} steps with untried candidates — refusing "done".`);
+          try {
+            decision = await selectActionLLM(candidates, historySummary);
+          } catch (err) {
+            terminationReason = `llm_error: ${err.message}`;
+            warnings.push(`Anti-laziness retry failed: ${err.message}`);
+            break;
+          }
+        }
+        if (decision.action === 'done' || !decision.candidate) {
+          const stillUntried = candidates.filter((c) => !c.alreadyTried);
+          if (decision.action === 'done' && stillUntried.length && belowFloor) {
+            const c = stillUntried[0];
+            const act = (c.type === 'text_input' || c.type === 'search_field') ? 'fill' : 'click';
+            let val = '';
+            if (act === 'fill') {
+              const t = normText(c.text);
+              val = /pass/.test(t)
+                ? (process.env.SEED_PASSWORD || 'TestPass123!')
+                : (process.env.SEED_USERNAME || 'test_user');
+            }
+            decision = { action: act, candidate: c, value: val, reason: 'anti_laziness_fallback' };
+            console.log(`[explore] Anti-laziness fallback: ${act} on element ${c.elementId}.`);
+          } else {
+            terminationReason = decision.action === 'done'
+              ? 'llm_done'
+              : 'no_valid_candidate_selected';
+            break;
+          }
+        }
       }
 
       const cand = decision.candidate;

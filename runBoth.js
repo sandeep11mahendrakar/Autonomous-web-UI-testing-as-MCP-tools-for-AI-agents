@@ -272,7 +272,8 @@ function collectArchitectureB(visionDir, startedAt) {
 // ---------------------------------------------------------------------------
 
 async function askUrl() {
-  if (process.argv[2]) return process.argv[2];
+  const urlArg = process.argv.slice(2).find((a) => !a.startsWith('--'));
+  if (urlArg) return urlArg;
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const answer = await new Promise((res) =>
     rl.question('Enter website URL [https://demoqa.com]: ', res));
@@ -280,8 +281,26 @@ async function askUrl() {
   return answer.trim() || 'https://demoqa.com';
 }
 
+/**
+ * Authenticated-seed support: `node runBoth.js <url> --auth <user> <pass>`.
+ * Credentials travel ONLY through the child process environment; they are
+ * never printed, logged, or written to the manifest.
+ */
+function parseAuthSeed() {
+  const idx = process.argv.indexOf('--auth');
+  if (idx === -1) return null;
+  const user = process.argv[idx + 1];
+  const pass = process.argv[idx + 2];
+  if (!user || !pass) {
+    console.error('[RUN] --auth requires both a username and a password argument.');
+    process.exit(2);
+  }
+  return { username: user, password: pass };
+}
+
 (async () => {
   const url = await askUrl();
+  const authSeed = parseAuthSeed();
   const runId = `run_${ts()}`;
   const runDir = path.join(ROOT, 'runs', runId);
   const domDir = path.join(runDir, 'dom');
@@ -290,9 +309,14 @@ async function askUrl() {
 
   log('RUN', `Run ID: ${runId}`);
   log('RUN', `URL: ${url}`);
+  log('RUN', `Auth seed: ${authSeed ? 'enabled (username provided; value not logged)' : 'not provided'}`);
   log('RUN', `Output tree: ${path.relative(process.cwd(), runDir)}`);
 
   const childEnv = buildChildEnv();
+  if (authSeed) {
+    childEnv.SEED_USERNAME = authSeed.username;
+    childEnv.SEED_PASSWORD = authSeed.password;
+  }
   const visionEnv = buildVisionEnv(childEnv);
   log('RUN', `GROQ_API_KEY available: ${childEnv.GROQ_API_KEY_SET}`);
   logLLMConfig('ARCH-A', childEnv, 'ARCH_A_');
@@ -387,6 +411,7 @@ async function askUrl() {
   const manifest = {
     run_id: runId,
     url,
+    auth_seed_enabled: !!authSeed,
     started_at: new Date(runStartedAt).toISOString(),
     finished_at: new Date().toISOString(),
     overall_status: overall,

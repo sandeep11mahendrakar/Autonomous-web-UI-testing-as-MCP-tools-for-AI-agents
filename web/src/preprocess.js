@@ -51,7 +51,7 @@ function preprocessDOM(rawElements) {
   return filtered;
 }
 
-function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageText = '') {
+function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageText = '', seed = null) {
   const recentSteps = memoryLog.slice(-5).map(s => ({
     step: s.step,
     state_id: s.state_id,
@@ -75,6 +75,7 @@ function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageT
     placeholder: el.placeholder || '',
     href: el.href || '',
     disabled: el.disabled || false,
+    isDropdown: !!el.isDropdown,
     alreadyUsed: usedSelectors.has(el.selector),
   }));
   const untried = compactElements.filter(el => !el.alreadyUsed).length;
@@ -95,6 +96,12 @@ function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageT
       '- After submitting, continue exploring newly reachable links/buttons; revisit forms with different values if an error appeared.',
       '- Prefer actions that navigate to new URLs over re-interacting with already-used elements.',
     ];
+  if (seed && seed.username && seed.password) {
+    goalLines.unshift(
+      `- SEEDED CREDENTIALS for this site: username="${seed.username}" password="${seed.password}". ` +
+      'Use EXACTLY these values when filling any login/signup/credential fields.'
+    );
+  }
 
   const pageTextBlock = pageText
     ? `\nPAGE TEXT (on-screen hints, credentials, labels):\n${pageText.replace(/\s+/g, ' ').trim().slice(0, 700)}\n`
@@ -119,15 +126,16 @@ STRICT RULES:
 3. NEVER pick an element with empty text, empty id, empty placeholder, and empty href.
 4. For anchor <a> tags, ALWAYS use action "navigate" with the full href as the url field. NEVER use "click" for links.
 5. Only use "click" for BUTTON and INPUT elements.
-6. If you just navigated to a new page, pick the most meaningful element on that new page.
-7. If nothing useful remains or the flow goal is complete, return action "done".
-8. Do NOT navigate back to the homepage — stay focused on completing the current flow.
-9. If the current page has input fields, fill them ALL before submitting.
-10. Respond ONLY with raw JSON — no markdown, no explanation, even if the answer feels obvious.
+6. If an element has isDropdown=true (custom combobox / react-select / native <select>), you MUST use action "select_option" with the desired option text as "value". NEVER use "fill" on a dropdown — it will fail. For a login dropdown, pick the option matching the seeded or on-screen credential (e.g., the username option).
+7. If you just navigated to a new page, pick the most meaningful element on that new page.
+8. If nothing useful remains or the flow goal is complete, return action "done".
+9. Do NOT navigate back to the homepage — stay focused on completing the current flow.
+10. If the current page has input fields, fill them ALL before submitting.
+11. Respond ONLY with raw JSON — no markdown, no explanation, even if the answer feels obvious.
 
 Respond with EXACTLY:
 {
-  "action": "click" | "fill" | "navigate" | "done",
+  "action": "click" | "fill" | "navigate" | "select_option" | "done",
   "elementId": <number or null>,
   "selector": "<css selector>",
   "value": "<text to type, only for fill>",

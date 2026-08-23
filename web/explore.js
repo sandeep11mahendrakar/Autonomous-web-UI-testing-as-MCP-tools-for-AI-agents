@@ -50,6 +50,16 @@ const TRANSITIONS_PATH= path.join(OUTPUT_DIR, 'transitions.json');
 const SUMMARY_PATH    = path.join(OUTPUT_DIR, 'exploration_summary.json');
 // Headless by default; HEADLESS=false opts back into a visible browser.
 const HEADLESS        = process.env.HEADLESS !== 'false';
+// Authenticated-seed support: optional start credentials supplied by the
+// orchestrator (runBoth.js --auth user pass) so exploration can get past
+// login walls instead of inventing values.
+const SEED = {
+  username: process.env.SEED_USERNAME || '',
+  password: process.env.SEED_PASSWORD || '',
+};
+if (SEED.username && SEED.password) {
+  console.log('[explore] Auth seed provided — credentials will be used on login/signup forms.');
+}
 
 for (const d of [OUTPUT_DIR, SCREENSHOT_DIR]) {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
@@ -86,7 +96,7 @@ async function decideAction(page, candidates, memoryLog, flowName, fingerprint) 
   const prompt = buildExplorationPrompt(
     // map candidates back to preprocess-shaped rows for the prompt builder
     candidates.map(c => ({ ...c, elementId: c.elementId })),
-    memoryLog, flowName, pageText
+    memoryLog, flowName, pageText, SEED.username && SEED.password ? SEED : null
   );
 
   const attempt = async (forbidDone) => {
@@ -123,10 +133,21 @@ async function decideAction(page, candidates, memoryLog, flowName, fingerprint) 
   if ((decision.action === 'done' || !decision.chosen) && untried.length) {
     const pick = untried[0];
     console.log(`[explore] Deterministic fallback candidate: ${pick.tag} "${pick.text || pick.selector}"`);
+    let fallbackAction;
+    if (pick.tag === 'A') fallbackAction = 'navigate';
+    else if (pick.tag === 'INPUT' || pick.tag === 'TEXTAREA') fallbackAction = pick.isDropdown ? 'select_option' : 'fill';
+    else if (pick.tag === 'SELECT') fallbackAction = 'select_option';
+    else fallbackAction = 'click';
+    let fallbackValue = pick.placeholder || pick.text || 'test_input';
+    if (fallbackAction === 'fill' && SEED.username && SEED.password) {
+      const s = `${pick.selector} ${pick.placeholder || ''}`.toLowerCase();
+      if (s.includes('password') || s.includes('pass')) fallbackValue = SEED.password;
+      else if (s.includes('user') || s.includes('name') || s.includes('mail')) fallbackValue = SEED.username;
+    }
     return {
-      action: pick.tag === 'A' ? 'navigate' : (pick.tag === 'INPUT' || pick.tag === 'TEXTAREA' ? 'fill' : 'click'),
+      action: fallbackAction,
       chosen: pick,
-      value: pick.placeholder || pick.text || 'test_input',
+      value: fallbackValue,
       reason: 'deterministic_fallback',
       fallback: true,
     };

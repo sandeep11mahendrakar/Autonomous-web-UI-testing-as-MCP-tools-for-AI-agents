@@ -101,6 +101,13 @@ function parseAction(llmResponse) {
 
     try { return _normaliseAction(JSON.parse(trimmed)); } catch (_) {}
 
+    // Some reasoning models inject markdown-fence fragments INSIDE JSON
+    // values/keys ("elementId":6```html). Strip every fence token and any
+    // leftover raw newlines (illegal as control chars inside JSON strings;
+    // harmless outside them for this single-line protocol).
+    const deFenced = trimmed.replace(/```[a-z]*/gi, '').replace(/\r?\n/g, ' ');
+    try { return _normaliseAction(JSON.parse(deFenced)); } catch (_) {}
+
     const noFences = trimmed
       .replace(/^```json\s*/i, '')
       .replace(/^```\s*/, '')
@@ -120,7 +127,7 @@ function parseAction(llmResponse) {
 }
 
 function _normaliseAction(obj) {
-  const VALID_ACTIONS = ['click', 'fill', 'navigate', 'done'];
+  const VALID_ACTIONS = ['click', 'fill', 'navigate', 'select_option', 'done'];
   return {
     action:    VALID_ACTIONS.includes(obj.action) ? obj.action : 'done',
     elementId: typeof obj.elementId === 'number'  ? obj.elementId : null,
@@ -186,6 +193,81 @@ async function executeAction(page, action) {
       await page.goto(absolute, { waitUntil: 'domcontentloaded', timeout: 20000 });
       break;
     }
+    case 'select_option': {
+      // Custom dropdowns (react-select et al.) reject page.fill(); they need
+      // click-to-open then click on the option. Native <select> uses the
+      // dedicated Playwright primitive.
+      if (!selector) throw new Error('executeAction: select_option missing selector');
+      const optionText = (value || '').trim();
+      console.log(`[llmClient] Executing: select_option "${selector}" -> "${optionText}"`);
+
+      const isNativeSelect = await page.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        return !!el && el.tagName === 'SELECT';
+      }, selector).catch(() => false);
+
+      if (isNativeSelect) {
+        try {
+          if (optionText) {
+            await page.selectOption(selector, { label: optionText }, { timeout: 8000 });
+          } else {
+            await page.selectOption(selector, { index: 1 }, { timeout: 8000 });
+          }
+        } catch (_) {
+          await page.selectOption(selector, { index: 1 }, { timeout: 5000 });
+        }
+        break;
+      }
+
+      // Custom widget: the detected node is often a hidden zero-size input
+      // (react-select) that Playwright cannot click directly — resolve the
+      // visible control ancestor and click its centre with raw mouse events.
+      const ctrlPoint = await page.evaluate((sel) => {
+        const norm = (t) => String(t || '').toLowerCase();
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        let ctrl = el;
+        while (ctrl && ctrl !== document.body) {
+          const c = norm(ctrl.className);
+          if (c.includes('control') || c.includes('dropdown') || c.includes('select')) break;
+          ctrl = ctrl.parentElement;
+        }
+        if (!ctrl || ctrl === document.body) ctrl = el.parentElement || el;
+        const r = ctrl.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) {
+          const er = el.getBoundingClientRect();
+          if (er.width > 0 && er.height > 0) return { x: er.x + er.width / 2, y: er.y + er.height / 2 };
+          return null;
+        }
+        return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+      }, selector);
+
+      if (!ctrlPoint) throw new Error(`select_option: ${selector} not found or not renderable`);
+      await page.mouse.click(ctrlPoint.x, ctrlPoint.y);
+      await page.waitForTimeout(700); // let the options menu render
+
+      // Options live in the freshly-opened menu; prefer the requested text,
+      // but NEVER hang on a missing label — deterministic first-option
+      // fallback keeps exploration moving (a wrong-but-real selection still
+      // records state; a stuck menu poisons every later step).
+      const MENU_SEL = '[class*="menu" i] [class*="option" i], [role="listbox"] [role="option"]';
+      try {
+        if (optionText) {
+          await page.locator(MENU_SEL)
+            .filter({ hasText: optionText })
+            .first()
+            .click({ timeout: 3000 });
+        } else {
+          throw new Error('no value — take first option');
+        }
+      } catch (_) {
+        if (optionText) {
+          console.log(`[llmClient] Option "${optionText}" not in menu — selecting first available option.`);
+        }
+        await page.locator(MENU_SEL).first().click({ timeout: 6000 });
+      }
+      break;
+    }
     case 'done': {
       console.log('[llmClient] Action is "done" — exploration complete');
       break;
@@ -198,6 +280,11 @@ async function executeAction(page, action) {
 
 function _defaultValue(selector) {
   const s = selector.toLowerCase();
+  // Authenticated-seed support: real credentials win over invented ones.
+  if (process.env.SEED_PASSWORD && (s.includes('password') || s.includes('pass'))) return process.env.SEED_PASSWORD;
+  if (process.env.SEED_USERNAME && (s.includes('user') || s.includes('name') || s.includes('mail'))) {
+    return process.env.SEED_USERNAME;
+  }
   if (s.includes('email') || s.includes('mail'))    return 'test@example.com';
   if (s.includes('password') || s.includes('pass')) return 'TestPass123!';
   if (s.includes('user') || s.includes('name'))     return 'testuser';
