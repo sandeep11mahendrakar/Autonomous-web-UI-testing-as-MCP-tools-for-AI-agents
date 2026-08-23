@@ -95,6 +95,128 @@ async function waitForContextPageChange(context, baselineUrls, waitMs) {
   return { changed: false };
 }
 
+// ------------------------- authenticated-seed support -------------------------
+// Fusion tests execute in a FRESH browser context, so any target that only
+// exists post-login (header links, account pages) resolves to nothing. When
+// the orchestrator supplied SEED_USERNAME/SEED_PASSWORD we proactively log in
+// ONCE per test before executing steps. Best-effort: every failure degrades
+// gracefully to today's behaviour and is recorded as a warning.
+
+const SEED = (process.env.SEED_USERNAME && process.env.SEED_PASSWORD)
+  ? { username: process.env.SEED_USERNAME, password: process.env.SEED_PASSWORD }
+  : null;
+
+async function isLoggedIn(page) {
+  return page.evaluate(() =>
+    !!document.querySelector(
+      'a[href*="logout" i], [id*="logout" i], [class*="logout" i], [aria-label*="logout" i]'
+    )).catch(() => false);
+}
+
+/** Click the visible control ancestor of a hidden react-select-style input. */
+async function openDropdownControl(page, selectorHandle) {
+  const point = await page.evaluate((el) => {
+    const norm = (t) => String(t || '').toLowerCase();
+    let ctrl = el;
+    while (ctrl && ctrl !== document.body) {
+      const c = norm(ctrl.className);
+      if (c.includes('control') || c.includes('dropdown') || c.includes('select')) break;
+      ctrl = ctrl.parentElement;
+    }
+    if (!ctrl || ctrl === document.body) ctrl = el.parentElement || el;
+    const r = ctrl.getBoundingClientRect();
+    return r.width > 0 && r.height > 0
+      ? { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+      : null;
+  }, selectorHandle);
+  if (!point) throw new Error('dropdown control not renderable');
+  await page.mouse.click(point.x, point.y);
+  await page.waitForTimeout(700);
+}
+
+async function pickOption(page, preferredText) {
+  const MENU_SEL = '[class*="menu" i] [class*="option" i], [role="listbox"] [role="option"]';
+  try {
+    if (preferredText) {
+      await page.locator(MENU_SEL).filter({ hasText: preferredText }).first()
+        .click({ timeout: 3000 });
+      return preferredText;
+    }
+    throw new Error('no preference');
+  } catch (_) {
+    const first = await page.locator(MENU_SEL).first().textContent({ timeout: 4000 }).catch(() => null);
+    await page.locator(MENU_SEL).first().click({ timeout: 5000 });
+    return (first || '').trim().slice(0, 40);
+  }
+}
+
+/**
+ * Log in using seeded credentials when a login affordance is reachable.
+ * Handles both custom combobox credential pickers (react-select) and classic
+ * username/password forms. Returns true when a login was performed.
+ */
+async function preAuthenticate(page, result) {
+  if (!SEED || (await isLoggedIn(page))) return false;
+
+  // Give SPAs a fair chance to render their login surface before probing.
+  await page.waitForSelector(
+    'input[type="password"], input[id^="react-select"], [id*="login" i], a:has-text("sign in"), button:has-text("login")',
+    { timeout: 8000 }
+  ).catch(() => {});
+
+  // Open the login surface if we are not already on one.
+  const onLoginForm = await page.evaluate(() =>
+    !!document.querySelector('input[type="password"]') ||
+    document.querySelectorAll('input[id^="react-select"]').length >= 2
+  ).catch(() => false);
+  if (!onLoginForm) {
+    const loginLink = page.locator(
+      'a:has-text("sign in"), a:has-text("login"), button:has-text("sign in"), button:has-text("login")'
+    ).first();
+    try {
+      await loginLink.click({ timeout: 5000 });
+      await page.waitForTimeout(1200);
+    } catch (_) {
+      result.warnings.push('auth_seed:no_login_surface');
+      return false;
+    }
+  }
+
+  try {
+    const comboInputs = await page.$$('input[id^="react-select"]');
+    if (comboInputs.length >= 2) {
+      await openDropdownControl(page, comboInputs[0]);
+      const uPicked = await pickOption(page, SEED.username);
+      await openDropdownControl(page, comboInputs[1]);
+      const pPicked = await pickOption(page, SEED.password);
+      result.warnings.push(`auth_seed:combobox_login:user=${uPicked}`);
+    } else {
+      const pwd = page.locator('input[type="password"]:visible').first();
+      await pwd.fill(SEED.password, { timeout: 5000 });
+      const user = page.locator(
+        'input[type="text"]:visible, input[type="email"]:visible, input:not([type]):visible'
+      ).first();
+      await user.fill(SEED.username, { timeout: 5000 });
+      result.warnings.push('auth_seed:form_login');
+    }
+
+    const submit = page.locator(
+      '#login-btn, button[type="submit"], button:has-text("login"), button:has-text("sign in"), input[type="submit"]'
+    ).first();
+    await submit.click({ timeout: 5000 });
+    await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+    await page.waitForTimeout(1500);
+
+    const ok = (await isLoggedIn(page)) ||
+      !/sign-?in|\/login/i.test(page.url());
+    result.warnings.push(`auth_seed:${ok ? 'logged_in' : 'unverified'}`);
+    return ok;
+  } catch (err) {
+    result.warnings.push(`auth_seed:failed:${err.message.slice(0, 80)}`);
+    return false;
+  }
+}
+
 async function runTest(browser, testCase, index) {
   const context = await browser.newContext({ viewport: VIEWPORT });
   const page = await context.newPage();
@@ -119,6 +241,24 @@ async function runTest(browser, testCase, index) {
   };
 
   try {
+    // Authenticated-seed: log in ONCE per test so post-login targets resolve.
+    // Session persists in this context's cookies for all subsequent steps.
+    if (SEED) {
+      const base = testCase.start_page ||
+        (testCase.steps.find(s => s.action === 'navigate') || {}).url;
+      if (base) {
+        try {
+          await page.goto(base, { waitUntil: 'domcontentloaded', timeout: 30000 });
+          await page.setViewportSize(VIEWPORT).catch(() => {});
+          await page.waitForTimeout(1000);
+          const did = await preAuthenticate(page, result);
+          if (!did) result.warnings.push('auth_seed:not_attempted_or_not_needed');
+        } catch (err) {
+          result.warnings.push(`auth_seed:navigation_failed:${err.message.slice(0, 80)}`);
+        }
+      }
+    }
+
     // Implicit routing: a test without a leading navigate step still declares
     // its start_page — open it, otherwise the first click would run on
     // about:blank and every target would fail resolution.
