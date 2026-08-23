@@ -108,6 +108,14 @@ function parseAction(llmResponse) {
     const deFenced = trimmed.replace(/```[a-z]*/gi, '').replace(/\r?\n/g, ' ');
     try { return _normaliseAction(JSON.parse(deFenced)); } catch (_) {}
 
+    // Models also emit CSS attribute selectors with UNESCAPED double quotes
+    // ("selector": "[name="username"]") which break JSON parsing. Normalise
+    // bracket-attribute quoting to single quotes and retry.
+    const attrRepaired = deFenced
+      .replace(/\[([a-zA-Z][\w:-]*)="/g, "[$1='")
+      .replace(/"\]/g, "']");
+    try { return _normaliseAction(JSON.parse(attrRepaired)); } catch (_) {}
+
     const noFences = trimmed
       .replace(/^```json\s*/i, '')
       .replace(/^```\s*/, '')
