@@ -29,8 +29,12 @@ async function getDOMElements(page) {
       if (el.offsetWidth === 0 && el.offsetHeight === 0) return;
 
       let selector = '';
-      if (el.id) {
+      if (el.id && /^[a-zA-Z_-]/.test(el.id)) {
         selector = '#' + el.id;
+      } else if (el.id) {
+        // IDs starting with a digit (e.g. generated UUIDs on challenging-dom
+        // style pages) are INVALID as #id selectors — use attribute form.
+        selector = '[id="' + el.id.replace(/"/g, '\\"') + '"]';
       } else if (el.getAttribute('name')) {
         selector = `[name="${el.getAttribute('name')}"]`;
       } else if (el.tagName === 'A' && el.getAttribute('href')) {

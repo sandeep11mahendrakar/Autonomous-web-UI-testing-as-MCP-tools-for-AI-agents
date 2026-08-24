@@ -35,6 +35,24 @@ const { hashStr, normText, buildCandidates,
         deriveFlowsFromDOM }                     = require('./src/exploreHelpers');
 
 const HOME_URL        = process.argv[2] || 'https://demoqa.com';
+let HOME_ORIGIN = '';
+try { HOME_ORIGIN = new URL(HOME_URL).origin; } catch (_) {}
+
+// Bot-wall / challenge-page detection: these pages have no testable surface,
+// so burning the whole step budget on them is waste. Detected once at
+// homepage load -> terminate immediately with an explicit reason.
+const BOT_WALL_PATTERNS = [
+  /just a moment/i,
+  /checking your browser/i,
+  /verify you are human/i,
+  /attention required/i,
+  /ddos protection by/i,
+  /access denied.*cloudflare/i,
+];
+function looksLikeBotWall(title, bodyText) {
+  const hay = `${title}\n${bodyText}`;
+  return BOT_WALL_PATTERNS.some((re) => re.test(hay));
+}
 const MAX_FLOWS       = Number(process.env.MAX_FLOWS) || 5;
 const LIMITS = {
   STEPS: Number(process.env.MAX_STEPS) || 25,
@@ -268,6 +286,19 @@ Example:
   const browser = await chromium.launch({ headless: HEADLESS });
   const page    = await browser.newPage();
 
+  // Heavy SPAs (e.g. OWASP Juice Shop) never settle on networkidle — their
+  // background traffic runs forever. Fall back to domcontentloaded + settle.
+  async function gotoPage(url, opts = {}) {
+    try {
+      await page.goto(url, { waitUntil: 'networkidle', timeout: 60000, ...opts });
+    } catch (err) {
+      if (!/Timeout.*exceeded/i.test(err.message)) throw err;
+      console.warn(`[explore] networkidle timeout on ${url} — retrying as domcontentloaded.`);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.waitForTimeout(6000);
+    }
+  }
+
   await page.route('**/*', route => {
     const url = route.request().url();
     const blocked = [
@@ -311,8 +342,19 @@ Example:
   try {
     // Step 1: homepage
     console.log(`[explore] Loading homepage: ${HOME_URL}`);
-    await page.goto(HOME_URL, { waitUntil: 'networkidle', timeout: 60000 });
+    await gotoPage(HOME_URL);
     await page.waitForTimeout(3000);
+
+    // Bot-wall check before any exploration investment.
+    const wallTitle = await page.title().catch(() => '');
+    const wallBody = await page.evaluate(() =>
+      (document.body ? document.body.innerText : '').slice(0, 2000)).catch(() => '');
+    if (looksLikeBotWall(wallTitle, wallBody)) {
+      terminationReason = 'bot_wall_blocked';
+      warnings.push(`Bot-wall/challenge page detected at ${HOME_URL} — run aborted (record as BLOCKED).`);
+      console.error('[explore] 🚫 Bot-wall/challenge page detected — aborting exploration.');
+      throw new Error('bot_wall_blocked');
+    }
 
     // Step 2: flows
     console.log('[explore] Extracting homepage elements...');
@@ -338,7 +380,7 @@ Example:
       console.log(`\n[explore] ▶ Flow ${flowNumber}/${flows.length}: ${flow.name} → ${flow.url}`);
 
       try {
-        await page.goto(flow.url, { waitUntil: 'networkidle', timeout: 60000 });
+        await gotoPage(flow.url);
         await page.waitForTimeout(3000);
       } catch (err) {
         console.error(`[explore] Failed to load ${flow.url}: ${err.message}`);
@@ -451,6 +493,23 @@ Example:
           continue;
         }
 
+        // External-domain scope guard: navigating off the target site leaves
+        // our observation scope (seen on GlobalSQA -> gitlab.com). Record,
+        // return, never adopt out-of-scope states.
+        let nextOrigin = '';
+        try { nextOrigin = new URL(toUrl).origin; } catch (_) {}
+        if (HOME_ORIGIN && nextOrigin && nextOrigin !== HOME_ORIGIN) {
+          transition.result = 'external_domain_skipped';
+          warnings.push(`Step ${globalStep}: external navigation blocked (${toUrl})`);
+          console.log(`[explore] ⛔ External domain (${nextOrigin}) — out of scope, going back.`);
+          if (toUrl !== fromUrl) {
+            await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+            await page.waitForTimeout(1200);
+          }
+          persistIncremental();
+          continue;
+        }
+
         // Fingerprint the post-action state.
         const nextRaw = await getDOMElements(page).catch(() => []);
         const nextElements = preprocessDOM(nextRaw);
@@ -499,7 +558,9 @@ Example:
       if (globalStep >= LIMITS.STEPS)     { terminationReason = 'max_steps_reached'; break; }
     }
   } catch (err) {
-    terminationReason = `fatal_error: ${err.message}`;
+    if (terminationReason !== 'bot_wall_blocked') {
+      terminationReason = `fatal_error: ${err.message}`;
+    }
     warnings.push(err.message);
     console.error('[explore] Fatal:', err.message);
   } finally {
@@ -549,6 +610,5 @@ Example:
 
     // Explicit exit — Chromium/Groq SDK handles must not keep the process alive.
     runLogStream.end();
-    process.exit(terminationReason.startsWith('fatal_error') ? 1 : 0);
-  }
+    process.exit(terminationReason.startsWith('fatal_error') ? 1 : 0);  }
 })();
