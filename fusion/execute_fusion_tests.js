@@ -348,7 +348,7 @@ async function runTest(browser, testCase, index) {
         }
         rec.after_state = await snapshotState(page, context);
         rec.verification_method = 'url_change';
-        const norm = (u) => String(u || '').replace(/\/+$/, '');
+        const norm = (u) => String(u || '').replace(/[\/#]+$/, '');
         const ok = norm(rec.after_state.url) === norm(step.url);
         rec.result = ok ? 'PASS' : 'FAIL';
         rec.detail = `landed on ${rec.after_state.url}`;
