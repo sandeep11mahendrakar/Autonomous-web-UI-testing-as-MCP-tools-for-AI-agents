@@ -93,8 +93,9 @@ async function runVariant(id, bugs, startedAt) {
   const url = `http://127.0.0.1:${port}/index.html`;
   const srv = await createFixtureServer(bugs, port);
 
-  // 1+2. unified pipeline against the local fixture
-  let runId = null;
+  // 1+2. unified pipeline against the local fixture. The server MUST stay up
+  // through the ENTIRE chain — fusion FT execution navigates the fixture too;
+  // closing early leaves FTs on about:blank (bug found in first campaign run).
   try {
     const code = await run('node', ['runBoth.js', url], ROOT,
       path.join(variantDir, 'pipeline.log'), 40 * 60 * 1000);
@@ -102,46 +103,46 @@ async function runVariant(id, bugs, startedAt) {
     const runs = fs.readdirSync(path.join(ROOT, 'runs'))
       .filter((d) => d.startsWith('run_') && fs.statSync(path.join(ROOT, 'runs', d)).mtimeMs >= startedAt)
       .sort();
-    runId = runs[runs.length - 1] || null;
+    const runId = runs[runs.length - 1] || null;
+
+    if (!runId) {
+      const score = { variant: id, run_id: null, error: 'no run dir produced', arch_b: 'NO_REPORT', fused: 'NO_REPORT', arch_a: 'NOT_APPLICABLE_V1' };
+      fs.writeFileSync(path.join(variantDir, 'score.json'), JSON.stringify(score, null, 2));
+      return score;
+    }
+    log(`unified run: ${runId}`);
+    const runDir = path.join(ROOT, 'runs', runId);
+
+    // 3. fusion chain (server still serving)
+    await run('node', ['fusion/s1_build_catalog.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
+    await run('node', ['fusion/s2_gap_report.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
+    await run('node', ['fusion/s4_fusion_synthesis.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
+    await run('node', ['fusion/execute_fusion_tests.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
+
+    // 4. score. B's executor writes vision/storage/outputs/ during the run and
+    // runBoth copies it into the unified tree; prefer the unified copy.
+    const bReport = findFirst(path.join(runDir, 'vision', 'outputs'), 'execution_results')
+      || findFirst(path.join(ROOT, 'vision', 'storage', 'outputs'), 'execution_results');
+    const score = {
+      variant: id,
+      bug_name: bugs.length === 1 ? BUGS[bugs[0]].name : '(baseline)',
+      run_id: runId,
+      url,
+      analyzed_at: new Date().toISOString(),
+      ...analyzeVariant(
+        bugs.length === 1 ? BUGS[bugs[0]] : { targets: [], detect_urls: [] },
+        {
+          bExecutionReport: bReport,
+          ftExecutionReport: findFirst(path.join(runDir, 'fusion'), 'ft_execution_results'),
+        },
+      ),
+    };
+    fs.writeFileSync(path.join(variantDir, 'score.json'), JSON.stringify(score, null, 2));
+    log(`${id}: arch_b=${score.arch_b} fused=${score.fused}`);
+    return score;
   } finally {
     await new Promise((r) => srv.close(r));
   }
-
-  if (!runId) {
-    const score = { variant: id, run_id: null, error: 'no run dir produced', ...{ arch_b: 'NO_REPORT', fused: 'NO_REPORT', arch_a: 'NOT_APPLICABLE_V1' } };
-    fs.writeFileSync(path.join(variantDir, 'score.json'), JSON.stringify(score, null, 2));
-    return score;
-  }
-  log(`unified run: ${runId}`);
-  const runDir = path.join(ROOT, 'runs', runId);
-
-  // 3. fusion chain
-  await run('node', ['fusion/s1_build_catalog.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
-  await run('node', ['fusion/s2_gap_report.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
-  await run('node', ['fusion/s4_fusion_synthesis.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
-  await run('node', ['fusion/execute_fusion_tests.js', runId], ROOT, path.join(variantDir, 'fusion.log'));
-
-  // 4. score. B's executor writes vision/storage/outputs/ during the run and
-  // runBoth copies it into the unified tree; prefer the unified copy.
-  const bReport = findFirst(path.join(runDir, 'vision', 'outputs'), 'execution_results')
-    || findFirst(path.join(ROOT, 'vision', 'storage', 'outputs'), 'execution_results');
-  const score = {
-    variant: id,
-    bug_name: bugs.length === 1 ? BUGS[bugs[0]].name : '(baseline)',
-    run_id: runId,
-    url,
-    analyzed_at: new Date().toISOString(),
-    ...analyzeVariant(
-      bugs.length === 1 ? BUGS[bugs[0]] : { targets: [], detect_urls: [] },
-      {
-        bExecutionReport: bReport,
-        ftExecutionReport: findFirst(path.join(runDir, 'fusion'), 'ft_execution_results'),
-      },
-    ),
-  };
-  fs.writeFileSync(path.join(variantDir, 'score.json'), JSON.stringify(score, null, 2));
-  log(`${id}: arch_b=${score.arch_b} fused=${score.fused}`);
-  return score;
 }
 
 function writeSummary(scores, startedAtIso) {
