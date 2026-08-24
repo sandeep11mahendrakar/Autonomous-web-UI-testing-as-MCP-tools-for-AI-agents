@@ -39,8 +39,9 @@ function collectSignals(node, out = [], depth = 0) {
   for (const k of ['status', 'outcome', 'result', 'verification_status']) {
     if (typeof node[k] === 'string' && node[k].length < 80) { status = node[k]; break; }
   }
-  if (typeof node.passed === 'boolean' || typeof node.success === 'boolean') {
-    status = (node.passed ?? node.success) ? 'pass' : 'fail';
+  if (typeof node.passed === 'boolean' || typeof node.success === 'boolean'
+    || typeof node.ok === 'boolean') {
+    status = (node.passed ?? node.success ?? node.ok) ? 'pass' : 'fail';
   }
 
   const texts = [];

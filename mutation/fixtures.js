@@ -82,6 +82,8 @@ function indexPage(bugs) {
   return page('DemoShop Home', `
     <h1>DemoShop</h1>
     <p>A tiny shop used by the mutation-testing harness.</p>
+    <p>Use the login form below. Credentials for this demo:
+       <strong>demo</strong> / <strong>demo123</strong></p>
     <h2>Sign in</h2>
     <form id="login" onsubmit="return doLogin(event)">
       <input id="user" type="text" placeholder="Username">
