@@ -51,7 +51,7 @@ function preprocessDOM(rawElements) {
   return filtered;
 }
 
-function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageText = '', seed = null) {
+function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageText = '', seed = null, directive = null) {
   const recentSteps = memoryLog.slice(-5).map(s => ({
     step: s.step,
     state_id: s.state_id,
@@ -100,6 +100,12 @@ function buildExplorationPrompt(elements, memoryLog, flowName = 'unknown', pageT
     goalLines.unshift(
       `- SEEDED CREDENTIALS for this site: username="${seed.username}" password="${seed.password}". ` +
       'Use EXACTLY these values when filling any login/signup/credential fields.'
+    );
+  }
+  if (directive && String(directive).trim()) {
+    goalLines.unshift(
+      'USER DIRECTIVE (HIGHEST PRIORITY for this flow — overrides the generic goals above):\n' +
+      `>>> ${String(directive).trim()}\n<<<`
     );
   }
 
