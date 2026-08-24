@@ -1,0 +1,10 @@
+[night-chain 2026-08-24T18:23:19.240Z] night chain started — waiting for repeatability study
+[night-chain 2026-08-24T20:29:19.868Z] repeatability finished — starting Tier-2 campaign
+[night-chain 2026-08-24T20:29:19.872Z] 10 tier-2 sites queued
+[night-chain 2026-08-24T20:29:19.874Z] === TIER-2 books_toscrape (https://books.toscrape.com) ===
+[night-chain 2026-08-24T20:29:19.875Z] START tier2 books_toscrape pipeline
+[night-chain 2026-08-24T20:44:20.099Z] FAIL tier2 books_toscrape pipeline: Command failed: node runBoth.js https://books.toscrape.com
+[night-chain 2026-08-24T20:44:20.102Z] STOPPING tier-2: books_toscrape produced FAILED/crashed pipeline (run_20260825_015919) — fix required before next site
+[night-chain 2026-08-24T20:44:20.104Z] START s8 campaign evaluation
+[night-chain 2026-08-24T20:44:20.248Z] DONE s8 campaign evaluation: [s8] Evaluation written: C:\Users\sandeep\pes\vs code\Capstone-Project\testing\CAMPAIGN_EVALUATION.md (10 sites aggregated) | 
+[night-chain 2026-08-24T20:44:20.249Z] night chain finished
