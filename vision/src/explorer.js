@@ -235,6 +235,12 @@ async function runExploration({ url, runId }) {
   const page = await browser.newPage({ viewport: VIEWPORT });
   let stateCounter = 0;
 
+  // Scope guard baseline: exploration must never leave the target site's
+  // origin. Seen live on the-internet (B followed footer links to github.com
+  // and typed into GitHub's login form) — unacceptable behavior.
+  let START_ORIGIN = '';
+  try { START_ORIGIN = new URL(url).origin; } catch (_) {}
+
   const nextStateName = (suffix) =>
     path.join(relDir, `state_${String(++stateCounter).padStart(3, '0')}_${suffix}.png`);
 
@@ -454,6 +460,26 @@ async function runExploration({ url, runId }) {
         }
         await page.waitForTimeout(1000);
         continue;
+      }
+
+      if (START_ORIGIN) {
+        let nextOrigin = '';
+        try { nextOrigin = new URL(next.state.url).origin; } catch (_) {}
+        if (nextOrigin && nextOrigin !== START_ORIGIN) {
+          // EXTERNAL DOMAIN: never adopt, never interact further (the action
+          // may already have landed on a third-party login form — leave).
+          transition.result = 'external_domain_skipped';
+          transition.url_after = next.state.url;
+          transitions.push(transition);
+          recordFailure(2); // off-site link = definitive dead end for this family
+          warnings.push(`External domain blocked: ${next.state.url}`);
+          console.log(`[explore] ${transition.from_state} --${decision.action}--> ⛔ external domain (${nextOrigin}) — going back`);
+          if (page.url() !== urlBeforeAction) {
+            await page.goBack({ waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+          }
+          await page.waitForTimeout(1000);
+          continue;
+        }
       }
 
       if (visitedFingerprints.has(next.fingerprint)) {
