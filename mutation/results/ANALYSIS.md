@@ -47,3 +47,10 @@ S4 returned HTTP 429 and fusion_tests.json was never produced (executor then
 correctly refused). fused=NO_REPORT rows are quota casualties, not pipeline
 failures. Remaining variants are scheduled post-reset by
 `testing/overnight_scheduler.js`.
+
+## Round 4 (Groq TPM-paced, 2026-08-24 late evening)
+
+- bad_validation: NOT_COVERED (B) / honest-zero (Fusion — LLM candidate rejected no_actionable_step)
+- missing_required: NOT_COVERED / NOT_DETECTED across rounds; contact/checkout surfaces remain unexercised within budgets
+- dead_button: SKIPPED after 3 consecutive rounds of identical NOT_COVERED results — a fourth adds no information. Groq free-tier TPM (8k/min) made the run uneconomical.
+
