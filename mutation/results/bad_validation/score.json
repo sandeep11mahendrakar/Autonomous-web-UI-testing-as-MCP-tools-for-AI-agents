@@ -1,10 +1,10 @@
 {
   "variant": "bad_validation",
   "bug_name": "Checkout accepts invalid email",
-  "run_id": "run_20260824_182652",
-  "url": "http://127.0.0.1:57888/index.html",
-  "analyzed_at": "2026-08-24T13:00:56.787Z",
-  "arch_b": "NOT_DETECTED",
+  "run_id": "run_20260824_224912",
+  "url": "http://127.0.0.1:60180/index.html",
+  "analyzed_at": "2026-08-24T17:27:16.840Z",
+  "arch_b": "NOT_COVERED",
   "fused": "NO_REPORT",
   "arch_a": "NOT_APPLICABLE_V1"
 }

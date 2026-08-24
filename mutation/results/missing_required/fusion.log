@@ -32,3 +32,152 @@
 No fusion_tests.json — run S4 first.
 
 ===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_200833 @ 2026-08-24T14:40:19.274Z =====
+[s1] Observations: 92
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 35
+[s1] Canonical behaviors: 16
+[s1] Conflicts: 1
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_200833\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_200833\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_200833 @ 2026-08-24T14:40:19.355Z =====
+[gap] elements: {"common":0,"a_only":19,"b_only":16,"actionable_uncovered":12,"covered":16,"coverage_pct":46}
+[gap] behaviors: {"common":0,"a_only":16,"b_only":0,"uncovered":3,"covered":13,"coverage_pct":81}
+[gap] conflicts: 1
+[gap] anomalies: {"rare":26,"low_confidence":0,"multi_position":5}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_200833\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_200833 @ 2026-08-24T14:40:19.424Z =====
+[s4] gap candidates offered: 7 {"uncovered_behavior":3,"quiet_page":1,"uncovered_actionable_element":3}
+[s4] prompt chars: 4076 (~1019 tokens estimated)
+[s4] ONE Fusion call -> openrouter:nvidia/nemotron-3-super-120b-a12b:free (max_tokens=1500) ...
+[s4] Fusion LLM call failed: LLM HTTP 429 from openrouter: {"error":{"message":"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"50","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1787616000000"},"limit_source":"openrouter_free_tier_daily","remedy_hi
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_200833 @ 2026-08-24T14:40:19.934Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_211105 @ 2026-08-24T15:45:41.173Z =====
+[s1] Observations: 191
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 41
+[s1] Canonical behaviors: 24
+[s1] Conflicts: 1
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_211105 @ 2026-08-24T15:45:41.254Z =====
+[gap] elements: {"common":1,"a_only":21,"b_only":19,"actionable_uncovered":12,"covered":22,"coverage_pct":54}
+[gap] behaviors: {"common":0,"a_only":22,"b_only":2,"uncovered":2,"covered":22,"coverage_pct":92}
+[gap] conflicts: 1
+[gap] anomalies: {"rare":14,"low_confidence":0,"multi_position":20}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_211105 @ 2026-08-24T15:45:41.325Z =====
+[s4] gap candidates offered: 1 {"quiet_page":1}
+[s4] prompt chars: 2652 (~663 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[s4] raw response chars: 632 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 1
+[s4] accepted: 0  rejected: 1
+[s4]   REJECT #0: no_actionable_step — navigation-only test
+[s4] gap ids used: (none)
+[s4] all accepted grounded: true
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211105\fusion\fusion_report.json
+
+===== exited code=0 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_211105 @ 2026-08-24T15:45:47.551Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_223156 @ 2026-08-24T17:04:04.280Z =====
+[s1] Observations: 125
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 41
+[s1] Canonical behaviors: 20
+[s1] Conflicts: 2
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223156\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223156\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_223156 @ 2026-08-24T17:04:04.359Z =====
+[gap] elements: {"common":1,"a_only":20,"b_only":20,"actionable_uncovered":16,"covered":18,"coverage_pct":44}
+[gap] behaviors: {"common":0,"a_only":19,"b_only":1,"uncovered":4,"covered":16,"coverage_pct":80}
+[gap] conflicts: 2
+[gap] anomalies: {"rare":19,"low_confidence":0,"multi_position":17}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223156\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_223156 @ 2026-08-24T17:04:04.433Z =====
+[s4] gap candidates offered: 8 {"uncovered_behavior":3,"classification_conflict":1,"quiet_page":1,"uncovered_actionable_element":3}
+[s4] prompt chars: 4477 (~1119 tokens estimated)
+[s4] ONE Fusion call -> groq:openai/gpt-oss-120b (max_tokens=1500) ...
+[s4] Fusion LLM call failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7051, Requested 1920. Please try again in 7.2825s. Need more tokens? Upgrade to Dev Tier today at https://con
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_223156 @ 2026-08-24T17:04:04.706Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_225716 @ 2026-08-24T17:39:49.567Z =====
+[s1] Observations: 311
+[s1] Canonical pages: 6 (multi-arch: 2)
+[s1] Canonical elements: 59
+[s1] Canonical behaviors: 24
+[s1] Conflicts: 4
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_225716\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_225716\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_225716 @ 2026-08-24T17:39:49.657Z =====
+[gap] elements: {"common":1,"a_only":18,"b_only":40,"actionable_uncovered":30,"covered":16,"coverage_pct":27}
+[gap] behaviors: {"common":0,"a_only":17,"b_only":7,"uncovered":9,"covered":15,"coverage_pct":63}
+[gap] conflicts: 4
+[gap] anomalies: {"rare":21,"low_confidence":0,"multi_position":37}
+[gap] opportunities: quietPages=0
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_225716\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_225716 @ 2026-08-24T17:39:49.726Z =====
+[s4] gap candidates offered: 6 {"uncovered_behavior":2,"classification_conflict":1,"uncovered_actionable_element":3}
+[s4] prompt chars: 4392 (~1098 tokens estimated)
+[s4] ONE Fusion call -> groq:openai/gpt-oss-120b (max_tokens=1500) ...
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[s4] Fusion LLM call failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199314, Requested 3074. Please try again in 17m11.616s. Need more tokens? Upgrade to Dev Tier today at https:/
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_225716 @ 2026-08-24T17:42:08.576Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
