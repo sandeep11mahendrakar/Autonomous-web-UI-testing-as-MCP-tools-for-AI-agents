@@ -1,10 +1,10 @@
 {
   "variant": "dead_button",
   "bug_name": "Dead submit button",
-  "run_id": "run_20260824_175902",
-  "url": "http://127.0.0.1:53580/index.html",
-  "analyzed_at": "2026-08-24T12:33:05.421Z",
+  "run_id": "run_20260824_183317",
+  "url": "http://127.0.0.1:57680/index.html",
+  "analyzed_at": "2026-08-24T13:05:22.027Z",
   "arch_b": "NOT_COVERED",
-  "fused": "NOT_COVERED",
+  "fused": "NO_REPORT",
   "arch_a": "NOT_APPLICABLE_V1"
 }

@@ -1,52 +1,62 @@
 
-===== node fusion/s1_build_catalog.js run_20260824_174511 @ 2026-08-24T12:18:37.423Z =====
-[s1] Observations: 370
-[s1] Canonical pages: 6 (multi-arch: 4)
-[s1] Canonical elements: 79
-[s1] Canonical behaviors: 25
-[s1] Conflicts: 7
-[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\observations.json
-[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\catalog.json
+===== node fusion/s1_build_catalog.js run_20260824_181531 @ 2026-08-24T12:50:59.441Z =====
+[s1] Observations: 329
+[s1] Canonical pages: 6 (multi-arch: 3)
+[s1] Canonical elements: 73
+[s1] Canonical behaviors: 28
+[s1] Conflicts: 5
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\catalog.json
 
 ===== exited code=0 =====
 
-===== node fusion/s2_gap_report.js run_20260824_174511 @ 2026-08-24T12:18:37.648Z =====
-[gap] elements: {"common":2,"a_only":14,"b_only":63,"actionable_uncovered":37,"covered":16,"coverage_pct":20}
-[gap] behaviors: {"common":0,"a_only":15,"b_only":10,"uncovered":10,"covered":15,"coverage_pct":60}
-[gap] conflicts: 7
-[gap] anomalies: {"rare":29,"low_confidence":0,"multi_position":49}
+===== node fusion/s2_gap_report.js run_20260824_181531 @ 2026-08-24T12:50:59.531Z =====
+[gap] elements: {"common":1,"a_only":20,"b_only":52,"actionable_uncovered":39,"covered":21,"coverage_pct":29}
+[gap] behaviors: {"common":0,"a_only":19,"b_only":9,"uncovered":9,"covered":19,"coverage_pct":68}
+[gap] conflicts: 5
+[gap] anomalies: {"rare":27,"low_confidence":0,"multi_position":41}
 [gap] opportunities: quietPages=0
-[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\gap_report.json
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\gap_report.json
 
 ===== exited code=0 =====
 
-===== node fusion/s4_fusion_synthesis.js run_20260824_174511 @ 2026-08-24T12:18:37.817Z =====
-[s4] gap candidates offered: 2 {"classification_conflict":2}
-[s4] prompt chars: 3287 (~822 tokens estimated)
+===== node fusion/s4_fusion_synthesis.js run_20260824_181531 @ 2026-08-24T12:50:59.599Z =====
+[s4] gap candidates offered: 4 {"classification_conflict":4}
+[s4] prompt chars: 3620 (~905 tokens estimated)
 [s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
-[s4] raw response chars: 1207 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\fusion_raw_response.txt
-[s4] candidates from LLM: 2
-[s4] accepted: 2  rejected: 0
-[s4] gap ids used: gap_conflict_3, gap_conflict_5
+[s4] raw response chars: 3054 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 4
+[s4] accepted: 4  rejected: 0
+[s4] gap ids used: gap_conflict_1, gap_conflict_2, gap_conflict_3, gap_conflict_4
 [s4] all accepted grounded: true
-[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\fusion_tests.json
-[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\fusion_report.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\fusion_report.json
 
 ===== exited code=0 =====
 
-===== node fusion/execute_fusion_tests.js run_20260824_174511 @ 2026-08-24T12:18:48.002Z =====
-[exec] Executing 2 Fusion test(s) from C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511
+===== node fusion/execute_fusion_tests.js run_20260824_181531 @ 2026-08-24T12:51:20.394Z =====
+[exec] Executing 4 Fusion test(s) from C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531
 
-[exec] === FT001: Disambiguate the Cart element classified as both anchor and link by clicking it and verifying navigation to the cart page
-[exec]   step 1 click    el_r8glun                                          -> PASS (action opened a new page (http://127.0.0.1:64091/cart.html))
+[exec] === FT001: Disambiguate the dual-classified 'Shop' element (a/link) on the cart page by clicking it and verifying it navigates to the shop page
+[exec]   step 1 click    el_16zgmdh                                         -> PASS (action opened a new page (http://127.0.0.1:49337/shop.html))
 [exec] RESULT FT001: PASS
 
-[exec] === FT002: Disambiguate the Home element on the about page classified as both anchor and link by clicking it from the about page
-[exec]   step 1 click    el_gziugv                                          -> PASS (action opened a new page (http://127.0.0.1:64091/index.html))
+[exec] === FT002: Verify the dual-classified 'Home' element on the cart page returns the user to the home page
+[exec]   step 1 click    el_16z8b6c                                         -> PASS (action opened a new page (http://127.0.0.1:49337/index.html))
 [exec] RESULT FT002: PASS
 
-[exec] Summary: {"total":2,"passed":2,"failed":0,"steps_total":2,"steps_passed":2,"targets_preverified":2,"warnings":2}
-[exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\fusion\ft_execution_results.json
+[exec] === FT003: Confirm the conflicted 'Cart' element on the cart page remains clickable and does not break state when navigating to itself
+[exec]   step 1 click    el_16z44wl                                         -> FAIL (no new page, no URL change, no body-text change observable after click)
+[exec] RESULT FT003: FAIL
+
+[exec] === FT004: Composed workflow: navigate to checkout, then use the conflicted 'Shop' element to exit back toward shopping, verifying cross-page link integrity
+[exec]   step 1 navigate http://127.0.0.1:49337/checkout.html               -> PASS (landed on http://127.0.0.1:49337/checkout.html)
+[exec]   step 2 click    el_63zhjl                                          -> PASS (action opened a new page (http://127.0.0.1:49337/shop.html))
+[exec] RESULT FT004: PASS
+
+[exec] Summary: {"total":4,"passed":3,"failed":1,"steps_total":5,"steps_passed":4,"targets_preverified":4,"warnings":3}
+[exec] Failure classification: [{"step":1,"stage":"no_post_action_change","class":"semantic_verification"}]
+[exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\fusion\ft_execution_results.json
 [exec] Evidence: fusion\ft_execution_evidence/
 
 ===== exited code=0 =====
