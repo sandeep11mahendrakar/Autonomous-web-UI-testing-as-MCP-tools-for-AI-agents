@@ -52,13 +52,28 @@ function freePort() {
   });
 }
 
-/** Spawn a command, stream output to a log file + console. Resolve on exit. */
-function run(cmd, args, cwd, logFile, timeoutMs = 30 * 60 * 1000) {
+// Exploration-depth overrides: the fixture is small but has 6 pages; the
+// defaults (25 steps / 15 states) rarely reach checkout/contact surfaces.
+const DEEP_ENV = {
+  MAX_STEPS: '45',
+  MAX_STATES: '30',
+  MAX_FLOWS: '8',
+  EXPLORE_MAX_STEPS: '45',
+  EXPLORE_MIN_STEPS: '10',
+};
+
+/** Spawn a command, stream output to a log file + console. Resolve on exit.
+ * Extra env is merged over process.env (exploration-depth knobs). */
+function run(cmd, args, cwd, logFile, timeoutMs = 30 * 60 * 1000, extraEnv = {}) {
   return new Promise((resolve, reject) => {
     fs.mkdirSync(path.dirname(logFile), { recursive: true });
     const stream = fs.createWriteStream(logFile, { flags: 'a' });
     stream.write(`\n===== ${cmd} ${args.join(' ')} @ ${new Date().toISOString()} =====\n`);
-    const child = spawn(cmd, args, { cwd, shell: process.platform === 'win32' });
+    const child = spawn(cmd, args, {
+      cwd,
+      shell: process.platform === 'win32',
+      env: { ...process.env, ...extraEnv },
+    });
     const timer = setTimeout(() => {
       try { if (process.platform === 'win32') spawn('taskkill', ['/pid', String(child.pid), '/T', '/F']); else child.kill(); } catch (_) {}
       stream.end();
@@ -98,7 +113,7 @@ async function runVariant(id, bugs, startedAt) {
   // closing early leaves FTs on about:blank (bug found in first campaign run).
   try {
     const code = await run('node', ['runBoth.js', url], ROOT,
-      path.join(variantDir, 'pipeline.log'), 40 * 60 * 1000);
+      path.join(variantDir, 'pipeline.log'), 40 * 60 * 1000, DEEP_ENV);
     if (code !== 0) log(`runBoth exited ${code} (may still have artifacts)`);
     const runs = fs.readdirSync(path.join(ROOT, 'runs'))
       .filter((d) => d.startsWith('run_') && fs.statSync(path.join(ROOT, 'runs', d)).mtimeMs >= startedAt)
