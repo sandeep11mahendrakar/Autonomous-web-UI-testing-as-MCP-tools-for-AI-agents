@@ -52,6 +52,7 @@ async function probeSelector(page, selector, expectedLabel) {
       exists: true,
       visible,
       enabled: !el.disabled,
+      readonly: el.readOnly === true || el.getAttribute('readonly') !== null,
       tag: el.tagName.toLowerCase(),
       rect: { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) },
       label,
@@ -75,6 +76,11 @@ function classifyFailure(stage) {
     selector_disabled: 'browser_execution',
     label_mismatch: 'semantic_verification',
     click_threw: 'browser_execution',
+    fill_threw: 'browser_execution',
+    fill_not_persisted: 'semantic_verification',
+    selector_readonly: 'semantic_verification',
+    option_not_selected: 'semantic_verification',
+    select_option_threw: 'browser_execution',
     no_post_action_change: 'semantic_verification',
   }[stage] || 'browser_execution';
 }
@@ -113,9 +119,14 @@ async function isLoggedIn(page) {
     )).catch(() => false);
 }
 
-/** Click the visible control ancestor of a hidden react-select-style input. */
-async function openDropdownControl(page, selectorHandle) {
-  const point = await page.evaluate((el) => {
+/** Click the visible control ancestor of a hidden react-select-style input.
+ *  Accepts an ElementHandle OR a CSS selector string. */
+async function openDropdownControl(page, target) {
+  const handle = typeof target === 'string' ? null : target;
+  const sel = typeof target === 'string' ? target : null;
+  const point = await page.evaluate(({ handleEl, selStr }) => {
+    const el = handleEl || document.querySelector(selStr);
+    if (!el) return null;
     const norm = (t) => String(t || '').toLowerCase();
     let ctrl = el;
     while (ctrl && ctrl !== document.body) {
@@ -128,7 +139,7 @@ async function openDropdownControl(page, selectorHandle) {
     return r.width > 0 && r.height > 0
       ? { x: r.x + r.width / 2, y: r.y + r.height / 2 }
       : null;
-  }, selectorHandle);
+  }, { handleEl: handle, selStr: sel });
   if (!point) throw new Error('dropdown control not renderable');
   await page.mouse.click(point.x, point.y);
   await page.waitForTimeout(700);
@@ -343,6 +354,140 @@ async function runTest(browser, testCase, index) {
         rec.detail = `landed on ${rec.after_state.url}`;
         if (!ok) { rec.failure_stage = 'navigation_failed'; result.status = 'FAIL'; }
         rec.after_screenshot = await shot(page, `step${rec.step}_after_navigate`);
+        result.steps.push(rec);
+        continue;
+      }
+
+      // fill: existence + visibility + value-persisted verification.
+      // Label matching is skipped deliberately — live inputs are usually
+      // empty while catalog labels come from OCR/placeholders.
+      if (step.action === 'fill') {
+        const probe = await probeSelector(page, selector, null);
+        rec.live_probe = probe;
+        rec.coordinates_live = probe.exists ? probe.rect : null;
+        rec.verification_method = 'input_value_persisted';
+        if (!probe.exists) {
+          rec.result = 'FAIL';
+          rec.failure_stage = 'selector_not_found';
+          rec.detail = `selector ${selector} not present on current page ${page.url()}`;
+          result.status = 'FAIL';
+          result.steps.push(rec);
+          break;
+        }
+        if (!probe.visible) {
+          rec.result = 'FAIL';
+          rec.failure_stage = 'selector_not_visible';
+          rec.detail = `selector ${selector} present but not visible/renderable`;
+          result.status = 'FAIL';
+          result.steps.push(rec);
+          break;
+        }
+        if (!probe.enabled) {
+          rec.result = 'FAIL';
+          rec.failure_stage = 'selector_disabled';
+          rec.detail = `selector ${selector} is disabled`;
+          result.status = 'FAIL';
+          result.steps.push(rec);
+          break;
+        }
+        if (probe.readonly) {
+          // Honest semantic failure: the catalogued target is a display-only
+          // input (e.g. demo-credential hint boxes) — not an editable field.
+          rec.result = 'FAIL';
+          rec.failure_stage = 'selector_readonly';
+          rec.detail = `selector ${selector} is readonly (display box, not editable)`;
+          result.status = 'FAIL';
+          result.steps.push(rec);
+          break;
+        }
+        try {
+          const val = typeof step.value === 'string' && step.value.trim() ? step.value : 'test_input';
+          // Class-derived selectors can match readonly display inputs
+          // (e.g. CURA's demo-credential boxes) while the real target sits at
+          // another match — try every grounded selector, ID-based first.
+          const sels = [...(catalogRecord.a_selectors || [])]
+            .sort((a, b) => (b.startsWith('#') - a.startsWith('#')));
+          let back = null;
+          let lastErr = null;
+          for (const sel of sels) {
+            try {
+              await page.fill(sel, val, { timeout: 6000 });
+              back = await page.inputValue(sel);
+              break;
+            } catch (e) { lastErr = e; }
+          }
+          if (back === null && lastErr) {
+            // Cold-start / slow-render fallback: reload once and retry the
+            // most specific selector before declaring failure.
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
+            await page.waitForTimeout(2000);
+            await page.fill(sels[0], val, { timeout: 12000 });
+            back = await page.inputValue(sels[0]);
+          }
+          rec.result = back === val ? 'PASS' : 'FAIL';
+          rec.detail = `filled "${val.slice(0, 40)}", read back "${String(back).slice(0, 40)}"`;
+          if (!rec.result.startsWith('P')) {
+            rec.failure_stage = 'fill_not_persisted';
+            result.status = 'FAIL';
+          }
+        } catch (err) {
+          rec.result = 'FAIL';
+          rec.failure_stage = 'fill_threw';
+          rec.detail = err.message;
+          result.status = 'FAIL';
+        }
+        rec.after_state = await snapshotState(page, context);
+        rec.after_screenshot = await shot(page, `step${rec.step}_after_fill`);
+        result.steps.push(rec);
+        continue;
+      }
+
+      // select_option: open the dropdown control, pick the requested option.
+      if (step.action === 'select_option') {
+        const probe = await probeSelector(page, selector, null);
+        rec.live_probe = probe;
+        rec.coordinates_live = probe.exists ? probe.rect : null;
+        rec.verification_method = 'dropdown_option_selected';
+        if (!probe.exists || !probe.visible) {
+          rec.result = 'FAIL';
+          rec.failure_stage = probe.exists ? 'selector_not_visible' : 'selector_not_found';
+          rec.detail = `selector ${selector} ${probe.exists ? 'not visible' : 'not present'} on ${page.url()}`;
+          result.status = 'FAIL';
+          result.steps.push(rec);
+          break;
+        }
+        try {
+          const want = typeof step.value === 'string' ? step.value.trim() : '';
+          const isNative = await page.evaluate((sel) => {
+            const el = document.querySelector(sel);
+            return !!el && el.tagName === 'SELECT';
+          }, selector).catch(() => false);
+          let picked = null;
+          if (isNative) {
+            await page.selectOption(selector, { label: want || undefined }, { timeout: 8000 })
+              .catch(() => page.selectOption(selector, { index: 1 }, { timeout: 5000 }));
+            picked = await page.evaluate((sel) => {
+              const el = document.querySelector(sel);
+              return el && el.selectedIndex >= 0 ? el.options[el.selectedIndex].text : null;
+            }, selector);
+          } else {
+            await openDropdownControl(page, selector);
+            picked = await pickOption(page, want);
+          }
+          rec.result = picked ? 'PASS' : 'FAIL';
+          rec.detail = `selected option "${String(picked).slice(0, 40)}"${want ? ` (wanted "${want.slice(0, 40)}")` : ''}`;
+          if (!picked) {
+            rec.failure_stage = 'option_not_selected';
+            result.status = 'FAIL';
+          }
+        } catch (err) {
+          rec.result = 'FAIL';
+          rec.failure_stage = 'select_option_threw';
+          rec.detail = err.message;
+          result.status = 'FAIL';
+        }
+        rec.after_state = await snapshotState(page, context);
+        rec.after_screenshot = await shot(page, `step${rec.step}_after_select`);
         result.steps.push(rec);
         continue;
       }

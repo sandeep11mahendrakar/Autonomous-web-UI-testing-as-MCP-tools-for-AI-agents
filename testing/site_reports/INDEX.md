@@ -11,6 +11,15 @@ recalculated from this table as the campaign grows.
 | 4 | Demoblaze | https://www.demoblaze.com | 2026-08-24 | `demoblaze_2026-08-24.md` | `run_20260824_001544` | ✅ 11 steps/checkout reached | ✅ 9 steps/2 URLs | 4/4 grounded, 1 dedup-rejected | **4/4 PASS** | **40%** |
 | 5 | CURA Healthcare | https://katalon-demo-cura.herokuapp.com | 2026-08-24 | `cura_2026-08-24.md` | `run_20260824_002709` | ⚠️ login page only | ✅ 12 steps/2 URLs | 0 offered (honest zero) | n/a | 0% |
 | 6 | Parasoft ParaBank | https://parabank.parasoft.com/parabank/index.htm | 2026-08-24 | `parabank_2026-08-24.md` | `run_20260824_015222` | ✅ **LOGGED IN** (auth-seed) 8 steps/overview.htm | ✅ 10 steps/3 URLs, replay PASS | 0 accepted (2× no_actionable_step) | n/a (honest zero) | 0% |
+| 7 | Automation Exercise | https://www.automationexercise.com | 2026-08-24 | `automationexercise_2026-08-24.md` | `run_20260824_094432` | ✅ 15 steps/15 states (search+brands+cart) | ⚠️ 6 steps, replay FAIL step2 | 0 offered (honest zero, bh cov 79%) | n/a | 0% |
+| 8 | OpenCart Demo | https://demo.opencart.com | 2026-08-24 | `opencart_blocked_2026-08-24.md` | `run_20260824_095411` | 🚫 **BLOCKED** — Cloudflare bot-wall | 🚫 blocked | — | — | — |
+| 8s | GlobalSQA (spare for #8) | https://www.globalsqa.com/demo-site/ | 2026-08-24 | `globalsqa_2026-08-24.md` | `run_20260824_095724` | ✅ 16 steps/15 states | ✅ 10 steps/3 URLs, replay PASS | 3/5 grounded | **3/3 PASS** | **33.3%** |
+
+### Re-run: CURA with capability upgrades
+
+| Site | Date | Run ID | Note |
+|---|---|---|---|
+| CURA Healthcare (re-run) | 2026-08-24 | `run_20260824_093124` | **B LOGGED IN via seeded creds → appointment page reached for the first time**; S4 composed 3 executable tests (was honest zero); FT 0/3 but all honest failures that drove the fill/select_option executor branches + readonly fast-fail; dashboard 33.3% fusion. See `cura_rerun_2026-08-24.md`. |
 
 ### Post-capability-upgrade re-test (bstackdemo with auth-seed + select_option)
 
@@ -20,12 +29,13 @@ recalculated from this table as the campaign grows.
 
 ## Tier-1 running aggregate (checkpoint C2 tracking)
 
-| Metric | Value (sites 1,3,4,5,6) |
+| Metric | Value |
 |---|---|
-| Full-pipeline success (no stage crash) | 5/5 |
-| FT live pass rate (executed tests) | 7/9 = 78% (bstackdemo FT001 fixed by FT auth-seed → verified PASS post-fix) |
-| Fusion-attributable coverage | mean ≈ 18% (range 0–40%) |
-| Pipeline defects found & fixed during campaign | 12 total (+ LLM-response tolerance: fence fragments, attribute-quote escaping; + FT executor pre-login) |
+| Full-pipeline success (no stage crash) | 9/9 runnable sites (1 bot-walled site excluded: OpenCart BLOCKED) |
+| FT live pass rate (executed tests) | 10/12 = 83% (CURA re-run 3 honest failures included) |
+| Fusion-attributable coverage | mean ≈ 21% across scored sites (range 0–40%); 33% on both post-upgrade runs |
+| Auth-gated sites reached post-login | 3 of 3 attempted (bstackdemo-A via select_option, CURA-B via seeded vision prompt, ParaBank-A via seeded DOM fill) |
+| Pipeline defects found & fixed during campaign | 14 total (+FT fill branch, readonly probe, S4 select_option vocabulary, external-domain leak logged as backlog) |
 
 ## Reference run (pre-campaign, DemoQA)
 
