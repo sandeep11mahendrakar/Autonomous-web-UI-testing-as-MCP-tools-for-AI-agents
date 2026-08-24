@@ -1,13 +1,60 @@
 # PROJECT_MEMORY.md — single source of truth
 
-Last updated: 2026-08-23 (evening — first non-DemoQA end-to-end run complete).
-This file MERGES and REPLACES the old `VISION_CONTEXT.md` + `AGENT_HANDOFF.md`
-(both deleted). All metrics come from real saved run artifacts, none are
-estimates.
+Last updated: 2026-08-24 (evening — Tier-2 prep: fuzzy matcher, mutation
+harness, campaign evaluator, repeatability runner; quota-gated work scheduled).
 
 ---
 
-## 0. LATEST SESSION RESULT (2026-08-23, saucedemo.com)
+## 0. SESSION RESULT (2026-08-24 evening, branch `capstone-tier2-prep`)
+
+Branch created off `capstone-final-integrated`; ALL work below committed and
+pushed to the `backup` remote
+(`github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-`).
+**The Neonishh origin remote was REMOVED from git config by user instruction —
+never push there from this clone.**
+
+1. **A2 fuzzy matcher DONE**: `lib/fuzzyMatch.js` (containment -> windowed
+   edit-distance <=2 -> token overlap >=0.6) wired into B's replay
+   `resolveTarget` as tier between exact text match and proximity fallback.
+   Fixes bstackdemo/AutomationExercise OCR-variance replay failures.
+2. **Mutation harness BUILT + RUN (3 rounds)** (`mutation/`): deterministic
+   fixture app with 5 seeded bugs, detection analyzer with honest
+   DETECTED/NOT_DETECTED/NOT_COVERED taxonomy. Round-3 headline finding:
+   **the system verifies actions-work, not values-correct** — wrong-calc /
+   missing-validation / dead-button undetectable even when fully exercised
+   (FT 4/4 PASS on the buggy cart page). Full analysis:
+   `mutation/results/ANALYSIS.md`. New V2 P1 item: assertion/value-oracle
+   synthesis. Rounds 1-2 archived honestly (server-close bug; default depth).
+3. **s8 campaign evaluator DONE** (`fusion/s8_campaign_eval.js`, zero LLM):
+   aggregates INDEX ledger + per-run dashboard_data/manifests ->
+   `testing/CAMPAIGN_EVALUATION.md` (summary, SUCCESS/PARTIAL/BLOCKED matrix,
+   confidence heuristic column, A-vs-B means, fusion contribution quality,
+   curated defect/discovery/limitation ledgers, cost/time). Implements the
+   ChatGPT-report review items approved by the user.
+4. **Repeatability runner READY** (`testing/run_repeatability.js`): N runs/site,
+   separates exploration variability vs execution flakiness vs API variance.
+5. **QUOTA INCIDENT + overnight scheduler**: ox-alpha key = 1000 req/DAY
+   (not near-unlimited); exhausted mid-round-3 at ~18:20 IST. Last 3 mutation
+   variants have fused=NO_REPORT (quota casualties). `testing/
+   overnight_scheduler.js` polls the key endpoint and auto-runs remaining
+   variants + repeatability study after the 00:00 UTC reset.
+
+Offline suites after changes: **116 tests PASS** (was 91).
+
+Code changes this session (all on `capstone-tier2-prep`, pushed to backup):
+`lib/fuzzyMatch.js` (+tests), `vision/src/executeTests.js` (matcher wiring +
+exports), `mutation/*` (fixtures/server/analyze/run_detection + results +
+ANALYSIS), `fusion/s8_campaign_eval.js` (+tests),
+`testing/{CAMPAIGN_EVALUATION.md, run_repeatability.js,
+overnight_scheduler.js}`, backlog priority updates.
+
+NEXT: verify overnight scheduler output in the morning -> finish scorecard ->
+Tier-2 campaign sites 11-20 (list to be availability-checked at runtime;
+~50-60 LLM calls/site fits within a daily 1000 budget if paced).
+
+---
+
+## 0a. PREVIOUS SESSION RESULT (2026-08-23, saucedemo.com)
 
 First full-pipeline validation on a site OTHER than DemoQA, using the
 `stealth/ox-alpha` OpenRouter model (free, reasoning effort=low):

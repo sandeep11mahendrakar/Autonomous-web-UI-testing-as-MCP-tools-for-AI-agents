@@ -1,6 +1,6 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-24T12:37:47.299Z by `fusion/s8_campaign_eval.js`.
+Generated: 2026-08-24T14:08:19.056Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -65,6 +65,21 @@ Raw keys of `architecture_comparison` vary per run schema; see each run's dashbo
 > Quality note: fusion % alone does not equal value. Cross-origin composed
 > workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative
 > wins beyond the percentage. **CURATED** — see per-site reports.
+
+## 4b. Mutation bug-detection scorecard
+
+| Variant | Bug | arch_b | fused |
+|---|---|---|---|
+| bad_validation | Checkout accepts invalid email | NOT_DETECTED | NO_REPORT |
+| baseline | (baseline) | NOT_COVERED | NOT_COVERED |
+| broken_nav | Broken navigation link | NOT_COVERED | NOT_COVERED |
+| dead_button | Dead submit button | NOT_COVERED | NO_REPORT |
+| missing_required | Login accepts empty credentials | NOT_DETECTED | NO_REPORT |
+| wrong_calc | Wrong cart total | NOT_COVERED | NOT_COVERED |
+
+Full analysis incl. verification-strength ceiling finding:
+`mutation/results/ANALYSIS.md`. NOT_COVERED = buggy surface never exercised
+(cannot conclude); NO_REPORT = channel produced no report that run.
 
 ## 5. Reliability / repeatability
 
