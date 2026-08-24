@@ -1,19 +1,20 @@
 
-===== node runBoth.js http://127.0.0.1:64091/index.html @ 2026-08-24T12:15:11.509Z =====
-[RUN] Run ID: run_20260824_174511
-[RUN] URL: http://127.0.0.1:64091/index.html
+===== node runBoth.js http://127.0.0.1:49337/index.html @ 2026-08-24T12:45:31.500Z =====
+[RUN] Run ID: run_20260824_181531
+[RUN] URL: http://127.0.0.1:49337/index.html
 [RUN] Auth seed: not provided
-[RUN] Output tree: runs\run_20260824_174511
+[RUN] Output tree: runs\run_20260824_181531
 [RUN] GROQ_API_KEY available: true
 [RUN] ARCH-A LLM: provider=groq model=(provider default) key=set
 [RUN] ARCH-B LLM: provider=groq model=(provider default) key=set
 [ARCH-A] Starting... (DOM + memory-log exploration)
 [ARCH-B] Starting... (Vision pipeline: capture -> YOLO/OCR -> visual DOM -> LLM tests -> execution)
-[ARCH-B] [run] Target: http://127.0.0.1:64091/index.html
+[ARCH-B] [run] Target: http://127.0.0.1:49337/index.html
 [ARCH-B] [run] Starting services...
-[ARCH-B] (node:25520) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (node:27812) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
 [ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
 [ARCH-B] [merge] [merge] Merge service running on :5003
+[ARCH-A] [explore] Loading homepage: http://127.0.0.1:49337/index.html
 [ARCH-B] [ocr]  * Serving Flask app 'ocr'
 [ARCH-B]  * Debug mode: off
 [ARCH-B] [browser] [browser] Browser service running on :5004
@@ -22,11 +23,6 @@
 [ARCH-B]  * Running on http://127.0.0.1:5002
 [ARCH-B]  * Running on http://192.168.0.113:5002
 [ARCH-B] [ocr] Press CTRL+C to quit
-[ARCH-A] [explore] Loading homepage: http://127.0.0.1:64091/index.html
-[ARCH-A] [explore] Extracting homepage elements...
-[ARCH-A] [explore] Homepage elements found: 8
-[ARCH-A] [explore] Deterministic flow discovery found 4 flows: Shop,Cart,Contact,About
-[ARCH-A] [explore] ▶ Flow 1/4: Shop → http://127.0.0.1:64091/shop.html
 [ARCH-B] [yolo] [yolo] Loading model: screenparser_best.pt (conf=0.15, imgsz=640)
 [ARCH-B] [yolo] Model loaded. Classes: 55
 [ARCH-B]  * Serving Flask app 'detect'
@@ -36,322 +32,469 @@
 [ARCH-B]  * Running on http://127.0.0.1:5001
 [ARCH-B]  * Running on http://192.168.0.113:5001
 [ARCH-B] [yolo] Press CTRL+C to quit
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:18] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:34] "GET /health HTTP/1.1" 200 -
 [ARCH-B] [run] YOLO service ready
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:18] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:34] "GET /health HTTP/1.1" 200 -
 [ARCH-B] [run] OCR service ready
 [ARCH-B] [run] Merge service ready
 [ARCH-B] [gateway] [gateway] Vision gateway running on :5000
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:19] "GET /health HTTP/1.1" 200 -
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:19] "GET /health HTTP/1.1" 200 -
+[ARCH-A] [explore] Extracting homepage elements...
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:35] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:35] "GET /health HTTP/1.1" 200 -
 [ARCH-B] [run] Vision gateway ready
 [ARCH-B] [run] All services healthy. Starting autonomous exploration...
+[ARCH-A] [explore] Homepage elements found: 8
+[ARCH-A] [explore] Deterministic flow discovery found 4 flows: Shop,Cart,Contact,About
+[ARCH-A] [explore] ▶ Flow 1/4: Shop → http://127.0.0.1:49337/shop.html
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:38] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:40] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:40] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 @ http://127.0.0.1:49337/index.html (21 elements)
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
 [ARCH-A] [explore] ══ Step 1 (Flow: Shop, flow-step: 1) ══
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:23] "POST /extract HTTP/1.1" 200 -
 [ARCH-A] [llmClient] Raw response: {"action":"click","elementId":0,"selector":"button:nth-of-type(1)","value":"","url":"","reason":"Add the Wireless Mouse to the cart to test the shop's
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-0","value":"standard_user","reason":"Top input of a stacked login form is the username field, so fill it with the standard username credential."}
 [ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:26] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:26] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_001 @ http://127.0.0.1:64091/index.html (21 elements)
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:46] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:46] "POST /detect HTTP/1.1" 200 -
 [ARCH-A] [explore] Repeated state — going back.
-[ARCH-A] [memoryLog] Saved 1 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 1 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 1 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
+[ARCH-A] [memoryLog] Saved 1 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 1 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 1 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
 [ARCH-A] [explore] ══ Step 2 (Flow: Shop, flow-step: 2) ══
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-3","value":"secret_sauce","reason":"The top input already contains a username, so the empty bottom input is the password field that must be filled before submitting.
-[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":3,"selector```html
-[ARCH-A] ":"a[href=\"/cart.html"]","value":"","url":"http://127.0.0.1:64091/cart.html","reason":"Verify the
-[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
-[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:64091/cart.html"
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:32] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:32] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:32] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_001 --fill(text_input:)--> state_002 @ http://127.0.0.1:64091/index.html
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:46] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 --fill(text_input:Jsemam)--> state_002 @ http://127.0.0.1:49337/index.html
 [ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-A] [explore] Step 2: navigate "Cart" → state_002 @ http://127.0.0.1:64091/cart.html
-[ARCH-A] [memoryLog] Saved 2 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 2 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-2","value":"secret_sauce","reason":"The username field is filled with standard_user, so the empty password field below it needs the matching credential secret_sauce 
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":3,"selector":"a```html
+[ARCH-A] [href=\"/cart.html\"]","value":"","url":"http://127.0.0.1:49337/cart.html","reason":"An item w
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/cart.html"
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:51] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:52] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:52] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --fill--> repeated state, going back
+[ARCH-A] [explore] Step 2: navigate "Cart" → state_002 @ http://127.0.0.1:49337/cart.html
+[ARCH-A] [memoryLog] Saved 2 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 2 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
 [ARCH-A] [explore] ══ Step 3 (Flow: Shop, flow-step: 3) ══
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-0","value":"standard_user","reason":"Fill the top login input with the username before completing the password field."}
-[ARCH-A] [llmClient] Raw response: {"action":"click","elementId":0,"selector":"button:nth-of-type(1)","value":"","url":"","reason":"Proceed to checkout is the next meaningful step in th
-[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:38] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:38] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:38] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_002 --fill(text_input:ane)--> state_003 @ http://127.0.0.1:64091/index.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-A] [explore] Step 3: click "Proceed to checkout" → state_003 @ http://127.0.0.1:64091/checkout.html
-[ARCH-A] [memoryLog] Saved 3 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 3 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 3 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 4 (Flow: Shop, flow-step: 4) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-1","value":"secret_sauce","reason":"The username field is already filled with standard_user, so the next required step is to fill the empty password field with the m
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":6,"selector":"#email","value":"test@example.com","reason":"Fill the email field before submitting the checkout form."}
-[ARCH-A] [llmClient] Executing: fill "#email" with "test@example.com"
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:44] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:44] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:44] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_003 --fill--> repeated state, going back
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-A] [explore] Step 4: fill "#email" → state_004 @ http://127.0.0.1:64091/checkout.html
-[ARCH-A] [memoryLog] Saved 4 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 4 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 4 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 5 (Flow: Shop, flow-step: 5) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-2","value":"standard_user","reason":"Fill the username field with the standard_user credential before submitting the login form."}
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"#name","value":"Test User","reason":"Fill the remaining required checkout field before placing the order."}
-[ARCH-A] [llmClient] Executing: fill "#name" with "Test User"
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:50] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:50] "POST /detect HTTP/1.1" 200 -
-[ARCH-A] [explore] Step 5: fill "#name" → state_005 @ http://127.0.0.1:64091/checkout.html
-[ARCH-A] [memoryLog] Saved 5 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 5 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 5 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 6 (Flow: Shop, flow-step: 6) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:50] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_003 --fill--> repeated state, going back
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"The Login button is the highest-confidence untried interactive element and likely leads to a new state."}
-[ARCH-A] [llmClient] Raw response: {"action": "navigate", "elementId": 4, "selector": "a```html
-[ARCH-A] [href=\"/contact.html\"]", "value": "", "url": "http://127.0.0.1:64091/contact.html", "re
-[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
-[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:64091/contact.html"
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:57] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:45:57] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:45:57] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_003 --click(button:Login)--> state_006 @ http://127.0.0.1:64091/index.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-A] [explore] Step 6: navigate "Contact" → state_006 @ http://127.0.0.1:64091/contact.html
-[ARCH-A] [memoryLog] Saved 6 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 6 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 6 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 7 (Flow: Shop, flow-step: 7) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-8","value":"","reason":"The 'Invalid credentials' element is an error message rather than a link, so I will explore the highest-confidence untried navigation link '
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:03] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:03] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:03] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_006 --click(link:Conta)--> state_007 @ http://127.0.0.1:64091/contact.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-5","value":"","reason":"Explore the unvisited Shop page via its navigation link."}
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:08] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:08] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:08] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_007 --click(link:Shop)--> state_008 @ http://127.0.0.1:64091/shop.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":6,"selector":"input:nth-of-type(1)","value":"Test User","url":"","reason":"Fill the contact form name field before submit
-[ARCH-A] [llmClient] Executing: fill "input:nth-of-type(1)" with "Test User"
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"Clicking the first untried 'Add to cart' button to test shop functionality."}
-[ARCH-A] [explore] Step 7: fill "input:nth-of-type(1)" → state_007 @ http://127.0.0.1:64091/contact.html
-[ARCH-A] [memoryLog] Saved 7 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 7 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 7 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 8 (Flow: Shop, flow-step: 8) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:13] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:13] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:13] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_008 --click(button:| cart | Add to)--> state_009 @ http://127.0.0.1:64091/shop.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-2","value":"","reason":"Clicking the first 'Add to cart' button explores the shop's add-to-cart functionality, which hasn't been tried yet."}
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:18] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:18] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:18] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_009 --click(button:| cart | Add to)--> state_010 @ http://127.0.0.1:64091/shop.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"Click the first 'Add to cart' button to test shop functionality on an untried element."}
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:23] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:23] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:23] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_010 --click--> repeated state, going back
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-3","value":"","reason":"The 'Add to cart' button is a high-confidence untried interactive element that likely triggers new state on the shop page."}
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"textarea:nth-of-type(1)","value":"Hello, I have a question about your products.","url":"","reason":"Fill th
-[ARCH-A] [llmClient] Executing: fill "textarea:nth-of-type(1)" with "Hello, I have a question about your products."
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:30] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:30] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:30] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_010 --click--> repeated state, going back
-[ARCH-A] [explore] Step 8: fill "textarea:nth-of-type(1)" → state_008 @ http://127.0.0.1:64091/contact.html
-[ARCH-A] [memoryLog] Saved 8 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 8 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 8 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ✓ Flow "Shop" finished.
-[ARCH-A] [explore] ▶ Flow 2/4: Cart → http://127.0.0.1:64091/cart.html
-[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-1","value":"","reason":"The high-confidence button at (341,316) is untried and likely triggers a primary page action, offering the best chance of reaching a new sta
-[ARCH-A] [explore] ══ Step 9 (Flow: Cart, flow-step: 1) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:36] "POST /extract HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:37] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:37] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_010 --click--> repeated state, going back
 [ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
 [ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":2```html
-[ARCH-A] ,"selector":"a[href=\"/shop.html"]","value":"","url":"http://127.0.0.1:64091/shop.html","reason":"Cart page 
+[ARCH-A] ,"selector":"a[href=\"/shop.html"]","value":"","url":"http://127.0.0.1:49337/shop.html","reason":"Returning 
 [ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
-[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:64091/shop.html"
-[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-8","value":"","reason":"About link is untried and likely leads to a new page."}
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/shop.html"
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-4","value":"standard_user","reason":"Fill the username field with the on-screen example credential before logging in."}
 [ARCH-A] [explore] Repeated state — going back.
-[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 17:46:42] "POST /extract HTTP/1.1" 200 -
-[ARCH-A] [memoryLog] Saved 9 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 8 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 9 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:15:58] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:58] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:15:58] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --fill--> repeated state, going back
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [memoryLog] Saved 3 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 3 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 4 (Flow: Shop, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from openrouter: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"stealth/ox-alpha is temporarily rate-limited upstream. Please retry shortly.","provider_name":"Stealth","is_byok":false,"limit_source":"upstream_provider_shared_pool","remedy_hint":"Retry shortly, add your own provider key (
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from openrouter: {"error":{"message":"Provider returned error","cod) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"The Login button is the highest-confidence untried interactive element and likely leads to a new page."}
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":4```html
+[ARCH-A] ,"selector":"a[href=\"/contact.html"]","value":"","url":"http://127.0.0.1:49337/contact.html","reason":"Expl
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/contact.html"
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:16:05] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:16:05] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:16:05] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --click(button:Login)--> state_005 @ http://127.0.0.1:49337/index.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [explore] Step 4: navigate "Contact" → state_003 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 4 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 3 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 4 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 5 (Flow: Shop, flow-step: 5) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":6,"selector":"input:nth-of-type(1)","value":"Test User","url":"","reason":"Fill the name field of the contact form before
+[ARCH-A] [llmClient] Executing: fill "input:nth-of-type(1)" with "Test User"
+[ARCH-A] [explore] Step 5: fill "input:nth-of-type(1)" → state_004 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 5 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 4 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 5 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 6 (Flow: Shop, flow-step: 6) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"textarea:nth-of-type(1)","value":"Hello, I have a question about your products.","url":"","reason":"Fill th
+[ARCH-A] [llmClient] Executing: fill "textarea:nth-of-type(1)" with "Hello, I have a question about your products."
+[ARCH-A] [explore] Step 6: fill "textarea:nth-of-type(1)" → state_005 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 6 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 5 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 6 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 7 (Flow: Shop, flow-step: 7) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":5```html
+[ARCH-A] ,"selector":"a[href=\"/about.html"]","value":"","url":"http://127.0.0.1:49337/about.html","reason":"The cont
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/about.html"
+[ARCH-A] [explore] Step 7: navigate "About" → state_006 @ http://127.0.0.1:49337/about.html
+[ARCH-A] [memoryLog] Saved 7 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 6 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 7 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 8 (Flow: Shop, flow-step: 8) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":0,"```html
+[ARCH-A] selector":"a[href=\"/index.html"]","value":"","url":"http://127.0.0.1:49337/index.html","reason":"The shop
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/index.html"
+[ARCH-A] [explore] Step 8: navigate "Home" → state_007 @ http://127.0.0.1:49337/index.html
+[ARCH-A] [memoryLog] Saved 8 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 7 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 8 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ✓ Flow "Shop" finished.
+[ARCH-A] [explore] ▶ Flow 2/4: Cart → http://127.0.0.1:49337/cart.html
+[ARCH-A] [explore] ══ Step 9 (Flow: Cart, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the cart page have already been interacted with and no u
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All six elements on the cart page have already been interacted with and 
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Proceed to checkout"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-13","value":"","reason":"The 'Cart' link is an unexplored site section that likely navigates to a new page."}
+[ARCH-A] [explore] Step 9: click "Proceed to checkout" → state_009 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 9 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 8 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 9 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
 [ARCH-A] [explore] ══ Step 10 (Flow: Cart, flow-step: 2) ══
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:42] "POST /detect HTTP/1.1" 200 -
-[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 17:46:43] "POST /render_boxes HTTP/1.1" 200 -
-[ARCH-B] [explore] state_010 --click(link:About)--> state_014 @ http://127.0.0.1:64091/about.html
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:16:44] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:16:44] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:16:44] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_005 --click(link:Cart)--> state_006 @ http://127.0.0.1:49337/cart.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":6,"selector":"#email","value":"test@example.com","reason":"Fill the email field on the checkout form before placing the o
+[ARCH-A] [llmClient] Executing: fill "#email" with "test@example.com"
+[ARCH-A] [explore] Step 10: fill "#email" → state_010 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 10 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 10 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 11 (Flow: Cart, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"#name","value":"John Doe","reason":"Fill the remaining required checkout field before placing the order."}
+[ARCH-A] [llmClient] Executing: fill "#name" with "John Doe"
+[ARCH-A] [explore] Step 11: fill "#name" → state_011 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 11 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 10 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 11 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 12 (Flow: Cart, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the checkout page have been interacted with and the cart
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the checkout page have already been interacted with an
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Place order"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Step 12: click "Place order" → state_012 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 12 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 11 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 12 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 13 (Flow: Cart, flow-step: 5) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The order has been placed successfully, completing the cart flow."}
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The order was placed successfully and all 8 elements on the page have al
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Place order"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-2","value":"","reason":"Proceed to checkout is the most meaningful unexplored action on the cart page."}
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 13 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 11 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 13 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 14 (Flow: Cart, flow-step: 6) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:17:16] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:17] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:17] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_006 --click(button:| Proceed to checkout)--> state_007 @ http://127.0.0.1:49337/checkout.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"Order placed successfully and all elements have been interacted with, so
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"Place order button is the primary untried action on the checkout page to complete the flow."}
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:17:21] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:21] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:21] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_007 --click(button:| order Place)--> state_008 @ http://127.0.0.1:49337/checkout.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":2```html
+[ARCH-A] ,"selector":"a[href=\"/shop.html"]","value":"","url":"http://127.0.0.1:49337/shop.html","reason":"Order was 
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/shop.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 14 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 11 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 14 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 15 (Flow: Cart, flow-step: 7) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-3","value":"B88","reason":"The checkout form has an untried text input that should be filled before proceeding."}
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:17:30] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:30] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:30] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_008 --fill(text_input:ac: B88)--> state_009 @ http://127.0.0.1:49337/checkout.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on this page have already been interacted with, so the Cart
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-0","value":"Basel","reason":"The text input currently contains partial text 'Bas'; completing it with a plausible full value before submitting the order form."}
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on this page have already been interacted with and no unt
+[ARCH-A] [explore] Deterministic fallback candidate: INPUT "test@example.com"
+[ARCH-B] [ocr] 127.0.0.1 - - [24/Aug/2026 18:17:35] "POST /extract HTTP/1.1" 200 -
+[ARCH-A] [llmClient] Executing: fill "#email" with "Email address"
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:35] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [24/Aug/2026 18:17:36] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_009 --fill(text_input:Bas)--> state_010 @ http://127.0.0.1:49337/checkout.html
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [explore] Step 15: fill "test@example.com" → state_013 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 15 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 12 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 15 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 16 (Flow: Cart, flow-step: 8) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"scroll","elementId":null,"value":"","reason":"An 'Invalid email address' error is visible but no email input appears in the candidate list, so scrolling may reveal the missing checkout fiel
 [ARCH-B] [run] Exploration summary:
 [ARCH-B] {
-[ARCH-B]   "total_steps": 13,
-[ARCH-B]   "total_states": 9,
-[ARCH-B]   "unique_states": 9,
-[ARCH-B]   "unique_urls": 4,
-[ARCH-B]   "repeated_states_skipped": 5,
+[ARCH-B]   "total_steps": 9,
+[ARCH-B]   "total_states": 8,
+[ARCH-B]   "unique_states": 8,
+[ARCH-B]   "unique_urls": 3,
+[ARCH-B]   "repeated_states_skipped": 2,
 [ARCH-B]   "action_errors": 0,
-[ARCH-B]   "click_actions": 9,
-[ARCH-B]   "fill_actions": 4,
+[ARCH-B]   "click_actions": 4,
+[ARCH-B]   "fill_actions": 5,
 [ARCH-B]   "scroll_actions": 0,
 [ARCH-B]   "submit_actions": 0,
 [ARCH-B]   "generated_tests": 1,
-[ARCH-B]   "avg_steps_per_test": 8
+[ARCH-B]   "avg_steps_per_test": 7
 [ARCH-B] }
-[ARCH-B] [run] Termination: max_depth_reached
+[ARCH-B] [run] Termination: no_valid_candidate_selected
 [ARCH-B] [run] Visited URLs:
-[ARCH-B]   http://127.0.0.1:64091/index.html
-[ARCH-B]   http://127.0.0.1:64091/contact.html
-[ARCH-B]   http://127.0.0.1:64091/shop.html
-[ARCH-B]   http://127.0.0.1:64091/about.html
-[ARCH-B] [run] Test cases from history: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787573719863_exploration.json
-[ARCH-B] [run] Evidence: storage/screenshots/run_1787573719863
+[ARCH-B]   http://127.0.0.1:49337/index.html
+[ARCH-B]   http://127.0.0.1:49337/cart.html
+[ARCH-B]   http://127.0.0.1:49337/checkout.html
+[ARCH-B] [run] Test cases from history: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787575536100_exploration.json
+[ARCH-B] [run] Evidence: storage/screenshots/run_1787575536100
 [ARCH-B] [run] Shutting down services...
-[ARCH-B] [execute] Test cases: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787573719863_exploration.json (1 tests)
-[ARCH-B] [execute] Base URL:   http://127.0.0.1:64091/index.html
-[ARCH-B] [execute] Run ID:     run_1787573719863 (evidence: storage/screenshots/run_1787573719863/)
+[ARCH-B] [execute] Test cases: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787575536100_exploration.json (1 tests)
+[ARCH-B] [execute] Base URL:   http://127.0.0.1:49337/index.html
+[ARCH-B] [execute] Run ID:     run_1787575536100 (evidence: storage/screenshots/run_1787575536100/)
 [ARCH-B] [execute] Vision services not running — starting them for closed-loop execution...
-[ARCH-B] (node:13052) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (node:26700) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
 [ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
-[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":5,"selector```html
-[ARCH-A] ":"a[href=\"/about.html"]","value":"","url":"http://127.0.0.1:64091/about.html","reason":"The Abou
-[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
-[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:64091/about.html"
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the page have already been interacted with and no unused
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
 [ARCH-B] [execute] Vision services started (5 spawned, 0 already healthy) — re-detection enabled.
 [ARCH-B] [execute] Test 1/1: TC01
-[ARCH-B] [execute]   Objective: Replays an autonomously discovered visual workflow: fill -> fill(ane) -> click(Login) -> click(Conta) -> click(Shop) -> click(| cart | Add to) -> click(| cart | Add to) -> click(About)
-[ARCH-A] [explore] Step 10: navigate "About" → state_010 @ http://127.0.0.1:64091/about.html
-[ARCH-A] [memoryLog] Saved 10 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 10 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 11 (Flow: Cart, flow-step: 3) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-B] [execute] Re-detection failed (attempt 1/3): Request failed with status code 500
-[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":0,"selector":"a```html
-[ARCH-A] [href=\"/index.html\"]","value":"","url":"http://127.0.0.1:64091/index.html","reason":"The onl
-[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
-[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:64091/index.html"
-[ARCH-A] [explore] Step 11: navigate "Home" → state_011 @ http://127.0.0.1:64091/index.html
-[ARCH-A] [memoryLog] Saved 11 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 10 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 11 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 12 (Flow: Cart, flow-step: 4) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":6,"selector":"#user","value":"demo","reason":"Fill the username field with the demo credentials shown on the page."}
-[ARCH-A] [llmClient] Executing: fill "#user" with "demo"
-[ARCH-A] [explore] Step 12: fill "#user" → state_012 @ http://127.0.0.1:64091/index.html
-[ARCH-A] [memoryLog] Saved 12 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 11 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 12 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 13 (Flow: Cart, flow-step: 5) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"#pass","value":"demo123","reason":"Fill the password field with the demo credential before submitting login
-[ARCH-A] [llmClient] Executing: fill "#pass" with "demo123"
-[ARCH-A] [explore] Step 13: fill "#pass" → state_013 @ http://127.0.0.1:64091/index.html
-[ARCH-A] [memoryLog] Saved 13 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 12 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 13 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 14 (Flow: Cart, flow-step: 6) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [execute]   Objective: Replays an autonomously discovered visual workflow: fill(Jsemam) -> click(Login) -> click(Cart) -> click(| Proceed to checkout) -> click(| order Place) -> fill(ac: B88) -> fill(Bas)
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the page have already been interacted with and no untr
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Place order"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Step 16: click "Place order" → state_014 @ http://127.0.0.1:49337/checkout.html
+[ARCH-A] [memoryLog] Saved 16 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 13 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 16 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ✓ Flow "Cart" finished.
+[ARCH-A] [explore] ▶ Flow 3/4: Contact → http://127.0.0.1:49337/contact.html
 [ARCH-B] [execute]   Result: PASS
-[ARCH-B] [execute]   Warning: Unexpected navigation to http://127.0.0.1:64091/about.html
+[ARCH-B] [execute]   Warning: Unexpected navigation to http://127.0.0.1:49337/checkout.html
+[ARCH-A] [explore] ══ Step 17 (Flow: Contact, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
 [ARCH-B] [execute] Vision services started by this run were shut down.
 [ARCH-B] =========================================
 [ARCH-B] [execute] Suite finished: 1 passed, 0 failed, 0 errors (of 1)
 [ARCH-B] [execute] Report saved to C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\execution_results.json
 [ARCH-B] =========================================
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the page have already been interacted with and the cart 
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the Contact page have already been interacted with, so
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on this page have already been interacted with, so no unt
-[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Login"
-[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
-[ARCH-A] [explore] Repeated state — going back.
-[ARCH-A] [memoryLog] Saved 14 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 12 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 14 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 15 (Flow: Cart, flow-step: 7) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the cart page have been interacted with and no unused el
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on this page have already been interacted with and the logi
-[ARCH-A] [explore] Deterministic fallback candidate: INPUT "demo"
-[ARCH-A] [llmClient] Executing: fill "#user" with "Username"
-[ARCH-A] [explore] Step 15: fill "demo" → state_014 @ http://127.0.0.1:64091/index.html
-[ARCH-A] [memoryLog] Saved 15 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 13 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 15 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ══ Step 16 (Flow: Cart, flow-step: 8) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the page are already used and no unused interactive elem
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"#pass","value":"demo123","url":"","reason":"Complete the login form by filling the password field with the 
-[ARCH-A] [llmClient] Executing: fill "#pass" with "demo123"
-[ARCH-A] [explore] Step 16: fill "#pass" → state_015 @ http://127.0.0.1:64091/index.html
-[ARCH-A] [memoryLog] Saved 16 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 14 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 16 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [explore] ✓ Flow "Cart" finished.
-[ARCH-A] [explore] ▶ Flow 3/4: Contact → http://127.0.0.1:64091/contact.html
-[ARCH-A] [explore] ══ Step 17 (Flow: Contact, flow-step: 1) ══
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the Contact page have already been interacted with, so t
-[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
-[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on this page have already been interacted with and no unt
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the Contact page have already been interacted with, so
 [ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Send message"
 [ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
-[ARCH-A] [explore] Step 17: click "Send message" → state_017 @ http://127.0.0.1:64091/contact.html
-[ARCH-A] [memoryLog] Saved 17 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 15 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 17 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
+[ARCH-A] [explore] Step 17: click "Send message" → state_016 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 17 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 14 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 17 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 18 (Flow: Contact, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The contact form was submitted successfully with a confirmation message 
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have been interacted with, the form w
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Send message"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 18 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 14 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 18 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 19 (Flow: Contact, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have been interacted with and the for
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Attempt 1 failed: terminated
+[ARCH-A] [llmClient] Retrying in 2 seconds...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have already been interacted with and
+[ARCH-A] [explore] Deterministic fallback candidate: INPUT "input:nth-of-type(1)"
+[ARCH-A] [llmClient] Executing: fill "input:nth-of-type(1)" with "Your name"
+[ARCH-A] [explore] Step 19: fill "input:nth-of-type(1)" → state_017 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 19 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 15 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 19 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 20 (Flow: Contact, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "done",
+[ARCH-A]   "elementId": null,
+[ARCH-A]   "selector": "",
+[ARCH-A]   "value": "",
+[ARCH-A]   "url": "",
+[ARCH-A]   "reason": "The contact form was filled and submitted succes
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have been interacted with, the form w
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Send message"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 20 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 15 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 20 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 21 (Flow: Contact, flow-step: 5) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The contact form was submitted successfully (confirmation 'Thanks! We wi
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have been interacted with and the for
+[ARCH-A] [explore] Deterministic fallback candidate: INPUT "Your name"
+[ARCH-A] [llmClient] Executing: fill "input:nth-of-type(1)" with "Your name"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 21 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 15 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 21 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 22 (Flow: Contact, flow-step: 6) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 8 elements on the contact page have been interacted with and the for
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action": "done", "elementId": null, "selector": "", "value": "", "url": "", "reason": "All 8 elements on the contact page have been interacted with 
+[ARCH-A] [explore] Deterministic fallback candidate: TEXTAREA "textarea:nth-of-type(1)"
+[ARCH-A] [llmClient] Executing: fill "textarea:nth-of-type(1)" with "Message"
+[ARCH-A] [explore] Step 22: fill "textarea:nth-of-type(1)" → state_018 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 22 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 16 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 22 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 23 (Flow: Contact, flow-step: 7) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All form fields have been filled and submitted successfully with a confi
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":7,"selector":"textarea:nth-of-type(1)","value":"Hello, I have a question about your products.","url":"","reason":"Fill th
+[ARCH-A] [llmClient] Executing: fill "textarea:nth-of-type(1)" with "Hello, I have a question about your products."
+[ARCH-A] [explore] Step 23: fill "Message" → state_019 @ http://127.0.0.1:49337/contact.html
+[ARCH-A] [memoryLog] Saved 23 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 17 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 23 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 24 (Flow: Contact, flow-step: 8) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The contact form was filled and submitted successfully with a confirmati
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The contact form was successfully submitted and the confirmation message
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Send message"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 24 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 17 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 24 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
 [ARCH-A] [explore] ✓ Flow "Contact" finished.
+[ARCH-A] [explore] ▶ Flow 4/4: About → http://127.0.0.1:49337/about.html
+[ARCH-A] [explore] ══ Step 25 (Flow: About, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the About page have been interacted with and the flow go
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The current page shows a 404 error and all 5 navigation elements have al
+[ARCH-A] [explore] Deterministic fallback candidate: A "Shop"
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/shop.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 25 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 17 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 25 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 26 (Flow: About, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the About page have been interacted with and no forms or
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"The current page shows a 404 error and all 5 elements have already been 
+[ARCH-A] [explore] Deterministic fallback candidate: A "Cart"
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/cart.html"
+[ARCH-A] [explore] Step 26: navigate "Cart" → state_021 @ http://127.0.0.1:49337/cart.html
+[ARCH-A] [memoryLog] Saved 26 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 26 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 27 (Flow: About, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the page have been interacted with and the About flow ex
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 6 elements on this page have already been interacted with and no unt
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Proceed to checkout"
+[ARCH-A] [llmClient] Executing: click "button:nth-of-type(1)"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 27 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 27 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 28 (Flow: About, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the page have been interacted with and the About flow ex
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 6 elements on this page have already been interacted with and the ch
+[ARCH-A] [explore] Deterministic fallback candidate: A "Home"
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/index.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 28 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 28 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 29 (Flow: About, flow-step: 5) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 6 elements on the About page have already been interacted with and n
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 6 elements on this page have already been interacted with and no unu
+[ARCH-A] [explore] Deterministic fallback candidate: A "Shop"
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/shop.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 29 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 29 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] ══ Step 30 (Flow: About, flow-step: 6) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All elements on the About page have been interacted with and no forms re
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action":"done","elementId":null,"selector":"","value":"","url":"","reason":"All 6 elements on this page have already been interacted with and no for
+[ARCH-A] [explore] Deterministic fallback candidate: A "Cart"
+[ARCH-A] [llmClient] Executing: navigate "http://127.0.0.1:49337/cart.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 30 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 30 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [explore] Max actions per state reached — next flow.
+[ARCH-A] [explore] ✓ Flow "About" finished.
 [ARCH-A] [explore] ✅ Exploration finished.
-[ARCH-A] [explore] Total steps logged: 17; states: 15; termination: max_states_reached
-[ARCH-A] [memoryLog] Saved 17 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\memory_log.json
-[ARCH-A] [memoryLog] Saved 15 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\states.json
-[ARCH-A] [memoryLog] Saved 17 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\transitions.json
-[ARCH-A] [memoryLog] Saved exploration summary → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\exploration_summary.json
-[ARCH-A] [testGenerator] Building test case prompt from 17 steps / 17 transitions...
+[ARCH-A] [explore] Total steps logged: 30; states: 18; termination: completed
+[ARCH-A] [memoryLog] Saved 30 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 18 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\states.json
+[ARCH-A] [memoryLog] Saved 30 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\transitions.json
+[ARCH-A] [memoryLog] Saved exploration summary → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\exploration_summary.json
+[ARCH-A] [testGenerator] Building test case prompt from 30 steps / 30 transitions...
 [ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
 [ARCH-A] [llmClient] Raw response: [
 [ARCH-A]   {
 [ARCH-A]     "id": "TC001",
-[ARCH-A]     "objective": "Verify complete shopping cart to checkout flow with customer details",
+[ARCH-A]     "objective": "Verify contact form submission with valid name and message",
 [ARCH-A]     "steps": [
-[ARCH-A]       {"stepNum": 1, 
-[ARCH-A] [testGenerator] Saved → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_174511\dom\test_cases.json
+[ARCH-A]       {"stepNum": 1, "action": 
+[ARCH-A] [testGenerator] Saved → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_181531\dom\test_cases.json
 [ARCH-A] [testGenerator] ✓ Generated 5 test case(s):
-[ARCH-A]   [TC001] Verify complete shopping cart to checkout flow with customer details (4 steps)
-[ARCH-A]   [TC002] Verify contact form accepts user name and message (4 steps)
-[ARCH-A]   [TC003] Verify successful login with valid credentials redirects to shop page (5 steps)
-[ARCH-A]   [TC004] Verify login form allows re-entry of credentials after initial input (4 steps)
-[ARCH-A]   [TC005] Verify navigation across site pages (shop, about, index) (4 steps)
+[ARCH-A]   [TC001] Verify contact form submission with valid name and message (4 steps)
+[ARCH-A]   [TC002] Verify checkout flow with valid email and name (5 steps)
+[ARCH-A]   [TC003] Verify checkout validation with invalid email address (3 steps)
+[ARCH-A]   [TC004] Verify contact form validation when submitted empty then filled (5 steps)
+[ARCH-A]   [TC005] Verify navigation between shop, cart, about, and home pages (5 steps)
 [RUN] Collecting artifacts into unified run tree...
 
 =========================================
@@ -359,12 +502,12 @@
 [RUN] Architecture B: success
 [RUN] Overall run: SUCCESS
 [RUN] Results:
-  DOM:    runs\run_20260824_174511\dom
+  DOM:    runs\run_20260824_181531\dom
        -> (no artifacts produced)
-  VISION: runs\run_20260824_174511\vision
-       -> 21 artifact(s)
+  VISION: runs\run_20260824_181531\vision
+       -> 18 artifact(s)
 Manifest:
-  runs\run_20260824_174511\run_manifest.json
+  runs\run_20260824_181531\run_manifest.json
 =========================================
 
 ===== exited code=0 =====

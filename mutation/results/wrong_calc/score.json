@@ -1,9 +1,9 @@
 {
   "variant": "wrong_calc",
   "bug_name": "Wrong cart total",
-  "run_id": "run_20260824_174913",
-  "url": "http://127.0.0.1:65459/index.html",
-  "analyzed_at": "2026-08-24T12:23:02.958Z",
+  "run_id": "run_20260824_182158",
+  "url": "http://127.0.0.1:52610/index.html",
+  "analyzed_at": "2026-08-24T12:56:51.968Z",
   "arch_b": "NOT_COVERED",
   "fused": "NOT_COVERED",
   "arch_a": "NOT_APPLICABLE_V1"
