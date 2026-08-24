@@ -106,10 +106,26 @@ when target pages require it.
 
 ## C. PRIORITY ORDER FOR TIER-2 READINESS
 
-1. **A2 matcher** (unblocks B value) — M
-2. **A1 goal-driven done-criteria** (biggest coverage lever) — M
-3. **A6 rate limiter** (stability under quota pressure) — S
+Updated 2026-08-24 evening after Tier-2-prep work on `capstone-tier2-prep`:
+
+1. ~~**A2 matcher**~~ **DONE** — `lib/fuzzyMatch.js` two-stage matcher wired
+   into B's replay resolution (`resolveTarget`); 14 unit tests; unblocks B value.
+2. ~~A1 goal-driven done-criteria~~ **DEMOTED to P3** — auth-seed already
+   unblocked gated sites; remaining cases are cosmetic vs coverage levers.
+   Touching termination logic mid-campaign risks regressing green sites.
+3. **A6 rate limiter** — partially mitigated by scheduler-side quota gating;
+   shared limiter in lib/llmProvider.js still open (S).
 4. **A3 S4 capability flags** (fewer doomed FTs) — S-M
-5. **A4 SPA extraction** (before any Tier-4-like Tier-2 site) — M
+5. **A4 SPA extraction** (before any Tier-4-like site) — M
 6. **A7 recorded-login replay** — M
 7. **A5 reconciler**, **B code-health consolidation** — P3
+
+### New items from Tier-2-prep session (2026-08-24)
+
+8. **Assertion/value-oracle synthesis** — mutation campaign PROVED the system
+   verifies "actions work", not "values are correct": wrong-calc,
+   missing-validation, dead-button bugs undetectable even when surfaces are
+   fully exercised (see `mutation/results/ANALYSIS.md`). Highest-value V2 item:
+   expected-value predicates at test-generation time. P1 for research impact.
+9. **Navigation-to-error visibility** — body-text verification passes on 404
+   pages; semantic ladder needs an HTTP-status/navigation-quality signal. P2.

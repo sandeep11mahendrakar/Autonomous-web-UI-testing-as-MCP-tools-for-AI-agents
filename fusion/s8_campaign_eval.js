@@ -269,6 +269,30 @@ function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
   lines.push('> workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative');
   lines.push('> wins beyond the percentage. **CURATED** — see per-site reports.');
   lines.push('');
+  lines.push('## 4b. Mutation bug-detection scorecard');
+  lines.push('');
+  const mutDir = path.join(root, 'mutation', 'results');
+  const mutScores = [];
+  try {
+    for (const d of fs.readdirSync(mutDir)) {
+      const s = readJson(path.join(mutDir, d, 'score.json'));
+      if (s && !s.error) mutScores.push(s);
+    }
+  } catch (_) { /* no mutation results yet */ }
+  if (mutScores.length) {
+    lines.push('| Variant | Bug | arch_b | fused |');
+    lines.push('|---|---|---|---|');
+    for (const s of mutScores) {
+      lines.push(`| ${s.variant} | ${s.bug_name || '(baseline)'} | ${s.arch_b} | ${s.fused} |`);
+    }
+    lines.push('');
+    lines.push('Full analysis incl. verification-strength ceiling finding:');
+    lines.push('`mutation/results/ANALYSIS.md`. NOT_COVERED = buggy surface never exercised');
+    lines.push('(cannot conclude); NO_REPORT = channel produced no report that run.');
+  } else {
+    lines.push('_No completed mutation runs found under `mutation/results/`._');
+  }
+  lines.push('');
   lines.push('## 5. Reliability / repeatability');
   lines.push('');
   lines.push('Single-run results dominate this ledger. Variance data lives in');
