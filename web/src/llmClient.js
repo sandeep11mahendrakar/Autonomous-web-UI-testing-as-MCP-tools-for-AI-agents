@@ -31,8 +31,10 @@ async function callLLM(prompt) {
 
   console.log(`[llmClient] Calling ${LLM_CONFIG.provider} → ${LLM_CONFIG.model || '(no model set)'} ...`);
 
-  // Retry up to 3 times on transient failures
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  // Retry up to 6 times on transient failures (stealth preview endpoints
+  // intermittently return 503 upstream-unavailable; backoff absorbs it)
+  const MAX_ATTEMPTS = Number(process.env.LLM_MAX_ATTEMPTS) || 6;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const rawText = (
         await chatCompletion(LLM_CONFIG, {
@@ -58,9 +60,9 @@ async function callLLM(prompt) {
       // provider issue). Retry within the same attempt loop instead of
       // returning garbage for parseAction to choke on.
       if (!rawText) {
-        if (attempt < 3) {
+        if (attempt < MAX_ATTEMPTS) {
           console.warn('[llmClient] Empty response — retrying...');
-          await new Promise(r => setTimeout(r, 2000));
+          await new Promise(r => setTimeout(r, Math.min(2000 * attempt, 15000)));
           continue;
         }
         throw new Error('Empty LLM response after 3 attempts');
@@ -77,9 +79,9 @@ async function callLLM(prompt) {
       console.error(`[llmClient] Attempt ${attempt} failed:`, err.message);
       // Quota/auth errors: retrying only burns quota or repeats the failure.
       if (err.status === 429 || err.status === 401 || err.status === 403) throw err;
-      if (attempt < 3) {
+      if (attempt < MAX_ATTEMPTS) {
         console.log('[llmClient] Retrying in 2 seconds...');
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, Math.min(2000 * attempt, 15000)));
       } else {
         throw err; // re-throw after 3 failures so explore.js can log it properly
       }

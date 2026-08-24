@@ -55,8 +55,9 @@ async function callLLM(prompt, options = {}) {
 
   console.log(`[llm] Calling ${LLM_CONFIG.provider} -> ${options.model || LLM_CONFIG.model || '(no model set)'} ...`);
 
-  // One retry for transient failures only; do not retry quota errors.
-  const maxAttempts = 2;
+  // Retries for transient failures only; do not retry quota errors.
+  // Stealth preview endpoints intermittently 503 — backoff absorbs it.
+  const maxAttempts = Number(process.env.LLM_MAX_ATTEMPTS) || 5;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -94,7 +95,7 @@ async function callLLM(prompt, options = {}) {
       }
       if (attempt >= maxAttempts) throw err;
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, Math.min(1500 * attempt, 12000)));
     }
   }
 }
