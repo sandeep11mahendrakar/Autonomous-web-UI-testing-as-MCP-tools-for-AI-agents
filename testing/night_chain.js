@@ -63,31 +63,51 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
 
   for (const site of rows) {
     log(`=== TIER-2 ${site.key} (${site.url}) ===`);
-    const startedAt = Date.now();
-    const out = runStep(`tier2 ${site.key} pipeline`, 'runBoth.js', site.url, 50 * 60 * 1000);
+    let done = false;
+    for (let attempt = 1; attempt <= 4 && !done; attempt++) {
+      const startedAt = Date.now();
+      const out = runStep(`tier2 ${site.key} pipeline (attempt ${attempt})`, 'runBoth.js', site.url, 50 * 60 * 1000);
 
-    const runsRoot = path.join(ROOT, 'runs');
-    const dirs = fs.readdirSync(runsRoot).filter((d) => d.startsWith('run_')).sort();
-    const latest = dirs[dirs.length - 1];
-    let status = null;
-    try {
-      status = JSON.parse(fs.readFileSync(path.join(runsRoot, latest, 'run_manifest.json'), 'utf8')).overall_status;
-    } catch (_) {}
+      const runsRoot = path.join(ROOT, 'runs');
+      const dirs = fs.readdirSync(runsRoot).filter((d) => d.startsWith('run_')).sort();
+      const latest = dirs[dirs.length - 1];
+      let status = null;
+      try {
+        status = JSON.parse(fs.readFileSync(path.join(runsRoot, latest, 'run_manifest.json'), 'utf8')).overall_status;
+      } catch (_) {}
 
-    if (!out || status === 'FAILED') {
-      log(`STOPPING tier-2: ${site.key} produced FAILED/crashed pipeline (${latest}) — fix required before next site`);
-      break;
+      // Quota exhaustion is ENVIRONMENTAL, not a pipeline defect: wait for
+      // the rolling TPD window and retry the SAME site.
+      let quotaBlocked = false;
+      try {
+        const alog = fs.readFileSync(path.join(runsRoot, latest, 'dom', 'run_explore.log'), 'utf8');
+        quotaBlocked = /tokens per day \(TPD\)/.test(alog.slice(-4000));
+      } catch (_) {}
+
+      if (!out || status === 'FAILED') {
+        if (quotaBlocked && attempt < 4) {
+          log(`${site.key}: quota-blocked — waiting 22 min for rolling TPD refill (attempt ${attempt}/4)`);
+          await new Promise((r) => setTimeout(r, 22 * 60 * 1000));
+          continue;
+        }
+        if (!quotaBlocked) {
+          log(`STOPPING tier-2: ${site.key} genuine pipeline failure (${latest}) — fix required`);
+          process.exit(1);
+        }
+        continue;
+      }
+
+      // fusion chain
+      runStep(`s1 ${site.key}`, 'fusion/s1_build_catalog.js', latest, 10 * 60 * 1000);
+      runStep(`s2 ${site.key}`, 'fusion/s2_gap_report.js', latest, 10 * 60 * 1000);
+      runStep(`s4 ${site.key}`, 'fusion/s4_fusion_synthesis.js', latest, 15 * 60 * 1000);
+      runStep(`ft ${site.key}`, 'fusion/execute_fusion_tests.js', latest, 20 * 60 * 1000);
+      runStep(`s6 ${site.key}`, 'fusion/s6_dashboard.js', latest, 10 * 60 * 1000);
+
+      log(`tier2 ${site.key} COMPLETE: ${latest} status=${status} took=${Math.round((Date.now() - startedAt) / 60000)}min`);
+      done = true;
     }
-
-    // fusion chain
-    runStep(`s1 ${site.key}`, 'fusion/s1_build_catalog.js', latest, 10 * 60 * 1000);
-    runStep(`s2 ${site.key}`, 'fusion/s2_gap_report.js', latest, 10 * 60 * 1000);
-    runStep(`s4 ${site.key}`, 'fusion/s4_fusion_synthesis.js', latest, 15 * 60 * 1000);
-    runStep(`ft ${site.key}`, 'fusion/execute_fusion_tests.js', latest, 20 * 60 * 1000);
-    // dashboard for completeness
-    runStep(`s6 ${site.key}`, 'fusion/s6_dashboard.js', latest, 10 * 60 * 1000);
-
-    log(`tier2 ${site.key} COMPLETE: ${latest} status=${status} took=${Math.round((Date.now() - startedAt) / 60000)}min`);
+    if (!done) log(`tier2 ${site.key}: SKIPPED after retries (quota) — recorded honestly, continue next site`);
   }
 
   // final aggregate refresh
