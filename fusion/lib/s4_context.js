@@ -195,7 +195,7 @@ function buildFusionContext({
       'Every non-navigate step MUST set ref to a provided ELEMENT/BEHAVIOR id on the CURRENT page (for gap_conflict_* entries, use the ref listed INSIDE that GAP entry — never the gid itself).',
       'navigate steps MUST use a url exactly as listed in PAGES (no invented URLs).',
       'A navigate step switches the current page; later refs must belong to it.',
-      'fill steps require a non-empty value.',
+      'fill/select_option steps require a non-empty value.',
       'novelty_reason must state why A/B tests do not already cover this.',
       'Prefer: uncovered behaviors, conflict disambiguation probes, composed multi-step workflows over known pages.',
       'Do NOT re-test targets already listed in COVERED_KEYS.',
@@ -227,7 +227,7 @@ function buildFusionContext({
         start_page: '<pid from PAGES>',
         expected_result: '<string>',
         steps: [{
-          action: 'click|fill|navigate',
+          action: 'click|fill|navigate|select_option',
           ref: '<ELEMENT/BEHAVIOR id; omit for navigate>',
           url: '<PAGES url; navigate only>',
           value: '<fill only>',

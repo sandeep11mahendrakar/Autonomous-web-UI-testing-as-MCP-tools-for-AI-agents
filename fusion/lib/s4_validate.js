@@ -15,7 +15,7 @@
 
 const { normText } = require('./normalize');
 
-const VALID_ACTIONS = new Set(['click', 'fill', 'navigate']);
+const VALID_ACTIONS = new Set(['click', 'fill', 'navigate', 'select_option']);
 const FILLABLE_ELEMENT_TYPES = new Set(['input', 'textarea', 'select', 'text_input']);
 const NON_TEXT_ELEMENT_TYPES = new Set([
   'button', 'a', 'link', 'input', 'select', 'textarea', 'checkbox',
@@ -150,7 +150,8 @@ function validateTests({ response, candidates, index, coveredA, coveredB, accept
           return fail('action_not_applicable', `${where}: click on ${et} ${ref}`);
         }
       }
-      if (action === 'fill' && (typeof step.value !== 'string' || !step.value.trim())) {
+      if ((action === 'fill' || action === 'select_option') &&
+          (typeof step.value !== 'string' || !step.value.trim())) {
         return fail('missing_value', where);
       }
     }
