@@ -222,3 +222,63 @@ Cross-cutting rules for all five tools:
 Skeleton implementation: `mcp/server.js` in the vision standalone fork
 (`CAPSTONE_BACKUPS/vision-fork-2026-08-25/mcp/`) — stdio JSON-RPC 2.0 with all
 five schemas registered and stubs returning `-32006 not_implemented`.
+
+---
+
+# ADDENDUM (T102): Cross-platform port assessment
+
+_Audit date: 2026-08-25 · author: serial2 agent · scope: vision architecture +
+its drivers (`vision/`, `runBoth.js`, campaign runners). Assessment ONLY —_
+_implementation is POST-DEADLINE by Master Plan §0.6._
+
+## Inventory of Windows-only constructs (verified against code)
+
+| # | Construct | Citations | POSIX impact |
+|---|---|---|---|
+| W1 | Process-tree kill via `taskkill /T /F` | `vision/src/serviceManager.js:40-42` (`execSync`, win32-guarded), `vision/runVision.js:64-71` (`spawn('taskkill', …)`), `testing/run_repeatability.js:57` + `mutation/run_detection.js:78` (guarded) | Guarded sites fall back to `proc.kill()` = direct child only; Playwright's Chromium grandchild can orphan. **Unguarded:** `runBoth.js:137` and `runBoth.js:186` call `execSync('taskkill …')` unconditionally — throws (caught) and leaks every service on Linux/macOS |
+| W2 | `shell: true` on win32 for service spawns | `vision/runVision.js:54`, `vision/src/serviceManager.js:66` | Windows-only branch, but causes real problems AT HOME: cmd.exe wrapper forces the tree-kill dance in W1 and triggers Node deprecation DEP0190 (observed live during the T105 roundtrip run, 2026-08-25) |
+| W3 | Interpreter name `python` | `vision/src/serviceManager.js:21-22` (`cmd: 'python'`), `vision/runVision.js:84-85` | Debian/Ubuntu/macOS typically ship only `python3`; bare `python` fails to spawn. No venv awareness — relies on whichever global interpreter has torch/ultralytics/pytesseract installed |
+| W4 | Hardcoded Tesseract binary path | `vision/services/ocr-service/ocr.py:17-18`: default `r"C:\Program Files\Tesseract-OCR\tesseract.exe"` | Overridable via `TESSERACT_CMD`, but nothing validates it at startup — on any OS without that exact path the OCR service dies mid-pipeline instead of failing loudly |
+| W5 | Hardcoded service ports 5000–5004 | `vision/src/serviceManager.js:18-23`, `vision/runVision.js:29` | Not OS-specific, but blocks concurrent instances on EVERY OS (INDEX row 14 PORT-CONFLICT). Cross-cutting with dimension 6 and T103's dynamic-port spec |
+| W6 | Path separators | **No defects found.** All filesystem joins use `path.join`; artifacts normalize to forward slashes for records (`executeTests.js:65`, `explorer.js:267-268,581`) | None — this layer is already portable |
+| W7 | PowerShell assumptions | **None found.** No `powershell`/`.ps1` invocation anywhere in the repo | The earlier "PowerShell-era" concern reduces to W1+W2 (cmd.exe + taskkill), both fixable in one place each |
+
+## Port plan (design only)
+
+1. **Tree-kill without taskkill** — spawn every long-lived service with
+   `{ detached: true }` so each becomes its own process-group leader; POSIX
+   cleanup becomes `process.kill(-pid, 'SIGTERM')` → `SIGKILL` after grace;
+   Windows keeps the existing `taskkill /T /F` behind the platform guard (it
+   is the *correct* API there — no need to remove it). Touch points:
+   `serviceManager.js killTree()`, `runVision.js killProcessTree()/spawnProcess()`,
+   `runBoth.js:137,186` (add guards regardless). Zero-dependency; alternatively
+   the `tree-kill` npm package (~2 kB, same semantics).
+2. **Drop `shell: true`** — nothing in the spawn args requires a shell
+   (commands are bare names resolved via PATH, which `CreateProcess` does natively);
+   removing it eliminates the cmd.exe wrapper, DEP0190, and shrinks what the
+   tree-kill must reach. Re-verify Chromium grandchild handling after (Playwright
+   installs its own exit hooks; abrupt parent kill still needs item 1).
+3. **Interpreter injection** — honor `VISION_PYTHON` env var (default `python`)
+   in `SERVICE_DEFS`/`runVision.js`; document a project `.venv` layout
+   (`pip install -r services/*/requirements.txt`). Trivial effort, removes the
+   `python`-vs-`python3` hazard AND pins torch-heavy deps away from system Python.
+4. **Fail-loud preflights** — startup check `pytesseract.get_tesseract_version()`;
+   on Windows keep the default path, elsewhere REQUIRE `TESSERACT_CMD`. Convert
+   "dies mid-run" into "refuses to start with instructions" (aligns with
+   MCP_READINESS dimension 1's installer-validation goal).
+5. **Dynamic ports** — defer to T103's parallel-safety spec (per-worker port
+   allocation solves concurrency and portability together); mechanically:
+   `VISION_PORT_BASE` env → derive 5 ports → thread through service argv/env →
+   replace literal ports in `explorer.js`/`executeTests.js` constants.
+
+## Verdict
+
+- **Effort: EASY-MEDIUM ≈ 1.5–2 focused days.** Items 1+2 ≈ half a day
+  (two files + two driver touch-ups, existing offline suites cover regressions),
+  item 3 ≈ 1 h, item 4 ≈ 2 h, item 5 ≈ 1 day (cross-cuts five services).
+- **Risk: LOW if done after the review, MODERATE before.** Items 1–4 are
+  mechanical with zero user-visible benefit pre-review — exactly the trade the
+  Master Plan §0.6 verdict already priced in. Item 5 is the only piece with
+  real regression surface (every service + both explorers read ports).
+- **Recommended order:** 2 → 1 → 3 → 4 (safe, testable increments), 5 last and
+  only alongside the T103 lockfile/port work so both land as one reviewed change.
