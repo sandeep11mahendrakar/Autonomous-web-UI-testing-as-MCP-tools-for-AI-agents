@@ -19,8 +19,8 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | W-2a evidence guide + MCP readiness audit + llmProvider token logging (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~13:45 | 2026-08-25 14:20 | 9c54473 (after-tier-2) |
 | W-2b vision fork push + MCP skeleton, five tools w/ typed stubs (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~14:00 | 2026-08-25 ~15:40 | fork cd4f8da + 44b633d, branch vision-standalone |
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
-| T201 quarantine re-runs 13-20 | RUNNING (window-3: human-authorized 2-task sprint = sites 16 weatherspark + 17 sahitest; then ALL SLEEP) | ox-alpha (CLI serial-1, window-3) | 2026-08-25 19:36 | - | - |
-| T202 reports 14/15 B-side rewrite | RUNNING (#14 DONE @ 8c77b9f; #15 gated on T201 artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
+| T201 quarantine re-runs 13-20 | PAUSED at Master order (13 kept-evidence; 14,15,16 CLEARED; 17 sahitest / 18 the-internet / 19 phptravels / 20 openlibrary PENDING - resume: `node testing/rerun_quarantine.js pipeline <key>` then `post <key>`) | ox-alpha serial-1 window-2+3 | 16:11 | 19:55 | 9acbcec | - | - |
+| T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via f8ec2db from run_20260825_165819) | ox-alpha CLI serial-2 | 16:55 | 19:30 | f8ec2db |
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -32,6 +32,37 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 19:55 IST] [serial1/ox-alpha] *** WINDOW-2 FINAL HANDOFF (Master ordered stop after site 16) ***
+T201 STATE: #13 lambdatest = SITE-MOVED-EVIDENCE (redirects to testmuai.com
+- recommend spare swap in final dataset); #14 docs_python CLEARED (run_163448);
+#15 gutenberg CLEARED (run_165819, FT 4/4 100% - NOTE serial2 correction:
+B_expl ended fatal_error Page.captureScreenshot after 3 states, stage-success
+nuance stands); #16 weathersparks CLEARED (run_173233: manifest FAILED/canvas
+blind spot but fusion 8/8 created, FT 5/8 62.5%, fusion-attributable 100%).
+#17 sahitest / #18 the-internet / #19 phptravels / #20 openlibrary PENDING.
+RESUME RECIPE per site: hold lock via driver, `node testing/rerun_quarantine.js
+pipeline <key>` then `post <key>`; keys are exactly TIER2_SITES.md names.
+Aggregates auto-regen: node testing/vision_test_quality.js && node
+fusion/s8_campaign_eval.js. Suites were green all window.
+
+--- SUGGESTIONS TO MASTER (communication pattern, earned this session) ---
+1. ONE WRITER PER FILE-WINDOW: today's 3 concurrent ox-alpha windows caused
+   a stalled rebase, a dropped commit (recovered), and duplicate contaminated
+   runs (165105 rejected by guard). Cheapest fix: each window claims a GIT
+   LEASE line on the board ("git-lease: <window-id> until <time>") and other
+   windows simply do not run git commands while one is held.
+2. BOARD ROW EDITS VIA SCRIPT NOT EDITOR: every human-time board conflict was
+   row-level. A tiny `node testing/board.js set-row "T201" "..."` helper with
+   retry-on-conflict would remove the whole conflict class.
+3. PIPELINE CLAIMS ARE PER-SITE: .campaign.lock is binary; per-site claim lines
+   on the board (already proposed by window-3) + the shared vision/storage/
+   outputs contamination risk mean: NEVER two pipelines even if locks allow.
+4. CLOCK SYNC: agent timestamps drift up to ~30 min (17:05 vs 16:4x). Each
+   comms entry should include the UTC ISO string alongside IST.
+5. QUOTA LEDGER: log ox-alpha request counts per run on the board so the next
+   window knows the budget before launching (429 bursts observed all window).
+Everything above is committed and pushed to backup @ 9acbcec+. Window sleeping
+on Master confirmation.
 [2026-08-25 17:30 IST] [serial4/ox-alpha] CHECK-IN + FINAL before sleep
 (human stop-order received): (1) QA PASS on lane deliverables T103
 PARALLEL_SPEC.md + T102 MCP_READINESS addendum - all code citations verified
