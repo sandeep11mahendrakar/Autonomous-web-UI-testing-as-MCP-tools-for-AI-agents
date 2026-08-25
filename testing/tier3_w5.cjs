@@ -18,6 +18,7 @@ if (!key || !url) { console.error('usage: node tier3_w5.cjs <key> <url>'); proce
 const TRIMMED_ENV = {
   MAX_STEPS: '25', MAX_STATES: '20',
   EXPLORE_MAX_STEPS: '25', EXPLORE_MAX_STATES: '20',
+  ARCH_A_TIMEOUT_MS: '1500000', // D8(b): mega-DOM sites - A must reach generation
 };
 const LOCK = path.join(__dirname, '.campaign.lock');
 
@@ -50,18 +51,24 @@ try {
   if (!runId) { log(`GUARD-FAIL ${key}: no run dir created this attempt matches manifest url=${url}`); process.exit(3); }
   log(`attributed ${key} -> ${runId}`);
 
-  // 3) fusion chain
+  // 3) fusion chain (soft-fail per W3 driver fix @ ed93581: a starved run
+  //    with no fusion_tests.json must still reach s6/purity/extract so the
+  //    thin-run is honestly recorded instead of crashing the lane driver)
   for (const [label, script] of [
     ['s1', 'fusion/s1_build_catalog.js'], ['s2', 'fusion/s2_gap_report.js'],
     ['s4', 'fusion/s4_fusion_synthesis.js'], ['ft', 'fusion/execute_fusion_tests.js'],
     ['s6', 'fusion/s6_dashboard.js'],
   ]) {
     log(`START ${label} ${key} (${runId})`);
-    execSync(`node ${script} ${runId}`, {
-      cwd: ROOT, encoding: 'utf8', timeout: 20 * 60 * 1000, maxBuffer: 64 * 1024 * 1024,
-      stdio: ['ignore', 'pipe', 'inherit'],
-    });
-    log(`DONE ${label} ${key}`);
+    try {
+      execSync(`node ${script} ${runId}`, {
+        cwd: ROOT, encoding: 'utf8', timeout: 20 * 60 * 1000, maxBuffer: 64 * 1024 * 1024,
+        stdio: ['ignore', 'pipe', 'inherit'],
+      });
+      log(`DONE ${label} ${key}`);
+    } catch (e) {
+      log(`SOFT-FAIL ${label} ${key}: ${String(e.message).split('\n')[0].slice(0, 160)} - continuing chain`);
+    }
   }
 
   // 4) folder_purity MUST be PURE
