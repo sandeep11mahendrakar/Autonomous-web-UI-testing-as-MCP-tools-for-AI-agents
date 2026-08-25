@@ -133,7 +133,14 @@ function parseAction(llmResponse) {
   }
 
   console.error('[llmClient] parseAction: all strategies failed, raw:', JSON.stringify(llmResponse).slice(0, 300));
-  return { action: 'done', elementId: null, selector: '', value: '', url: '', reason: 'parse_failed' };
+  // NEVER mask a total parse failure as action:'done' — that made malformed
+  // LLM output terminate exploration looking like a legitimate completion
+  // (AUDIT F-04 / PARALLEL_SPEC D4). Downstream (web/explore.js decideAction,
+  // web/src/engine.js) treats an unchosen non-done action via the
+  // deterministic-fallback path, so exploration still continues where
+  // candidates remain; the honest 'parse_failed' reason now propagates into
+  // transitions/termination instead of being conflated with 'done'.
+  return { action: 'parse_failed', elementId: null, selector: '', value: '', url: '', reason: 'parse_failed' };
 }
 
 function _normaliseAction(obj) {
