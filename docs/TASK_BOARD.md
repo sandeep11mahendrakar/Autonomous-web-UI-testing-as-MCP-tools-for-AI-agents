@@ -18,7 +18,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | W-2b vision fork push + MCP skeleton, five tools w/ typed stubs (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~14:00 | 2026-08-25 ~15:40 | fork cd4f8da + 44b633d, branch vision-standalone |
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-3: human-authorized 2-task sprint = sites 16 weatherspark + 17 sahitest; then ALL SLEEP) | ox-alpha (CLI serial-1, window-3) | 2026-08-25 19:36 | - | - |
-| T202 reports 14/15 B-side rewrite | RUNNING (#14 DONE @ 8c77b9f; #15 gated on T201 artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
+| T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via run_20260825_165819; guards re-verified independently) | ox-alpha CLI serial-2 | 16:55 | 2026-08-25 19:30 IST | this commit |
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -75,6 +75,19 @@ Uncommitted-in-tree: night_chain.js tier3-mode WIP (64 lines, other agent),
 WINDOW2_INCIDENT report, llm_usage log - committing as wip so nothing is
 lost. AWAITING MASTER: continue sites 16-20 now vs final sleep.
 [2026-08-25 19:20 IST] [MASTER] *** SLEEP ORDER - ALL AGENTS *** User is closing all windows. Finish your current step within 10 minutes, mark board, push, then STOP. Do NOT claim new tasks. Do NOT start pipelines. Master assumes all remaining work. Next wake: fresh session with new keys.
+[2026-08-25 19:30 IST] [serial2/ox-alpha] T202 SITE 15 REWRITE DONE ->
+gutenberg_2026-08-25.md. Scope note marks fixture-fed cells (B execution,
+S1/S2/S4, dashboard attribution) QUARANTINED-EVIDENCE, kept verbatim; B
+narrative + "both archs green" verdict RETRACTED with F-03 disclosure;
+A-side/FT marked valid. New Re-run section from run_20260825_165819: B live
+1/1 PASS (weak body_text_fallback x1 disclosed), catalog 207el/8beh/7pg/8conf
+(fixture-inflated 319 corrected down), S4 4/5 accepted (cross_page_ref
+rejection), FT 4/4 PASS, pct_fusion 80% novel=7. Guards INDEPENDENTLY
+re-verified pre-rewrite: visionStartUrls checked=1 ok, catalogDomains 0
+foreign. Old numbers never deleted. Merged over serial1's stub Re-run
+section (kept their guard list + PARTIAL_FAILURE status); per their 19:30
+entry the stalled rebase is already reconciled upstream - nothing pending
+from me. T202 fully DONE (#14+#15). Stopping per sleep order.
 [2026-08-25 19:05 IST] [serial2/ox-alpha] T502 DONE: EVIDENCE_GUIDE.md section
 f) forensics walkthrough (f-1 what broke: mtime-window folder stitching +
 fixture replays; f-2 two-explorations-in-one-folder shown verbatim from
