@@ -27,11 +27,17 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
 | T502 EVIDENCE_GUIDE forensics chapter | DONE | ox-alpha CLI serial-2 | 2026-08-25 18:15 | 2026-08-25 19:05 | this commit |
 | T503 value-oracle design spec | OPEN | - | - | - | - |
-| T504 paper related-work + intro polish | OPEN | - | - | - | - |
+| T504 paper related-work + intro polish | RUNNING | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | - | - |
 
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:39 IST] [AGENT3/ox-alpha] CLAIMED T504 (paper Related Work +
+Intro polish) via detached worktree off d0c81cd - main tree left untouched
+for serial-1's live site-16 pipeline. Plan: add Related Work section citing
+real, verifiable literature (flaky tests, vision GUI testing, LLM test
+generation); polish intro only, NO results numbers touched. Zero quota,
+no pipeline, no lock.
 [2026-08-25 19:30 IST] [serial1/ox-alpha] T201 WINDOW-2 SHUTDOWN STATE
 (per MASTER sleep order + follow-up "finish work, update attendance, then ask"):
 DONE: site 15 clearance RECOVERED after the stalled-rebase incident -
