@@ -199,3 +199,127 @@ No fusion_tests.json — run S4 first.
 [night-chain 2026-08-25T01:50:34.864Z] START s8 campaign evaluation
 [night-chain 2026-08-25T01:50:34.946Z] DONE s8 campaign evaluation: [s8] Evaluation written: C:\Users\sandeep\pes\vs code\Capstone-Project\testing\CAMPAIGN_EVALUATION.md (10 sites aggregated) | 
 [night-chain 2026-08-25T01:50:34.946Z] night chain finished
+[night-chain 2026-08-25T09:00:41.204Z] night chain started — waiting for repeatability study
+[night-chain 2026-08-25T09:00:41.208Z] repeatability finished — starting Tier-2 campaign
+[night-chain 2026-08-25T09:00:41.209Z] 10 tier-2 sites queued
+[night-chain 2026-08-25T09:00:41.210Z] === TIER-2 books_toscrape (https://books.toscrape.com) ===
+[night-chain 2026-08-25T09:00:41.210Z] START tier2 books_toscrape pipeline (attempt 1)
+[night-chain 2026-08-25T09:04:40.040Z] night chain started — TIER-3 mode (pre-registered criteria in CAMPAIGN_PLAN.md)
+[night-chain 2026-08-25T09:04:40.239Z] availability OK wikipedia (200)
+[night-chain 2026-08-25T09:04:40.270Z] availability OK stackoverflow (403)
+[night-chain 2026-08-25T09:04:40.383Z] availability OK github_trending (200)
+[night-chain 2026-08-25T09:04:40.627Z] availability OK imdb_top (202)
+[night-chain 2026-08-25T09:04:41.860Z] availability OK goodreads_list (200)
+[night-chain 2026-08-25T09:04:42.640Z] availability OK hackernews (405)
+[night-chain 2026-08-25T09:04:42.691Z] availability OK bbc_news (200)
+[night-chain 2026-08-25T09:04:43.376Z] availability OK archive_org (200)
+[night-chain 2026-08-25T09:04:43.400Z] availability OK npmjs_packages (403)
+[night-chain 2026-08-25T09:04:43.679Z] availability OK reddit_public (403)
+[night-chain 2026-08-25T09:04:43.680Z] 10/10 Tier-3 candidates reachable
+[night-chain 2026-08-25T09:04:43.680Z] 10 tier-3 sites queued
+[night-chain 2026-08-25T09:04:43.681Z] === TIER-2 wikipedia (https://en.wikipedia.org/wiki/Web_testing) ===
+[night-chain 2026-08-25T09:04:43.682Z] START tier2 wikipedia pipeline (attempt 1)
+[night-chain 2026-08-25T09:19:44.078Z] DONE tier2 wikipedia pipeline (attempt 1):   runs\run_20260825_143443\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:19:44.175Z] START s1 wikipedia
+[night-chain 2026-08-25T09:19:44.294Z] DONE s1 wikipedia: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\catalog.json | 
+[night-chain 2026-08-25T09:19:44.294Z] START s2 wikipedia
+[night-chain 2026-08-25T09:19:44.371Z] DONE s2 wikipedia: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:19:44.372Z] START s4 wikipedia
+[night-chain 2026-08-25T09:20:04.173Z] DONE s4 wikipedia: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:20:04.174Z] START ft wikipedia
+[night-chain 2026-08-25T09:20:32.562Z] DONE ft wikipedia: [exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\ft_execution_results.json | [exec] Evidence: fusion\ft_execution_evidence/ | 
+[night-chain 2026-08-25T09:20:32.646Z] START s6 wikipedia
+[night-chain 2026-08-25T09:20:32.761Z] DONE s6 wikipedia: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_143443\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 83.3% of final tests attributable to Fusion (5/6); novel targets: 10 | 
+[night-chain 2026-08-25T09:20:32.767Z] tier2 wikipedia COMPLETE: run_20260825_143443 status=PARTIAL_FAILURE took=16min
+[night-chain 2026-08-25T09:20:32.767Z] === TIER-2 stackoverflow (https://stackoverflow.com/questions) ===
+[night-chain 2026-08-25T09:20:32.767Z] START tier2 stackoverflow pipeline (attempt 1)
+[night-chain 2026-08-25T09:35:33.096Z] DONE tier2 stackoverflow pipeline (attempt 1):   runs\run_20260825_145032\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:35:33.145Z] START s1 stackoverflow
+[night-chain 2026-08-25T09:35:33.227Z] DONE s1 stackoverflow: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\catalog.json | 
+[night-chain 2026-08-25T09:35:33.228Z] START s2 stackoverflow
+[night-chain 2026-08-25T09:35:33.294Z] DONE s2 stackoverflow: [gap] opportunities: quietPages=0 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:35:33.295Z] START s4 stackoverflow
+[night-chain 2026-08-25T09:36:24.996Z] DONE s4 stackoverflow: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:36:24.996Z] START ft stackoverflow
+[night-chain 2026-08-25T09:36:25.420Z] FAIL ft stackoverflow: Command failed: node fusion/execute_fusion_tests.js run_20260825_145032
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T09:36:25.420Z] START s6 stackoverflow
+[night-chain 2026-08-25T09:36:25.493Z] DONE s6 stackoverflow: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_145032\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T09:36:25.495Z] tier2 stackoverflow COMPLETE: run_20260825_145032 status=PARTIAL_FAILURE took=16min
+[night-chain 2026-08-25T09:36:25.496Z] === TIER-2 github_trending (https://github.com/trending) ===
+[night-chain 2026-08-25T09:36:25.496Z] START tier2 github_trending pipeline (attempt 1)
+[night-chain 2026-08-25T09:51:25.860Z] DONE tier2 github_trending pipeline (attempt 1):   runs\run_20260825_150625\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:51:25.910Z] START s1 github_trending
+[night-chain 2026-08-25T09:51:26.015Z] DONE s1 github_trending: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\catalog.json | 
+[night-chain 2026-08-25T09:51:26.015Z] START s2 github_trending
+[night-chain 2026-08-25T09:51:26.090Z] DONE s2 github_trending: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:51:26.091Z] START s4 github_trending
+[night-chain 2026-08-25T09:51:45.198Z] DONE s4 github_trending: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:51:45.199Z] START ft github_trending
+[night-chain 2026-08-25T09:52:30.959Z] DONE ft github_trending: [exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\ft_execution_results.json | [exec] Evidence: fusion\ft_execution_evidence/ | 
+[night-chain 2026-08-25T09:52:30.961Z] START s6 github_trending
+[night-chain 2026-08-25T09:52:31.046Z] DONE s6 github_trending: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_150625\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 80% of final tests attributable to Fusion (4/5); novel targets: 8 | 
+[night-chain 2026-08-25T09:52:31.049Z] tier2 github_trending COMPLETE: run_20260825_150625 status=PARTIAL_FAILURE took=16min
+[night-chain 2026-08-25T09:52:31.050Z] === TIER-2 imdb_top (https://www.imdb.com/chart/top) ===
+[night-chain 2026-08-25T09:52:31.051Z] START tier2 imdb_top pipeline (attempt 1)
+[night-chain 2026-08-25T09:52:45.704Z] DONE tier2 imdb_top pipeline (attempt 1):   runs\run_20260825_152231\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:52:45.754Z] START s1 imdb_top
+[night-chain 2026-08-25T09:52:45.827Z] DONE s1 imdb_top: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\catalog.json | 
+[night-chain 2026-08-25T09:52:45.828Z] START s2 imdb_top
+[night-chain 2026-08-25T09:52:45.894Z] DONE s2 imdb_top: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:52:45.895Z] START s4 imdb_top
+[night-chain 2026-08-25T09:52:48.991Z] DONE s4 imdb_top: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:52:48.992Z] START ft imdb_top
+[night-chain 2026-08-25T09:52:49.407Z] FAIL ft imdb_top: Command failed: node fusion/execute_fusion_tests.js run_20260825_152231
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T09:52:49.407Z] START s6 imdb_top
+[night-chain 2026-08-25T09:52:49.479Z] DONE s6 imdb_top: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152231\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T09:52:49.481Z] tier2 imdb_top COMPLETE: run_20260825_152231 status=PARTIAL_FAILURE took=0min
+[night-chain 2026-08-25T09:52:49.481Z] === TIER-2 goodreads_list (https://www.goodreads.com/list/tag/best) ===
+[night-chain 2026-08-25T09:52:49.482Z] START tier2 goodreads_list pipeline (attempt 1)
+[night-chain 2026-08-25T09:53:06.500Z] DONE tier2 goodreads_list pipeline (attempt 1):   runs\run_20260825_152249\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:53:06.548Z] START s1 goodreads_list
+[night-chain 2026-08-25T09:53:06.619Z] DONE s1 goodreads_list: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\catalog.json | 
+[night-chain 2026-08-25T09:53:06.620Z] START s2 goodreads_list
+[night-chain 2026-08-25T09:53:06.687Z] DONE s2 goodreads_list: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:53:06.688Z] START s4 goodreads_list
+[night-chain 2026-08-25T09:53:17.162Z] DONE s4 goodreads_list: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:53:17.162Z] START ft goodreads_list
+[night-chain 2026-08-25T09:53:17.573Z] FAIL ft goodreads_list: Command failed: node fusion/execute_fusion_tests.js run_20260825_152249
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T09:53:17.574Z] START s6 goodreads_list
+[night-chain 2026-08-25T09:53:17.646Z] DONE s6 goodreads_list: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152249\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T09:53:17.648Z] tier2 goodreads_list COMPLETE: run_20260825_152249 status=PARTIAL_FAILURE took=0min
+[night-chain 2026-08-25T09:53:17.648Z] === TIER-2 hackernews (https://news.ycombinator.com) ===
+[night-chain 2026-08-25T09:53:17.649Z] START tier2 hackernews pipeline (attempt 1)
+[night-chain 2026-08-25T09:59:15.501Z] DONE tier2 hackernews pipeline (attempt 1):   runs\run_20260825_152317\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T09:59:15.549Z] START s1 hackernews
+[night-chain 2026-08-25T09:59:15.629Z] DONE s1 hackernews: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\catalog.json | 
+[night-chain 2026-08-25T09:59:15.630Z] START s2 hackernews
+[night-chain 2026-08-25T09:59:15.699Z] DONE s2 hackernews: [gap] opportunities: quietPages=3 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\gap_report.json | 
+[night-chain 2026-08-25T09:59:15.700Z] START s4 hackernews
+[night-chain 2026-08-25T09:59:48.670Z] DONE s4 hackernews: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\fusion_report.json | 
+[night-chain 2026-08-25T09:59:48.671Z] START ft hackernews
+[night-chain 2026-08-25T10:00:24.247Z] DONE ft hackernews: [exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\ft_execution_results.json | [exec] Evidence: fusion\ft_execution_evidence/ | 
+[night-chain 2026-08-25T10:00:24.248Z] START s6 hackernews
+[night-chain 2026-08-25T10:00:24.327Z] DONE s6 hackernews: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_152317\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 77.8% of final tests attributable to Fusion (7/9); novel targets: 14 | 
+[night-chain 2026-08-25T10:00:24.330Z] tier2 hackernews COMPLETE: run_20260825_152317 status=PARTIAL_FAILURE took=7min
+[night-chain 2026-08-25T10:00:24.331Z] === TIER-2 bbc_news (https://www.bbc.com/news) ===
+[night-chain 2026-08-25T10:00:24.331Z] START tier2 bbc_news pipeline (attempt 1)
+[night-chain 2026-08-25T10:21:46.171Z] DONE tier2 npmjs_packages pipeline (attempt 1):   runs\run_20260825_154936\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T10:21:46.245Z] START s1 npmjs_packages
+[night-chain 2026-08-25T10:21:46.327Z] DONE s1 npmjs_packages: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\catalog.json | 
+[night-chain 2026-08-25T10:21:46.328Z] START s2 npmjs_packages
+[night-chain 2026-08-25T10:21:46.396Z] DONE s2 npmjs_packages: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\gap_report.json | 
+[night-chain 2026-08-25T10:21:46.396Z] START s4 npmjs_packages
+[night-chain 2026-08-25T10:21:58.960Z] DONE s4 npmjs_packages: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\fusion_report.json | 
+[night-chain 2026-08-25T10:21:58.961Z] START ft npmjs_packages
+[night-chain 2026-08-25T10:21:59.491Z] FAIL ft npmjs_packages: Command failed: node fusion/execute_fusion_tests.js run_20260825_154936
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T10:21:59.491Z] START s6 npmjs_packages
+[night-chain 2026-08-25T10:21:59.568Z] DONE s6 npmjs_packages: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_154936\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T10:21:59.569Z] CONTAMINATION: npmjs_packages (run_20260825_154936) catalog has foreign hosts [archive.org]; allowed: [www.npmjs.com]. FAILING LOUDLY.
