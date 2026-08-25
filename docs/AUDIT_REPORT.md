@@ -188,3 +188,52 @@ Evidence copies: see `docs/audit_evidence/E1` … `E8` (JSON/TXT, generated
 directly from raw artifacts; `E4` is a verbatim copy of `scheduler.log`).
 
 *— AUDITOR-3, 2026-08-25*
+
+---
+
+## ADDENDUM (2026-08-25 ~16:00 IST) — Reconciliation of raw-data vs report integrity
+
+Appended by Master coordinator on behalf of the independent auditor's follow-up probes.
+
+### Finding: artifacts authentic, folder composition broken
+Individual JSON artifacts are authentic browser sessions (real LLM calls, no doctored
+values). The damage came from runBoth's mtime-window collector stitching artifacts
+from TWO different sessions into ONE folder:
+
+```
+run_20260825_060707 (Gutenberg):   B explore #1: http://127.0.0.1:50172  <- fixture
+                                   B explore #2: https://www.gutenberg.org  <- genuine
+run_20260825_062152 ("WeatherSpark"): manifest+A = saucedemo.com
+                                      B explore #1: https://weatherspark.com  <- real, wrong folder!
+                                      B explore #2: https://www.saucedemo.com
+run_20260825_053921 (LambdaTest):  B explore #1: http://127.0.0.1:58621    <- fixture
+                                   B explore #2: lambdatest.com             <- genuine
+```
+
+### Refined per-site verdicts (supersedes coarse quarantine where stricter)
+- Sites 13-15: quarantine stands (conservative but justified). A-sides and FT stages
+  DID hit live targets (testmuai.com is a legitimate LambdaTest property, verified;
+  docs.python.org and gutenberg.org confirmed live). Untrustworthy cells: B-side
+  replay/quality + fixture-sourced gap/novel-target counts.
+- Sites 16-20: hard quarantine fully confirmed (A-level wrong-site evidence).
+- Books(11)/Quotes(12): independently re-confirmed clean.
+
+### Independent strict recount (auditor classifier: any localhost/foreign host = dirty,
+testmuai whitelisted for lambdatest):
+```
+Clean-only Vision quality: 68 tests, 52 passed (76%), 34 STRONG, 96 fills
+Master's claim was:        76 tests, 57 passed (75%), 36 STRONG
+```
+Delta (+/-8 tests) is boundary definition only (catalogs merely RECORDING external
+links are Tier-1 scope-leak observations, not wrong-site runs). Either way the claim
+survives: ~75% pass, roughly half value-level STRONG.
+
+### Mandated closure for re-runs of 13-20
+The pipeline itself MUST assert, before a run dir is accepted: every
+vision/outputs/* exploration file carries the SAME session id / start-url as the
+run's manifest URL. Otherwise the mtime collector can re-stitch folders identically.
+
+### Gate requirement
+This addendum + QUARANTINE_TIER2.md are inputs to the Gate step: no quarantined row
+may leave QUARANTINED status without (a) guard-passing re-run, (b) domain assertion
+log, (c) rewritten narrative sourced only from the new run.
