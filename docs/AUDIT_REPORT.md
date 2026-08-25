@@ -556,3 +556,76 @@ git show 93a010f --stat; git show b2ad7ff --stat          # code-delta check
 ```
 
 *— TIER-3 FINAL AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+# FINAL READINESS VERDICT (2026-08-26)
+
+Scope: sites 1–35 (Tier-3 rows 36–40 executing tonight are out of scope).
+Basis: three prior audit passes (`2f139cc`, `f3807d4`/`43e0467`) plus this
+pass's document/artifact checks. Every claim below cites a path; nothing
+invented.
+
+## 1. VERDICT: **BETA**
+
+Core works end-to-end; rough edges are documented and non-blocking for a
+v1-beta release — but it is not PRODUCTION-GRADE, and saying so would be
+harmful.
+
+Why BETA and not PRODUCTION-GRADE:
+- The dual-perception engine (A DOM explorer + B vision/YOLO+OCR explorer +
+  grounded fusion synthesis + live FT execution + evidence screenshots) is
+  validated end-to-end on 35 real sites with a consistent honest-failure
+  taxonomy: 14 of 15 Tier-3 ledger rows carry FINAL verdicts
+  (`testing/site_reports/INDEX.md`), including 7 environment/bot-blocked
+  rows recorded as data, not failures.
+- The worst failure in project history — cross-run wrong-site stitching — was
+  found, fully quarantined, re-run behind guards, and mechanically closed:
+  root cause + remediation trail in `docs/AUDIT_REPORT.md` ADDENDUM,
+  `testing/QUARANTINE_TIER2.md`, `docs/RETROSPECTIVE_TIER2.md`; recurrence
+  attempts during Tier-3 were caught pre-publication every time (rounds 1–2
+  of this report); the collector guard was generalized and live-verified
+  (`97a29cb`, this report round 2 / `E-T3-9`).
+- BUT: (a) the MCP product surface is incomplete — `run_test` is still a
+  typed stub (`CAPSTONE_BACKUPS\vision-fork-2026-08-25\mcp\tools.js`,
+  `-32006`), so the explore→generate→execute loop is proven via the CLI/
+  campaign drivers, not yet through the MCP interface itself; (b)
+  `docs/MCP_READINESS.md` records 3 BLOCKER-class gaps for any multi-user/
+  production deployment (per-user auth & keys; cross-platform service
+  lifecycle, ports 5000–5004; concurrency control) with its own GO/NO-GO:
+  "GO strictly AFTER the capstone review"; (c) the verification oracle
+  ceiling stands (PASS-by-state-change/body-text; VTQ: only 33/62 STRONG,
+  `testing/VISION_TEST_QUALITY.md`). A team adopting this *tomorrow* as a
+  production service would hit exactly those walls.
+
+Why not REALLY NO: the ledger survived adversarial recomputation at every
+level (three independent audit passes; every published headline reproduced
+exactly from `runs/<id>/` raw artifacts), failures are classified honestly
+and consistently, and the remediation trail is complete and auditable — the
+opposite of the conditions that make adoption harmful.
+
+## 2. EVIDENCE CHECKLIST
+
+| Item | Status | Artifacts |
+|---|---|---|
+| Ledger integrity: INDEX recomputable from raw | **VERIFIED** — rows #21/#23/#26/#28/#31/#32/#33/#17 recomputed EXACT across audit rounds 1/2/final (elements/pages, S4 offered/accepted, FT totals+steps, dashboard %) | `runs/<id>/fusion/{catalog,fusion_report,ft_execution_results,dashboard_data}.json` vs `testing/site_reports/INDEX.md`; auditor evidence `docs/audit_evidence/E-T3-1/-3/-7/-11` |
+| Ledger integrity: EVALUATION/VTQ | **VERIFIED (with scope note)** — both are generated deterministically by `regen_ledger.js`/`fusion/s8_campaign_eval.js` from INDEX + dashboard_data with an explicit excluded-runs header; VTQ per-test row spot-traced to raw source (`runs/run_20260822_193916/vision/outputs/execution_results.json` contains "Verify navigation to Elements section", MEDIUM/PASS). Scope note: `testing/CAMPAIGN_EVALUATION.md` snapshot covers the 20-site Tier-2 era (regenerated 2026-08-25T15:16Z); Tier-3 aggregates live in INDEX rows + `testing/extract_run_*.json`, not yet folded into CE | `testing/CAMPAIGN_EVALUATION.md`, `testing/VISION_TEST_QUALITY.md`, `testing/extract_run_*.json` |
+| Quarantine clearances have domain-assertion logs | **VERIFIED** — all 8 Tier-2 quarantine rows cleared or dispositioned with domain assertions: four Phase-2 clearance runs domain-PASS tabled in `docs/AUDIT_T401_REPORT.md` §A2 (manifest/catalog/FT-step hosts each checked); #13 SITE-MOVED-EVIDENCE + #19 MIRROR-EVIDENCE dispositions in `testing/QUARANTINE_TIER2.md`; zero QUARANTINED markers remain in `testing/site_reports/INDEX.md`. Tier-3 adds machine enforcement: `folder_purity.js` + `provenanceGuard` (suite-covered). Caveat: Tier-2 assertions are recorded in the T401 report rather than raw per-run log files; Tier-3 evidence dirs keep `CONTAMINATION_REJECTS.json`/markers on disk | `docs/AUDIT_T401_REPORT.md`, `testing/QUARANTINE_TIER2.md`, `testing/site_reports/INDEX.md` |
+| Known defects #20–#24 fixed/dispositioned | **VERIFIED** — #20 executor crash on behavior refs: fixed (cited `docs/RESEARCH_PAPER_DRAFT.md` §6); #21 reasoning-token starvation → invalid JSON class: addressed (parse_failed honesty fix `2ed3d91` + regression test "parseAction never masks a total parse failure"); #22/#23 corruption modes: #23 null page_key FIXED `05baac6` (verified in `docs/AUDIT_T401_REPORT.md` correction + `docs/RETROSPECTIVE_TIER2.md`); #24 collector provenance gap FIXED `97a29cb`, live-verified rejecting an actual leaked artifact (this report, round 2, `E-T3-9`); auditor minors F3-03/F4-05 FIXED `0df6786`. Suites 157/157 independently re-executed | defect citations above; `test/provenance_guard.test.js`, `test/regen_ledger.test.js` |
+| MCP tools verified working | **PARTIAL — and the two cited files do not exist**: `mcp/FINAL_REPORT.md` and `mcp/VERIFICATION.md` are ABSENT from `pes\CAPSTONE_BACKUPS\vision-fork-2026-08-25\mcp\` (contains only README.md, server.js, tools.js, verify_roundtrip.js) and from the main repo. Actual verified evidence: fork git history (`41ce4c1` explore_site wired; `bf6a817` get_visual_dom/list_tests/get_evidence wired with typed RUN_NOT_FOUND(-32001)/TEST_NOT_FOUND(-32002)/STAGE_FAILED(-32003)/BUSY(-32005)/NOT_IMPLEMENTED(-32006)); `verify_roundtrip.js` covers initialize → tools/list(5) → typed stub error → live explore_site returning run_id (board T105: 15.1 s roundtrip vs example.com). **run_test remains a stub** — full-loop MCP execution unverified. Main-repo T501 (MCP wiring phase 2) OPEN on `docs/TASK_BOARD.md` | paths cited inline |
+
+## 3. TOP-3 RISKS FOR v1-BETA USERS
+
+| # | Risk | Mitigation status |
+|---|---|---|
+| 1 | **Concurrency / shared-storage stitching** — two concurrent pipelines can still cross-contaminate artifacts (recurred 3× during Tier-3; caught by purity gate each time, this report rounds 1–2). `runBoth.js` does not yet self-enforce the singleton lock (PARALLEL_SPEC D3 designed, scheduled post-tier) | **Strong but procedural**: `.campaign.lock` discipline + `folder_purity.js` + extended `provenanceGuard` (auto-rejects foreign artifacts — verified live) + CONTAMINATION_REJECTS.json evidence. Residual risk is behavioral, not mechanical |
+| 2 | **Environment blocking rate on real-world sites** — 6 of 15 Tier-3 rows blocked (403 walls, 202 challenges, blank-render challenges, login-walls, CF-526 outage); users should expect ~⅓ of popular consumer sites unreachable | **Handled honestly by design**: preflight availability gate (`testing/TIER3_PREFLIGHT.md`), skip-on-CAPTCHA policy (`CAMPAIGN_PLAN.md` pre-registration), BLOCKED rows registered as first-class data with probe trails (`testing/site_reports/*blocked*.md`) |
+| 3 | **Verification-oracle ceiling** — green ≠ correct: PASS ladder bottoms out at body-text/state-change (VTQ: 33 STRONG / 25 MEDIUM / 4 WEAK of 62; FT "no_post_action_change" cases on live-probe-passing targets documented as verifier-gap evidence in INDEX row 32) | **Disclosed, not solved**: rubric boundary definition is machine-checked and printed in VTQ/CE headers; value-level assertion oracle remains V2 backlog (`mutation/results/ANALYSIS.md`, VALUE_ORACLE spec slot) |
+
+## Verdict line for the record
+
+**BETA** — adopt as a single-tenant local research/testing runner today;
+do not adopt as a production service until the three MCP_READINESS BLOCKERs
+close and `run_test` leaves stub status.
+
+*— FINAL READINESS AUDITOR (ox-alpha), 2026-08-26*
