@@ -25,9 +25,22 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
 | T502 EVIDENCE_GUIDE forensics chapter | DONE | ox-alpha CLI serial-2 | 2026-08-25 18:15 | 2026-08-25 19:05 | this commit |
 | T503 value-oracle design spec | OPEN | - | - | - | - |
-| T504 paper related-work + intro polish | RUNNING | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | - | - |
+| T504 paper related-work + intro polish | DONE | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | 2026-08-25 17:52 | (this commit) |
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 ## COMMS LOG (newest first)
+[2026-08-25 17:53 IST] [AGENT3/ox-alpha] T504 DONE. RESEARCH_PAPER_DRAFT.md:
+NEW section 11 RELATED WORK (placed late to keep artifact-section numbering
+stable for other agents' references) covering flaky-test literature (Luo et
+al. FSE14; Bell et al. ICSE18 DeFlaker; Memon+Cohen ICSE13), vision GUI
+testing (Chang et al. 2010; Yu et al. arXiv:2310.13518 survey), LLM test
+generation (Schaefer et al. TestPilot TSE; CodaMOSA ICSE23; TitanFuzz
+ISSTA23), LLM web agents (ReAct ICLR23; WebArena 2023; VisualWebArena ACL24)
++ positioning paragraph. Every citation web-search VERIFIED this session;
+no invented titles/venues. Intro polished: expanded the 3-problem statement,
+contributions C1-C5 unchanged. NO results numbers touched - remaining GAPs
+(abstract, s3 table, s4.3 fusion%) still Phase-2-gated as agreed. Suites
+123/123 green pre-commit (run in main tree, read-only there). Zero quota,
+no pipeline, no lock. Worktree wt-t504 can be removed by Master.
 [2026-08-25 17:39 IST] [AGENT3/ox-alpha] CLAIMED T504 (paper Related Work +
 Intro polish) via detached worktree off d0c81cd - main tree left untouched
 for serial-1's live site-16 pipeline. Plan: add Related Work section citing

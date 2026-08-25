@@ -22,8 +22,15 @@ audit that uncovered - and remediated - a run-attribution corruption mode unique
 to multi-agent evaluation pipelines.
 
 ## 1. INTRODUCTION
-Problem: autonomous UI testing stalls on (a) selector fragility, (b) LLM
-hallucination of unverified targets, (c) single-perception blind spots.
+Problem: autonomous UI testing stalls on (a) selector fragility - brittle
+CSS/XPath selectors break on any DOM churn, the dominant root cause of GUI
+test flakiness in industry taxonomies; (b) LLM hallucination of unverified
+targets - generated tests reference elements that do not exist on the live
+page; (c) single-perception blind spots - DOM-only exploration misses what is
+visually salient, and vision-only exploration misses semantic structure.
+This paper addresses all three with a dual-perception design in which every
+LLM-proposed action target must resolve against a merged, deterministic
+catalog before execution.
 Contributions: C1 dual-perception complementary-exploration design with quantified
 perception asymmetry; C2 grounded fusion synthesis with zero-fabrication validator;
 C3 honest failure taxonomy as first-class output; C4 campaign methodology including
@@ -128,3 +135,51 @@ juiceshop `run_20260824_102041`; books `run_20260825_131135`; quotes
 `runs/fusion_s1_A214750_B169243844/`. Quarantine evidence (kept, not citable
 for site claims): `run_20260825_053921`..`run_20260825_070918` per
 testing/QUARANTINE_TIER2.md.
+
+## 11. RELATED WORK
+Placed late to keep artifact-section numbering stable; expand before external
+submission. All citations below are published, verifiable works; none of our
+campaign numbers depend on them.
+
+**Flaky and brittle GUI tests.** Luo et al. (FSE 2014) provide the first
+extensive taxonomy of flaky-test root causes; asynchronous waits and
+concurrency dominate, and GUI-specific flakiness was characterized earlier by
+Memon and Cohen (ICSE 2013). Bell et al. (ICSE 2018, DeFlaker) detect flaky
+failures without reruns via differential coverage. Our coordinate-based
+re-detection of targets on every state change attacks the same brittleness
+from the perception side: instead of repairing selectors after breakage,
+Architecture B never depends on them.
+
+**Vision-based GUI testing.** Chang et al. (2010) demonstrated visual test
+scripts that locate widgets by image matching rather than widget trees;
+Yu et al.'s survey (arXiv:2310.13518, 2023) systematizes vision-based mobile
+GUI test generation, record/replay, and repair. Our Architecture B follows
+this line but fuses two detectors (YOLO ScreenParser + OCR) into a single
+visual DOM with per-element confidence, and replays with live target
+re-detection so stale coordinates fail loudly instead of silently misclicking.
+
+**LLM-based test generation.** Schäfer et al. (arXiv:2302.06527; IEEE TSE)
+evaluate off-the-shelf LLMs for unit-test generation (TestPilot) and report
+strong coverage with human-like assertions; Lemieux et al. (ICSE 2023,
+CodaMOSA) use LLMs to escape coverage plateaus in generative test generation;
+Deng et al. (ISSTA 2023, TitanFuzz) generate fuzz targets for DL libraries
+zero-shot. These systems generate tests for CODE under test with executable
+oracles available at generation time; our setting inverts the problem: the
+LLM acts ON a live third-party website where no oracle exists, which motivates
+our grounding validator - the LLM may only reference catalog-verified targets,
+and every step is re-verified against the live page during execution.
+
+**LLM web agents.** ReAct (Yao et al., ICLR 2023) interleaves reasoning and
+acting for web tasks; WebArena (Zhou et al., 2023) and VisualWebArena (Koh
+et al., ACL 2024) benchmark agents on self-hosted replicas of real sites.
+Agent work optimizes task success in controlled environments; our campaign
+evaluates test-case QUALITY against uncontrolled production sites (bot-walls,
+redirects, canvas-only widgets), which is why honest failure classification
+and an attribution audit are first-class outputs here rather than footnotes.
+
+**Positioning summary.** Prior art supplies (i) flakiness taxonomies we map
+our failure classes onto, (ii) visual grounding techniques we combine two of,
+and (iii) LLM action-loop patterns we adopt. The unexplored intersection this
+paper contributes is deterministic fusion of two independent perception
+streams with zero-fabrication validation, evaluated under an adversarial
+self-audit protocol on real production websites.
