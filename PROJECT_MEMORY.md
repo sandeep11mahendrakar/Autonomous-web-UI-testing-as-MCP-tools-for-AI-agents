@@ -234,3 +234,36 @@ Dry-run passes: `python mobile/dry_run.py` (needs `mobile/requirements.txt`,
 4. Keep OpenRouter as default provider; remember the 50/day free-request cap
    when planning runs (a full A or B exploration makes many LLM calls — budget
    accordingly or add credits).
+
+## 0b. SESSION RESULT (2026-08-25 morning - MEGA RUN: Tier 2 COMPLETE)
+
+Campaign is now at **20/50 sites**. Everything below committed+pushed to
+`backup` remote (branch `capstone-tier2-prep`).
+
+1. **Provider saga resolved**: OpenRouter stealth pool = global 1000/day;
+   Groq free = 8k TPM + 200k TPD per model (separate buckets per model);
+   Zen gateway x-preview-f-free = ox-alpha route but flaky 503s. Final
+   config: exploration on whichever pool is healthy; S4/FT on ox-alpha
+   reasoning=low + FUSION_MAX_TOKENS=4000 (1500 starved reasoning -> no JSON).
+2. **Defect #20 fixed**: FT executor behavior-ref resolution crashed
+   (`catalog is not defined`); CATALOG_INDEX.elements is a Map.
+3. **LLM hardening**: llmProvider now wait-and-retries 429 honoring the
+   provider's suggested delay; A/B clients retry 5-6x w/ backoff.
+4. **Repeatability study DONE** (3 sites x 3 runs): A-steps variance tiny
+   (7.7 +-0.5) BUT methodology contaminated by concurrent night-chain
+   (disclosed in REPEATABILITY.md); clean C4 re-run recommended.
+5. **TIER-2 CAMPAIGN COMPLETE (10/10 sites, all reports FINAL in
+   testing/site_reports/, INDEX rows added)**:
+   - FT live aggregate 26/37 = 70% pass (all failures classified)
+   - Fusion-attributable mean ~66% on Tier 2 (vs ~20% Tier 1!) - fusion
+     value EXPLODES once catalogs include real-world sites
+   - Standouts: lambdatest 5/5 PASS @100% fusion/11 novel targets;
+     docs.python 7/7 @77.8%; gutenberg 6/6 @54.5%/16 novel targets;
+     openlibrary 3/3 @60%
+   - Real site issues: phptravels demo redirects to demoblaze mirror
+     (recorded as site issue); sahitest frames unsupported (honest limit)
+6. **s8 evaluation regenerated over 20 sites**: testing/CAMPAIGN_EVALUATION.md
+
+REMAINING for full campaign: Tier 3 (21-30), Tier 4 (31-40), sites 41-50
+(repeatability+wildcards), clean C4 repeatability re-run, capstone report.
+
