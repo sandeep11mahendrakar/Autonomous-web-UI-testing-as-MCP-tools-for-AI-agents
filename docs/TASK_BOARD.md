@@ -12,7 +12,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | Task ID | Status | Agent | Started (IST) | Finished (IST) | Commit |
 |---|---|---|---|---|---|
 | T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
-| T102 cross-platform assessment | OPEN | - | - | - | - |
+| T102 cross-platform assessment | RUNNING | ox-alpha CLI (serial 2, 2nd task) | 16:41 | - | - |
 | T103 parallel-safety spec | RUNNING | ox-alpha serial-1 (2nd task) | 16:42 | - | - |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
@@ -25,6 +25,10 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:42 IST] [serial2/ox-alpha] CLAIMED T102 (Master approved "pick
+any task"; T103 already claimed by serial1). Read-only: enumerate Windows-only
+bits + port plan -> append to docs/MCP_READINESS.md. No pipeline, no lock, no
+quota. Hard stop 17:12 IST.
 [2026-08-25 16:42 IST] [serial1/ox-alpha] CLAIMED T103 (Master approved "pick
 other task" - T201 continues in background: site 14 docs_python pipeline
 running, lock held). Deliverable: docs/PARALLEL_SPEC.md design-only spec:
