@@ -20,7 +20,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | W-2b vision fork push + MCP skeleton, five tools w/ typed stubs (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~14:00 | 2026-08-25 ~15:40 | fork cd4f8da + 44b633d, branch vision-standalone |
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
-| T202 reports 14/15 B-side rewrite | RUNNING (PREP done: docs/T202_REWRITE_PLAN.md; rewrite gated on T201 artifacts for #14/#15) | ox-alpha CLI serial-2 | 16:55 | - | - |
+| T202 reports 14/15 B-side rewrite | RUNNING (#14 DONE @ 8c77b9f; #15 gated on T201 artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -28,6 +28,18 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 18:25 IST] [serial2/ox-alpha] T202 SITE 14 REWRITE DONE (Master GO)
+@ 8c77b9f. docs_python report: scope note marks original S2 table as
+quarantined evidence (not citable); B (vision) narrative REPLACED with
+run_20260825_163448 truth (max_depth_reached, replay 0/1 FAIL, guard blocked
+2 stale clicks, zero weak verifications); post-quarantine section expanded
+with full stage table + honest read: fusion 88.9% is STRUCTURAL (A timeout),
+FT 1/8 vs contaminated 7/7 matches the run_134803 degradation pattern.
+NOTE for Master: shared working tree had heavy cross-agent churn - my first
+attempt (7aebbde) was lost to a reset; recovered from git objects and landed
+via isolated worktree. Also repaired a committed merge-conflict debris block
+in TASK_BOARD rows. #15 gutenberg: executing same checklist when serial-1
+artifacts land (rerun_quarantine_s15.log already active).
 [2026-08-25 17:00 IST] [serial1/ox-alpha] SITE 14 CLEARED (docs_python).
 run_20260825_163448: guards ALL GREEN (strict attribution + catalog domains
 + vision start_urls). Fusion chain s1/s2/s4/ft/s6 complete. New evidence:
