@@ -33,8 +33,11 @@ verification-ceiling characterization.
 ## 2. SYSTEM ARCHITECTURE
 ### 2.1 Architecture A (DOM)
 Playwright extraction -> LLM action loop -> memory log -> fingerprint dedup ->
-grounded test generation. {{GAP: A-side step/state totals across clean runs -
-testing/run_attribution.js filtered set}}
+grounded test generation. Across the 13-run clean set (Tier-1 rows plus
+books/quotes; quarantined sites 13-20 excluded per testing/QUARANTINE_TIER2.md),
+Architecture A visited 94 states total (mean 7.2 states/run, range 1-15).
+Source: dashboard_data.json architecture_comparison over the runs listed in
+testing/site_reports/INDEX.md intersected with CLEAN verdicts.
 ### 2.2 Architecture B (Vision)
 Screenshot -> YOLO11 ScreenParser (55 classes) + Tesseract OCR -> merged visual
 DOM with per-element confidence -> LLM action loop with form-completion rules ->
@@ -66,9 +69,16 @@ architecture_comparison across indexed runs.
 {{GAP: decontaminated fusion-attributable % per site + mean - regenerate
 fusion/s8_campaign_eval.js after Phase 2; current file has pre-quarantine values}}
 ### 4.4 Honest failure taxonomy
-Failure classes with counts: {{GAP: ft_execution_results.json summaries across
-clean runs}}. Case studies: label_mismatch proving idempotency objective;
-selector_readonly fast-fail proving readonly display box.
+Failure classes with counts, clean-set live executions (24 tests executed,
+18 PASS = 75%): no_post_action_change 3 (saucedemo FT003, books FT002, quotes
+FT001); label_mismatch 1 (bstackdemo FT001 - live label "" did not match
+catalog label "demouser", validator refusing a mislabeled target);
+selector_not_visible 1 (juiceshop FT001 - cookie-banner control disappears
+after its first click, an honest fail that proves the idempotency objective);
+selector_readonly 1 (CURA re-run FT003). Case studies: juiceshop FT001
+proving the idempotency objective; selector_readonly fast-fail proving
+readonly display box. Source: runs/<id>/fusion/ft_execution_results.json
+over the same 13-run clean set as section 2.1.
 ### 4.5 Autonomous issue discovery
 Juice Shop public /ftp exposure; PHPTravels demo demoblaze mirror (deterministic
 proof via validator rejections); CURA readonly credential display.
@@ -104,4 +114,17 @@ testing/quarantine_audit.js. Offline suites: node --test "test/*.test.js"
 "fusion/test/*.test.js" "web/test/*.test.js".
 
 ## 10. REFERENCE ARTIFACT INDEX
-{{GAP: consolidate final list - testing/site_reports/INDEX.md is canonical}}
+{{GAP: final list pending Phase 2 re-runs of sites 13-20 - testing/site_reports/
+INDEX.md is canonical; quarantined rows must NOT be cited until guard-passing
+re-runs land}}
+Clean-set primary runs (citable now): saucedemo `run_20260823_225906`;
+bstackdemo `run_20260824_001108` + re-run `run_20260824_012649`; demoblaze
+`run_20260824_001544`; CURA `run_20260824_002709` + capability re-run
+`run_20260824_093124`; parabank `run_20260824_015222`; automationexercise
+`run_20260824_094432`; globalsqa `run_20260824_095724` (spare for OpenCart
+bot-wall block, `run_20260824_095411`); the-internet `run_20260824_101451`;
+juiceshop `run_20260824_102041`; books `run_20260825_131135`; quotes
+`run_20260825_131756`; pre-campaign reference DemoQA
+`runs/fusion_s1_A214750_B169243844/`. Quarantine evidence (kept, not citable
+for site claims): `run_20260825_053921`..`run_20260825_070918` per
+testing/QUARANTINE_TIER2.md.
