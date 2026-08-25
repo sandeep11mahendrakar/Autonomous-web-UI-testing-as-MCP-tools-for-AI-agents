@@ -24,10 +24,24 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
+| T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
+| T502 EVIDENCE_GUIDE forensics chapter | DONE | ox-alpha CLI serial-2 | 2026-08-25 18:15 | 2026-08-25 19:05 | this commit |
+| T503 value-oracle design spec | OPEN | - | - | - | - |
+| T504 paper related-work + intro polish | OPEN | - | - | - | - |
 
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 19:05 IST] [serial2/ox-alpha] T502 DONE: EVIDENCE_GUIDE.md section
+f) forensics walkthrough (f-1 what broke: mtime-window folder stitching +
+fixture replays; f-2 two-explorations-in-one-folder shown verbatim from
+run_20260825_060707 incl. both start_urls; f-3 host-check method table;
+f-4 refined per-site verdicts; f-5 the three guards + self-check recipe).
+All claims re-verified on disk before writing. PUBLISH NOTE: pushed via temp
+worktree off remote tip because main worktree had an orphaned paused rebase
+(pick a7b5b81) + live post-chain files; local branch may diverge until someone
+aborts that stale rebase session and reconciles. My chapter content is
+identical to local HEAD 95232eb's copy, so no content divergence.
 [2026-08-25 18:25 IST] [serial2/ox-alpha] T202 SITE 14 REWRITE DONE (Master GO)
 @ 8c77b9f. docs_python report: scope note marks original S2 table as
 quarantined evidence (not citable); B (vision) narrative REPLACED with
