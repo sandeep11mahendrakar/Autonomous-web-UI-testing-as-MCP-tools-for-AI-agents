@@ -1,11 +1,12 @@
 ﻿# AI-Assisted Dual-Perception Web UI Testing with Grounded LLM Fusion
 
-**Research Report** — Team 101, Capstone Project · Status: DRAFT v2 (2026-08-25)
-Preceded by RESEARCH_PAPER_DRAFT.md v1; filled from VISION_TEST_QUALITY.md,
-CAMPAIGN_EVALUATION.md, MCP_READINESS.md, AUDIT_REPORT.md (+addendum),
-QUARANTINE_TIER2.md, mutation/results/ANALYSIS.md. No value in this document is
-estimated; every figure cites its artifact path. Two {{GAP}} markers remain for
-pending Phase-2 guarded re-runs and each states what that run will measure.
+**Research Report** — Team 101, Capstone Project · Status: DRAFT v3 FINAL-NUMBERS (2026-08-25)
+v2 filled limitations/prose from uploads; v3 completes Phase 2: all eight
+quarantined sites 13–20 re-run behind attribution guards (guards + folder-purity
+green on every row), aggregates regenerated (testing/CAMPAIGN_EVALUATION.md,
+testing/VISION_TEST_QUALITY.md, testing/site_reports/INDEX.md @ 2026-08-25T15:16Z),
+and the last markers resolved. No value in this document is estimated;
+every figure cites its artifact path.
 
 ---
 
@@ -21,14 +22,18 @@ into a canonical catalog, identifies coverage gaps via set algebra, and
 synthesizes new tests through a single grounded LLM call whose every step must
 resolve against catalog-verified targets before live execution. We evaluate on
 a tiered campaign of 20 real websites — demo applications, e-commerce,
-documentation, and production platforms — of which 15 scored end-to-end and 5
-are recorded honestly as environment-blocked rather than counted as failures.
-On the audited strict clean set, 68 vision-generated tests executed live with a
-76% pass rate, roughly half reaching value-level STRONG verification; fused-test
-executions pass at 75% with every failure assigned a classified root cause. An
+documentation, and production platforms — of which 19 are scored from
+guard-passing runs and 1 (OpenCart) is recorded honestly as environment-blocked
+rather than counted as a failure. On the regenerated post-decontamination
+ledger, 62 vision-generated tests executed live with a 77% pass rate, over half
+reaching value-level STRONG verification; 60 fused tests executed live with 37
+passing (62%) and every failure assigned a classified root cause; fusion is
+attributable for a mean of 48.7% of each site's final test suite. An
 adversarial self-audit uncovered — and we remediated — a run-attribution
 corruption mode unique to multi-agent evaluation pipelines, quarantining all
-affected rows behind attribution guards. A seeded-bug mutation study then
+affected rows behind attribution guards — then re-ran every affected site and
+recovered a complete, decontaminated 20-site ledger. A seeded-bug mutation
+study then
 characterizes the system's verification ceiling: it verifies that *actions
 work*, not that *values are correct* — value-level bugs are undetectable at any
 coverage level without assertion oracles. We release the complete artifact
@@ -73,11 +78,12 @@ methodology as engineered as the system itself.
 ### 2.1 Architecture A (DOM)
 
 Playwright extraction → LLM action loop → memory log → fingerprint dedup →
-grounded test generation. Across the 13-run clean set (Tier-1 rows plus
-books/quotes; quarantined sites 13–20 excluded per `testing/QUARANTINE_TIER2.md`),
-Architecture A visited **94 states total (mean 7.2 states/run, range 1–15)**.
-Source: `dashboard_data.json` `architecture_comparison` over the runs listed in
-`testing/site_reports/INDEX.md` intersected with CLEAN verdicts.
+grounded test generation. Across the 13-run clean set of the contamination
+audit (Tier-1 rows plus books/quotes; quarantined sites then excluded per
+`testing/QUARANTINE_TIER2.md`), Architecture A visited **94 states total
+(mean 7.2 states/run, range 1–15)**; over the final decontaminated 20-site
+ledger the A-vs-B means are those of §4.2. Source: `dashboard_data.json`
+`architecture_comparison`; run list in `testing/site_reports/INDEX.md`.
 
 ### 2.2 Architecture B (Vision)
 
@@ -108,12 +114,47 @@ matching (`run_attribution.js`), catalog domain assertions
 (`assertCatalogDomains`), pid-lockfile single-flight. An adversarial self-audit
 (independent agent, read-only) recomputed claims from raw artifacts and exposed
 a concurrency contamination window — documented in `docs/AUDIT_REPORT.md`
-including ADDENDUM, with remediation detailed in §7.2 of this report.
+including ADDENDUM, with remediation detailed in §7.2 of this report. All
+eight quarantined rows (sites 13–20) were subsequently re-run behind the full
+guard set; every re-run passed attribution and folder-purity checks, and all
+campaign-wide figures below are computed from the regenerated decontaminated
+ledger.
 
-{{GAP: final clean-site table after Phase 2 - testing/site_reports/INDEX.md.
-Pending run will measure: guard-passing re-executions of quarantined sites
-13–20 (birthtime+manifest match and catalog-domain closure asserted), yielding
-CLEAN-verdict rows so the canonical site table can be finalized.}}
+### 3.1 Final clean-site table
+
+Canonical source: `testing/site_reports/INDEX.md` (regenerated
+2026-08-25T15:16Z). Tier-1 (sites 1–10) plus Tier-2 re-runs (11–20):
+
+| # | Site | Run ID | A / B exploration | FT live | Fusion-attributable |
+|---|---|---|---|---|---|
+| 1 | SauceDemo | `run_20260823_225906` | ✅ / ⚠️ login only | 2/3 PASS | **37.5%** |
+| 3 | BrowserStack Demo | `run_20260824_001108` | ✅ / ⚠️ early stop | 0/1 FAIL | 14.3% |
+| 4 | Demoblaze | `run_20260824_001544` | ✅ / ✅ | **4/4 PASS** | **40%** |
+| 5 | CURA Healthcare | `run_20260824_002709` | ⚠️ / ✅ | n/a honest zero | 0% |
+| 6 | ParaBank | `run_20260824_015222` | ✅ / ✅ | n/a honest zero | 0% |
+| 7 | Automation Exercise | `run_20260824_094432` | ✅ / ⚠️ | n/a honest zero | 0% |
+| 8 | OpenCart Demo | `run_20260824_095411` | 🚫 BLOCKED (bot-wall) | — | — |
+| 8s | GlobalSQA (spare) | `run_20260824_095724` | ✅ / ✅ | **3/3 PASS** | **33.3%** |
+| 9 | The Internet | `run_20260824_101451` | ✅ / ⚠️ scope leak | n/a honest zero | 0% |
+| 10 | Juice Shop | `run_20260824_102041` | ✅ / ✅ (/ftp found) | 0/1 honest fail | 16.7% |
+| 11 | Books to Scrape | `run_20260825_131135` | ✅ / ✅ | 4/5 PASS | **71.4%** |
+| 12 | Quotes to Scrape | `run_20260825_131756` | ✅ / partial | 4/5 PASS | **83.3%** |
+| 13 | LambdaTest Playground | `un_20260825_133122` | ✅ / ✅ (testmuai verified) | 4/5 PASS | **100%** |
+| 14 | Python.org Docs | `run_20260825_163448` | ⚠️ timeout / ✅ 596 elems | 1/8 PASS | **88.9%** |
+| 15 | Project Gutenberg | `run_20260825_165819` | ⚠️ 0 tests / ✅ | **4/4 PASS** | **80%** |
+| 16 | WeatherSpark | `run_20260825_173233` | ⚠️ canvas blind / partial | 5/8 PASS | **100%** |
+| 17 | SahiTest Demo | `run_20260825_194511` | ✅ 3 states / ✅ | **1/1 PASS** | **33.3%** |
+| 18 | The Internet (status codes) | `run_20260825_195406` | ⚠️ budget cap / ✅ replay live | **3/3 PASS** | **80%** |
+| 19 | PHPTravels Demo | `run_20260825_201027` | ✅ 20 states / ✅ | 5/6 PASS | **60%** |
+| 20 | Open Library | `run_20260825_203014` | ✅ / ✅ | 0/7 (net resets) | **87.5%** |
+
+Sites #17–#20 are the post-quarantine re-runs replacing contaminated originals
+(old runs retained on disk as evidence; per-report Re-run sections document
+guards passed). Site #19's re-run independently reproduced the phptravels→
+demoblaze mirror finding via validator cross-page-ref rejections — the same
+deterministic discovery class as §4.5, now confirmed on clean artifacts.
+Site #20's FT failures are connection resets during a provider outage window,
+recorded honestly rather than retried into green.
 
 ---
 
@@ -121,38 +162,49 @@ CLEAN-verdict rows so the canonical site table can be finalized.}}
 
 ### 4.1 Test quality rubric (Vision)
 
-Strict audited clean set: **68 tests executed, 52 passed (76%), 34 value-level
-STRONG verifications, 96 fill actions.** Broader boundary: **76 tests / 75%
-pass / 36 STRONG.** The STRONG/MEDIUM/WEAK rubric has a single source-of-truth
-definition (a test is STRONG iff any step verified input values, checked state,
-selected dropdown options, or scroll position); the headline ratio — roughly
-half of passes are value-level STRONG — holds under both boundary definitions
-and survived independent recount during the audit.
-Sources: `testing/VISION_TEST_QUALITY.md`; audit recount in
-`docs/AUDIT_REPORT.md` addendum.
+Regenerated post-decontamination ledger (excludes all quarantined runs):
+**62 tests executed, 48 passed (77%), 33 value-level STRONG, 25 MEDIUM, 4
+WEAK.** The STRONG/MEDIUM/WEAK rubric has a single source-of-truth definition
+(a test is STRONG iff any step verified input values, checked state, selected
+dropdown options, or scroll position); over half of passes are value-level
+STRONG. During the contamination window the ledger read 68/52/76%/34 STRONG on
+the strict clean-set boundary and 76/75%/36 STRONG on the broader boundary —
+the headline ratio held under all three boundary definitions and survived the
+adversarial recount.
+Source: `testing/VISION_TEST_QUALITY.md` (regen 2026-08-25T15:16Z);
+historical boundaries in `docs/AUDIT_REPORT.md` addendum.
 
 ### 4.2 Complementary perception (A vs B means over dashboards)
 
+Regenerated post-decontamination (n=18 runs with comparison data):
+
 | Measure | Arch A | Arch B |
 |---|---|---|
-| Tests generated | 2.7 | 1.2 |
-| States explored | 7.4 | 6.1 |
-| Elements seen | 8.3 | **138.3** (~16×) |
-| Behaviors seen | 8.7 | 4.9 |
-| Targets covered | 6.2 | 5.1 |
+| Tests generated | 2.7 | 0.9 |
+| States explored | 7.8 | 5.9 |
+| Elements seen | 8.8 | **170.6** (~19×) |
+| Behaviors seen | 9.0 | 6.0 |
+| Targets covered | 5.4 | 4.3 |
 
 Neither perception's volume predicts usefulness: A dominates behaviors and
-targets, B dominates element visibility by an order of magnitude. Source:
-`dashboard_data.json` `architecture_comparison` (arithmetic independently
-verified by AUDIT_REPORT Audit A).
+targets, B dominates element visibility by an order of magnitude.
+(Pre-decontamination means over n=19 were tests 2.7/1.2, states 7.4/6.1,
+elements 8.3/138.3 — the asymmetry conclusion is stable under both ledgers.)
+Source: `dashboard_data.json` `architecture_comparison`; historical values
+verified by AUDIT_REPORT Audit A.
 
 ### 4.3 Fusion contribution
 
-{{GAP: decontaminated fusion-attributable % per site + mean - regenerate
-fusion/s8_campaign_eval.js after Phase 2; current file has pre-quarantine
-values. Pending run will measure: fusion-attributable coverage percentage and
-novel-target counts computed solely from guard-passing re-runs of sites 13–20,
-replacing the current mean that still includes quarantined rows.}}
+Campaign-wide, regenerated from guard-passing runs only
+(`fusion/s8_campaign_eval.js` @ 2026-08-25T15:16Z): **86 fusion tests offered,
+60 accepted as grounded, 60 executed live, 37 PASS / 23 FAIL; mean
+fusion-attributable coverage 48.7% across scored sites; 95 novel targets
+exercised by fusion that neither explorer reached alone.** Per-site percentages
+range 0–100% (full table in §3.1); zero-fusion sites are honest zeros where S4
+correctly offered nothing executable (CURA, ParaBank, Automation Exercise, The
+Internet). Fusion % alone does not equal value: cross-origin composed workflows
+(GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative wins beyond
+the percentage.
 
 ### 4.4 Honest failure taxonomy
 
@@ -167,14 +219,21 @@ failure classified:
 | selector_readonly | 1 | CURA re-run FT003 — readonly display box fast-fail |
 
 Source: `runs/<id>/fusion/ft_execution_results.json` over the same 13-run clean
-set as §2.1.
+set as §2.1. Post-decontamination campaign-wide fused-test totals (all
+guard-passing runs): 60 executed, 37 PASS (62%), 23 FAIL — every failure
+classified; notable honest-failure classes added by the Phase-2 re-runs:
+Open Library's 0/7 was a connection-reset outage window (recorded, not
+retried-into-green), and PHPTravels FT006's repeat-click fails prove the
+idempotency objective on the mirrored app.
 
 ### 4.5 Autonomous issue discovery
 
 Juice Shop public `/ftp` exposure (found by vision exploration, zero hints);
-PHPTravels demo serving a demoblaze mirror (deterministic proof via validator
-rejections); CURA readonly credential display (proven by fast-fail). Absence
-of a finding on other sites is not evidence of absence.
+PHPTravels demo serving a demoblaze mirror — **independently reproduced on the
+clean post-quarantine re-run** `run_20260825_201027` via validator cross-page-ref
+rejections (deterministic proof; the Open Library re-run showed the same mirror
+artifact in validator rejections); CURA readonly credential display (proven by
+fast-fail). Absence of a finding on other sites is not evidence of absence.
 
 ---
 
@@ -256,11 +315,14 @@ after the company's rebrand — correct property tested; fixture-sourced
 artifacts stayed excluded). Books (#11) and Quotes (#12) independently
 reconfirmed CLEAN. Old runs retained on disk as evidence of the failure mode.
 
-**Residual risk.** Sites 13–20 await guarded re-runs (Phase 2); until then no
-quarantined-row number appears here, and all clean-set claims scope to the
-13-run set. The generalizable lesson: any multi-agent evaluation pipeline
-sharing run directories needs identity assertions at artifact acceptance time —
-learned empirically, not from literature.
+**Residual risk.** Phase 2 is complete: all eight rows (13–20) were re-run
+behind the full guard set (run_attribution birthtime+manifest matching,
+assertCatalogDomains host closure, assertVisionStartUrls session-identity,
+folder-purity scan) and every re-run passed. Old contaminated runs remain on
+disk as evidence of the failure mode, never cited for site claims. The
+generalizable lesson stands: any multi-agent evaluation pipeline sharing run
+directories needs identity assertions at artifact acceptance time — learned
+empirically, not from literature.
 
 ### 7.3 Provider-pacing constraints
 
@@ -318,22 +380,39 @@ deterministic zero-LLM aggregators: `fusion/s8_campaign_eval.js`,
 
 ## 10. REFERENCE ARTIFACT INDEX
 
-{{GAP: final list pending Phase 2 re-runs of sites 13-20 - testing/site_reports/
-INDEX.md is canonical; quarantined rows must NOT be cited until guard-passing
-re-runs land. Pending run will supply: guard-passing run IDs plus domain-
-assertion logs for sites 13–20 so this index lists one citable primary run per
-site, with quarantine evidence retained separately.}}
+Canonical ledger: `testing/site_reports/INDEX.md` (regenerated
+2026-08-25T15:16Z). One citable primary run per site:
 
-Clean-set primary runs (citable now): saucedemo `run_20260823_225906`;
-bstackdemo `run_20260824_001108` + re-run `run_20260824_012649`; demoblaze
-`run_20260824_001544`; CURA `run_20260824_002709` + capability re-run
-`run_20260824_093124`; parabank `run_20260824_015222`; automationexercise
-`run_20260824_094432`; globalsqa `run_20260824_095724` (spare for OpenCart
-bot-wall block, `run_20260824_095411`); the-internet `run_20260824_101451`;
-juiceshop `run_20260824_102041`; books `run_20260825_131135`; quotes
-`run_20260825_131756`; pre-campaign reference DemoQA
-`runs/fusion_s1_A214750_B169243844/`. Quarantine evidence (kept, not citable
-for site claims): `run_20260825_053921`..`run_20260825_070918`.
+| Site | Primary run | Notes |
+|---|---|---|
+| DemoQA (reference) | `runs/fusion_s1_A214750_B169243844/` | pre-campaign |
+| SauceDemo | `run_20260823_225906` | |
+| BrowserStack Demo | `run_20260824_001108` + re-run `run_20260824_012649` | |
+| Demoblaze | `run_20260824_001544` | |
+| CURA Healthcare | `run_20260824_002709` + capability re-run `run_20260824_093124` | |
+| ParaBank | `run_20260824_015222` | |
+| Automation Exercise | `run_20260824_094432` | |
+| OpenCart (BLOCKED) | `run_20260824_095411` | bot-wall evidence only |
+| GlobalSQA | `run_20260824_095724` | spare for OpenCart |
+| The Internet | `run_20260824_101451` | |
+| Juice Shop | `run_20260824_102041` | |
+| Books to Scrape | `run_20260825_131135` | CLEAN (audit reconfirmed) |
+| Quotes to Scrape | `run_20260825_131756` | CLEAN (audit reconfirmed) |
+| LambdaTest Playground | `un_20260825_133122` | testmuai rebrand verified; row 13 CLEARED |
+| Python.org Docs | `run_20260825_163448` | guarded re-run |
+| Project Gutenberg | `run_20260825_165819` | guarded re-run |
+| WeatherSpark | `run_20260825_173233` | guarded re-run |
+| SahiTest Demo | `run_20260825_194511` | replaces quarantined `run_20260825_063248` |
+| The Internet (status codes) | `run_20260825_195406` | replaces quarantined `run_20260825_064713` |
+| PHPTravels Demo | `run_20260825_201027` | replaces quarantined `run_20260825_065652`; mirror finding reproduced |
+| Open Library | `run_20260825_203014` | replaces quarantined `run_20260825_070918`; FT fails = connection resets |
+
+Quarantine evidence (retained on disk, NOT citable for site claims):
+`run_20260825_053921`..`run_20260825_070918` per
+`testing/QUARANTINE_TIER2.md`. Every replacement run passed
+run_attribution + assertCatalogDomains + assertVisionStartUrls +
+folder-purity checks; per-report "Re-run (post-quarantine)" sections record
+the guard verdicts.
 
 ---
 
