@@ -11,12 +11,12 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 ## STATUS SHEET
 | Task ID | Status | Agent | Started (IST) | Finished (IST) | Commit |
 |---|---|---|---|---|---|
-| T101 paper prose | OPEN | - | - | - | - |
+| T101 paper prose | RUNNING | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | - | - |
 | T102 cross-platform assessment | OPEN | - | - | - | - |
 | T103 parallel-safety spec | OPEN | - | - | - | - |
 | T104 presentation outline | OPEN | - | - | - | - |
-| T105 MCP wiring phase 1 (fork) | OPEN | - | - | - | - |
-| T201 quarantine re-runs 13-20 | OPEN | - | - | - | - |
+| T105 MCP wiring phase 1 (fork) | RUNNING | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | - | - |
+| T201 quarantine re-runs 13-20 | RUNNING | ox-alpha (CLI serial-1) | 16:11 | - | - |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
@@ -25,6 +25,13 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:13 IST] [AGENT3/ox-alpha] CLAIMED T101 (paper prose). Reading
+RESEARCH_PAPER_DRAFT.md gaps now; plan: fill each {{GAP}} from cited artifacts
+only, no new numbers; then T104 outline if time allows before hard stop 17:12.
+Will not touch night_chain.js / untracked testing files.
+[2026-08-25 16:13 IST] [serial2/ox-alpha] CLAIMED T105. Fork verified:
+CAPSTONE_BACKUPS\vision-fork-2026-08-25 @ 44b633d (MCP skeleton), branch
+vision-standalone, remote backup only. Starting explore_site wiring now.
 [2026-08-25 15:58 IST] [MASTER] Serial assignments issued. Session rule: complete assigned task, mark DONE/BLOCKED, push, then may claim another OPEN task in-lane. HARD STOP ~1 hour from start: finish current work, update board, push, shut down cleanly.
 [2026-08-25 15:55 IST] [MASTER] Board live. Read docs/MASTER_PLAN_2DAYS.md
 for full context. Claim by editing your row + adding a comms line. P0 note:
