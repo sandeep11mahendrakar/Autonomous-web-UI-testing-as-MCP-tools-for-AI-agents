@@ -143,12 +143,13 @@ function classifySite(row, manifest) {
 }
 
 /** Coverage confidence heuristic — explicitly labelled as such in output. */
+const OK_MARK = /(?:^|\s)(✅|OK)\b/;
 function confidence(row, dd) {
   if (row.blocked) return { level: 'LOW', why: 'blocked environment; no meaningful interaction possible' };
-  const aOk = /✅/.test(row.a_expl);
-  const bOk = /✅/.test(row.b_expl);
+  const aOk = OK_MARK.test(row.a_expl);
+  const bOk = OK_MARK.test(row.b_expl);
   const both = aOk && bOk;
-  const ftPass = /PASS/.test(row.ft_live);
+  const ftPass = row.ft_live ? (/PASS/.test(row.ft_live) && !/0\/\d+ FAIL|^0\//.test(row.ft_live.trim())) : false;
   const fusion = (row.fusion_pct || 0) >= 20;
   if (both && (ftPass || fusion)) {
     return { level: 'HIGH', why: 'both architectures explored end-to-end' + (ftPass ? '; FT live PASS' : '') + (fusion ? '; fusion-attributable >=20%' : '') };
@@ -176,17 +177,24 @@ function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
   });
 
   const scored = enriched.filter((r) => !r.blocked);
+  // dashboard_data schema: fusion.{tests_generated,tests_accepted},
+  // execution.{executed_tests,passed,failed}
+  const fGen = (r) => r.dd?.fusion?.tests_generated;
+  const fAcc = (r) => r.dd?.fusion?.tests_accepted ?? r.dd?.headline?.tests_fusion_created;
+  const ftTot = (r) => r.dd?.execution?.executed_tests ?? r.dd?.execution?.total;
+  const ftPass = (r) => r.dd?.execution?.passed;
+  const withFT = scored.filter((r) => Number.isFinite(ftTot(r)));
   const summary = {
     attempted: enriched.length,
     scored: scored.length,
     blocked: enriched.filter((r) => r.blocked).length,
-    a_completed: enriched.filter((r) => /✅/.test(r.a_expl)).length,
-    b_completed: enriched.filter((r) => /✅/.test(r.b_expl)).length,
+    a_completed: enriched.filter((r) => /✅|^OK/.test(r.a_expl)).length,
+    b_completed: enriched.filter((r) => /✅|^OK/.test(r.b_expl)).length,
     full_pipeline: enriched.filter((r) => r.status === 'SUCCESS').length,
-    fusion_generated: scored.reduce((n, r) => n + ((r.dd?.fusion?.offered) ?? 0), 0),
-    fusion_accepted: scored.reduce((n, r) => n + ((r.dd?.headline?.tests_fusion_created) ?? 0), 0),
-    ft_total: scored.reduce((n, r) => n + ((r.dd?.execution?.total) ?? 0), 0),
-    ft_pass: scored.reduce((n, r) => n + ((r.dd?.execution?.passed) ?? 0), 0),
+    fusion_generated: scored.reduce((n, r) => n + (fGen(r) || 0), 0),
+    fusion_accepted: scored.reduce((n, r) => n + (fAcc(r) || 0), 0),
+    ft_total: withFT.reduce((n, r) => n + (ftTot(r) || 0), 0),
+    ft_pass: withFT.reduce((n, r) => n + (ftPass(r) || 0), 0),
     mean_fusion_pct: (() => {
       const vals = scored.map((r) => r.fusion_pct).filter((v) => Number.isFinite(v));
       return vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : null;
@@ -218,11 +226,12 @@ function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
   lines.push(`A completed:                  ${summary.a_completed}`);
   lines.push(`B completed:                  ${summary.b_completed}`);
   lines.push(`Full A+B pipeline completed:  ${summary.full_pipeline}`);
-  lines.push(`Fusion generated (offered):   ${withDD.length ? summary.fusion_generated : 'not recorded for these runs'}`);
-  lines.push(`Fusion accepted:              ${withDD.length ? summary.fusion_accepted : 'not recorded'}`);
-  lines.push(`Fusion live tests executed:   ${withDD.length ? summary.ft_total : 'not recorded'}`);
-  lines.push(`Fusion live PASS:             ${withDD.length ? summary.ft_pass : 'not recorded'}`);
-  lines.push(`Fusion live FAIL:             ${withDD.length ? summary.ft_total - summary.ft_pass : 'not recorded'}`);
+  const gen = scored.reduce((n, r) => n + (fGen(r) || 0), 0);
+  lines.push(`Fusion generated (offered):   ${gen ? gen : 'not recorded for these runs'}`);
+  lines.push(`Fusion accepted:              ${summary.fusion_accepted || 'not recorded'}`);
+  lines.push(`Fusion live tests executed:   ${withFT.length ? summary.ft_total : 'not recorded'}`);
+  lines.push(`Fusion live PASS:             ${withFT.length ? summary.ft_pass : 'not recorded'}`);
+  lines.push(`Fusion live FAIL:             ${withFT.length ? summary.ft_total - summary.ft_pass : 'not recorded'}`);
   lines.push(`Mean fusion-attributable %:   ${summary.mean_fusion_pct != null ? summary.mean_fusion_pct + '%' : 'not recorded'}`);
   lines.push('```');
   lines.push('');
@@ -240,16 +249,32 @@ function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
   lines.push('## 3. A vs B comparison (means over runs with dashboard data)');
   lines.push('');
   if (withDD.length) {
-    const cmp = withDD.map((r) => r.dd.architecture_comparison || {});
-    lines.push('| Measure | Value |');
-    lines.push('|---|---|');
-    const firstObj = cmp.find((c) => Object.keys(c).length) || {};
-    for (const k of Object.keys(firstObj)) {
-      const nums = cmp.map((c) => c[k]).filter(Number.isFinite);
-      lines.push(`| ${k} | mean ${nums.length ? Math.round((nums.reduce((a, b) => a + b, 0) / nums.length) * 10) / 10 : 'mixed/not numeric'} (n=${nums.length}) |`);
+    // architecture_comparison = { a:{tests,states,elements_seen,behaviors_seen,targets_covered}, b:{...} }
+    const cmps = withDD.map((r) => r.dd.architecture_comparison).filter((c) => c && c.a && c.b);
+    if (cmps.length) {
+      const meanOver = (get) => {
+        const nums = cmps.map(get).filter(Number.isFinite);
+        return nums.length ? Math.round((nums.reduce((x, y) => x + y, 0) / nums.length) * 10) / 10 : 'not recorded';
+      };
+      const metrics = [
+        ['Tests generated', (c) => [c.a.tests, c.b.tests]],
+        ['States explored', (c) => [c.a.states, c.b.states]],
+        ['Elements seen', (c) => [c.a.elements_seen, c.b.elements_seen]],
+        ['Behaviors seen', (c) => [c.a.behaviors_seen, c.b.behaviors_seen]],
+        ['Targets covered', (c) => [c.a.targets_covered, c.b.targets_covered]],
+      ];
+      lines.push(`(n=${cmps.length} runs with comparison data; values are means)`);
+      lines.push('');
+      lines.push('| Measure | Arch A | Arch B |');
+      lines.push('|---|---|---|');
+      for (const [label, get] of metrics) {
+        const [a, b] = get(cmps[0]); // shape from first
+        void a; void b;
+        lines.push(`| ${label} | ${meanOver((c) => get(c)[0])} | ${meanOver((c) => get(c)[1])} |`);
+      }
+    } else {
+      lines.push('_No architecture_comparison objects found in dashboards._');
     }
-    lines.push('');
-    lines.push('Raw keys of `architecture_comparison` vary per run schema; see each run\'s dashboard.');
   } else {
     lines.push('_No dashboard_data.json found for indexed runs — comparison not computable._');
   }
@@ -259,10 +284,10 @@ function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
   lines.push('| Metric | Value |');
   lines.push('|---|---|');
   lines.push(`| Runs with dashboard data | ${withDD.length} |`);
-  lines.push(`| Fusion tests offered/generated | ${withDD.length ? summary.fusion_generated : 'not recorded'} |`);
-  lines.push(`| Fusion tests accepted (grounded) | ${withDD.length ? summary.fusion_accepted : 'not recorded'} |`);
-  lines.push(`| Fusion tests executed live | ${withDD.length ? summary.ft_total : 'not recorded'} |`);
-  lines.push(`| Executed successfully | ${withDD.length ? summary.ft_pass : 'not recorded'} |`);
+  lines.push(`| Fusion tests offered/generated | ${gen || 'not recorded'} |`);
+  lines.push(`| Fusion tests accepted (grounded) | ${summary.fusion_accepted || 'not recorded'} |`);
+  lines.push(`| Fusion tests executed live | ${withFT.length ? summary.ft_total : 'not recorded'} |`);
+  lines.push(`| Executed successfully | ${withFT.length ? summary.ft_pass : 'not recorded'} |`);
   lines.push(`| Novel targets exercised by fusion | ${sum(withDD.map((r) => r.dd?.headline?.novel_targets_exercised_by_fusion))} |`);
   lines.push('');
   lines.push('> Quality note: fusion % alone does not equal value. Cross-origin composed');

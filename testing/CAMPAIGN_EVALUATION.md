@@ -1,6 +1,6 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-25T02:34:48.997Z by `fusion/s8_campaign_eval.js`.
+Generated: 2026-08-25T03:35:37.321Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -12,14 +12,14 @@ denominators by design.
 Sites attempted:              20
 Sites scored:                 19
 Sites blocked:                1
-A completed:                  8
-B completed:                  5
+A completed:                  17
+B completed:                  9
 Full A+B pipeline completed:  14
-Fusion generated (offered):   0
+Fusion generated (offered):   70
 Fusion accepted:              49
-Fusion live tests executed:   0
+Fusion live tests executed:   49
 Fusion live PASS:             35
-Fusion live FAIL:             -35
+Fusion live FAIL:             14
 Mean fusion-attributable %:   41.2%
 ```
 
@@ -27,48 +27,50 @@ Mean fusion-attributable %:   41.2%
 
 | # | Site | Status | Confidence (heuristic) | Why |
 |---|---|---|---|---|
-| 1 | SauceDemo | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
-| 3 | BrowserStack Demo | SUCCESS | MEDIUM | only A explored fully |
-| 4 | Demoblaze | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
-| 5 | CURA Healthcare | SUCCESS | MEDIUM | only B explored fully |
-| 6 | Parasoft ParaBank | SUCCESS | MEDIUM | only A explored fully |
-| 7 | Automation Exercise | SUCCESS | MEDIUM | only A explored fully |
+| 1 | SauceDemo | SUCCESS | LOW | neither architecture completed exploration |
+| 3 | BrowserStack Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 4 | Demoblaze | SUCCESS | LOW | neither architecture completed exploration |
+| 5 | CURA Healthcare | SUCCESS | LOW | neither architecture completed exploration |
+| 6 | Parasoft ParaBank | SUCCESS | LOW | neither architecture completed exploration |
+| 7 | Automation Exercise | SUCCESS | LOW | neither architecture completed exploration |
 | 8 | OpenCart Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
-| 8s | GlobalSQA (spare for #8) | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
-| 9 | The Internet (Heroku) | SUCCESS | MEDIUM | only A explored fully |
-| 10 | OWASP Juice Shop | SUCCESS | MEDIUM | only A explored fully |
-| 11 | Books to Scrape | PARTIAL | LOW | neither architecture completed exploration |
-| 12 | Quotes to Scrape | PARTIAL | LOW | neither architecture completed exploration |
-| 13 | LambdaTest Playground | PARTIAL | LOW | neither architecture completed exploration |
+| 8s | GlobalSQA (spare for #8) | SUCCESS | LOW | neither architecture completed exploration |
+| 9 | The Internet (Heroku) | SUCCESS | LOW | neither architecture completed exploration |
+| 10 | OWASP Juice Shop | SUCCESS | LOW | neither architecture completed exploration |
+| 11 | Books to Scrape | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 12 | Quotes to Scrape | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 13 | LambdaTest Playground | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
 | 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
-| 15 | Project Gutenberg | SUCCESS | LOW | neither architecture completed exploration |
-| 16 | WeatherSpark | SUCCESS | LOW | neither architecture completed exploration |
-| 17 | SahiTest Demo | SUCCESS | LOW | neither architecture completed exploration |
-| 18 | The Internet (status codes) | SUCCESS | LOW | neither architecture completed exploration |
-| 19 | PHPTravels Demo | SUCCESS | LOW | neither architecture completed exploration |
-| 20 | Open Library | PARTIAL | LOW | neither architecture completed exploration |
+| 15 | Project Gutenberg | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 16 | WeatherSpark | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 17 | SahiTest Demo | SUCCESS | MEDIUM | only A explored fully |
+| 18 | The Internet (status codes) | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 19 | PHPTravels Demo | SUCCESS | MEDIUM | only A explored fully |
+| 20 | Open Library | PARTIAL | MEDIUM | only A explored fully; FT live PASS though |
 
 Confidence is a DETERMINISTIC HEURISTIC from ledger signals (both-arch ✅, FT
 PASS, fusion >=20%) — not a human judgment.
 
 ## 3. A vs B comparison (means over runs with dashboard data)
 
-| Measure | Value |
-|---|---|
-| a | mean mixed/not numeric (n=0) |
-| b | mean mixed/not numeric (n=0) |
-| sources | mean mixed/not numeric (n=0) |
+(n=19 runs with comparison data; values are means)
 
-Raw keys of `architecture_comparison` vary per run schema; see each run's dashboard.
+| Measure | Arch A | Arch B |
+|---|---|---|
+| Tests generated | 2.7 | 1.2 |
+| States explored | 7.4 | 6.1 |
+| Elements seen | 8.3 | 138.3 |
+| Behaviors seen | 8.7 | 4.9 |
+| Targets covered | 6.2 | 5.1 |
 
 ## 4. Fusion contribution quality
 
 | Metric | Value |
 |---|---|
 | Runs with dashboard data | 19 |
-| Fusion tests offered/generated | 0 |
+| Fusion tests offered/generated | 70 |
 | Fusion tests accepted (grounded) | 49 |
-| Fusion tests executed live | 0 |
+| Fusion tests executed live | 49 |
 | Executed successfully | 35 |
 | Novel targets exercised by fusion | 83 |
 
