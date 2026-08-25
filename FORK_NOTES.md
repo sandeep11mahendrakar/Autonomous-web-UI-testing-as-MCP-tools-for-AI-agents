@@ -57,3 +57,19 @@ Services auto-start: gateway :5000, YOLO :5001, OCR :5002, merge :5003, browser 
 - Free-tier OpenRouter models rate-limit aggressively (429). The provider retries with backoff;
   long explorations on bursty free models can exhaust retries and abort mid-run. Raise
   `LLM_429_RETRIES` or use a paid/higher-quota key for long campaigns.
+
+## MCP server (added 2026-08-25/26 overnight)
+
+The `mcp/` directory is a complete stdio JSON-RPC MCP server exposing five
+tools: explore_site, get_visual_dom, list_tests, run_test, get_evidence.
+Status, verification transcripts, bugfix log, and task checklist:
+
+- `mcp/FINAL_REPORT.md` — works / doesn't-work / known limits
+- `mcp/TASKS.md` — mission checklist with completion status
+- `mcp/VERIFICATION.md` — actual outputs from end-to-end runs
+- `mcp/CHANGES.md` — change + bugfix log (no src/ algorithm changes)
+
+Quick start: `node mcp/server.js` (or `npm run mcp`), verify with
+`STUB_LLM=true node mcp/verify_roundtrip.js https://example.com`.
+Two `.env` pitfalls are worked around at the spawn layer — see
+CHANGES.md (YOLO_MODEL_PATH repo-relative; TESSERACT_CMD bare).
