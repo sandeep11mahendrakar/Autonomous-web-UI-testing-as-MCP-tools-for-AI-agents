@@ -143,7 +143,7 @@ function classifySite(row, manifest) {
 }
 
 /** Coverage confidence heuristic — explicitly labelled as such in output. */
-const OK_MARK = /(?:^|\s)(✅|OK)\b/;
+const OK_MARK = /(?:^|\s)(?:✅|OK\b)/;
 function confidence(row, dd) {
   if (row.blocked) return { level: 'LOW', why: 'blocked environment; no meaningful interaction possible' };
   const aOk = OK_MARK.test(row.a_expl);

@@ -122,5 +122,67 @@
       "llm_calls": 0,
       "duration_min": 13.2
     }
+  ],
+  "globalsqa": [
+    {
+      "run": 1,
+      "run_id": "run_20260825_072257",
+      "overall_status": "SUCCESS",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": 2,
+        "b_pass_rate": 1,
+        "ft_total": 3,
+        "ft_passed": 2
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": 18.4
+    },
+    {
+      "run": 2,
+      "run_id": "run_20260825_073812",
+      "overall_status": "PARTIAL_FAILURE",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": null,
+        "b_pass_rate": 0,
+        "ft_total": 7,
+        "ft_passed": 7
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": 20.2
+    },
+    {
+      "run": 3,
+      "run_id": "run_20260825_075515",
+      "overall_status": "FAILED",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": null
+      },
+      "tests": {
+        "a_test_cases": null,
+        "b_pass_rate": null,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": 20.2
+    }
   ]
 }

@@ -8,3 +8,194 @@
 [night-chain 2026-08-24T20:44:20.104Z] START s8 campaign evaluation
 [night-chain 2026-08-24T20:44:20.248Z] DONE s8 campaign evaluation: [s8] Evaluation written: C:\Users\sandeep\pes\vs code\Capstone-Project\testing\CAMPAIGN_EVALUATION.md (10 sites aggregated) | 
 [night-chain 2026-08-24T20:44:20.249Z] night chain finished
+[night-chain 2026-08-24T20:49:18.867Z] night chain started — waiting for repeatability study
+[night-chain 2026-08-24T20:49:18.871Z] repeatability finished — starting Tier-2 campaign
+[night-chain 2026-08-24T20:49:18.873Z] 10 tier-2 sites queued
+[night-chain 2026-08-24T20:49:18.874Z] === TIER-2 books_toscrape (https://books.toscrape.com) ===
+[night-chain 2026-08-24T20:49:18.876Z] START tier2 books_toscrape pipeline (attempt 1)
+[night-chain 2026-08-24T21:04:19.171Z] FAIL tier2 books_toscrape pipeline (attempt 1): Command failed: node runBoth.js https://books.toscrape.com
+[night-chain 2026-08-24T21:04:19.176Z] books_toscrape: quota-blocked — waiting 22 min for rolling TPD refill (attempt 1/4)
+[night-chain 2026-08-24T21:26:19.182Z] START tier2 books_toscrape pipeline (attempt 2)
+[night-chain 2026-08-24T21:41:19.517Z] DONE tier2 books_toscrape pipeline (attempt 2):   runs\run_20260825_025619\run_manifest.json | ========================================= | 
+[night-chain 2026-08-24T21:41:19.519Z] START s1 books_toscrape
+[night-chain 2026-08-24T21:41:19.633Z] DONE s1 books_toscrape: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_025619\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_025619\fusion\catalog.json | 
+[night-chain 2026-08-24T21:41:19.634Z] START s2 books_toscrape
+[night-chain 2026-08-24T21:41:19.706Z] DONE s2 books_toscrape: [gap] opportunities: quietPages=2 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_025619\fusion\gap_report.json | 
+[night-chain 2026-08-24T21:41:19.707Z] START s4 books_toscrape
+[night-chain 2026-08-24T21:43:38.311Z] FAIL s4 books_toscrape: Command failed: node fusion/s4_fusion_synthesis.js run_20260825_025619
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[llmProvider] 42
+[night-chain 2026-08-24T21:43:38.312Z] START ft books_toscrape
+[night-chain 2026-08-24T21:43:38.731Z] FAIL ft books_toscrape: Command failed: node fusion/execute_fusion_tests.js run_20260825_025619
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-24T21:43:38.732Z] START s6 books_toscrape
+[night-chain 2026-08-24T21:43:38.858Z] DONE s6 books_toscrape: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_025619\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/1); novel targets: 0 | 
+[night-chain 2026-08-24T21:43:38.859Z] tier2 books_toscrape COMPLETE: run_20260825_025619 status=PARTIAL_FAILURE took=17min
+[night-chain 2026-08-24T21:43:38.859Z] === TIER-2 quotes_toscrape (https://quotes.toscrape.com) ===
+[night-chain 2026-08-24T21:43:38.860Z] START tier2 quotes_toscrape pipeline (attempt 1)
+[night-chain 2026-08-24T21:58:39.087Z] FAIL tier2 quotes_toscrape pipeline (attempt 1): Command failed: node runBoth.js https://quotes.toscrape.com
+[night-chain 2026-08-24T21:58:39.089Z] quotes_toscrape: quota-blocked — waiting 22 min for rolling TPD refill (attempt 1/4)
+[night-chain 2026-08-24T22:20:39.103Z] START tier2 quotes_toscrape pipeline (attempt 2)
+[night-chain 2026-08-24T22:35:39.339Z] DONE tier2 quotes_toscrape pipeline (attempt 2):   runs\run_20260825_035039\run_manifest.json | ========================================= | 
+[night-chain 2026-08-24T22:35:39.341Z] START s1 quotes_toscrape
+[night-chain 2026-08-24T22:35:39.424Z] DONE s1 quotes_toscrape: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_035039\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_035039\fusion\catalog.json | 
+[night-chain 2026-08-24T22:35:39.445Z] START s2 quotes_toscrape
+[night-chain 2026-08-24T22:35:39.515Z] DONE s2 quotes_toscrape: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_035039\fusion\gap_report.json | 
+[night-chain 2026-08-24T22:35:39.515Z] START s4 quotes_toscrape
+[night-chain 2026-08-24T22:37:58.151Z] FAIL s4 quotes_toscrape: Command failed: node fusion/s4_fusion_synthesis.js run_20260825_035039
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[llmProvider] 42
+[night-chain 2026-08-24T22:37:58.152Z] START ft quotes_toscrape
+[night-chain 2026-08-24T22:37:58.567Z] FAIL ft quotes_toscrape: Command failed: node fusion/execute_fusion_tests.js run_20260825_035039
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-24T22:37:58.568Z] START s6 quotes_toscrape
+[night-chain 2026-08-24T22:37:58.643Z] DONE s6 quotes_toscrape: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_035039\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/1); novel targets: 0 | 
+[night-chain 2026-08-24T22:37:58.644Z] tier2 quotes_toscrape COMPLETE: run_20260825_035039 status=PARTIAL_FAILURE took=17min
+[night-chain 2026-08-24T22:37:58.644Z] === TIER-2 lambdatest_playground (https://www.lambdatest.com/selenium-playground/) ===
+[night-chain 2026-08-24T22:37:58.645Z] START tier2 lambdatest_playground pipeline (attempt 1)
+[night-chain 2026-08-24T22:52:58.882Z] FAIL tier2 lambdatest_playground pipeline (attempt 1): Command failed: node runBoth.js https://www.lambdatest.com/selenium-playground/
+[night-chain 2026-08-24T22:52:58.885Z] lambdatest_playground: quota-blocked — waiting 22 min for rolling TPD refill (attempt 1/4)
+[night-chain 2026-08-24T23:14:58.889Z] START tier2 lambdatest_playground pipeline (attempt 2)
+[night-chain 2026-08-24T23:29:59.184Z] FAIL tier2 lambdatest_playground pipeline (attempt 2): Command failed: node runBoth.js https://www.lambdatest.com/selenium-playground/
+[night-chain 2026-08-24T23:29:59.187Z] lambdatest_playground: quota-blocked — waiting 22 min for rolling TPD refill (attempt 2/4)
+[night-chain 2026-08-24T23:51:59.201Z] START tier2 lambdatest_playground pipeline (attempt 3)
+[night-chain 2026-08-25T00:06:59.482Z] FAIL tier2 lambdatest_playground pipeline (attempt 3): Command failed: node runBoth.js https://www.lambdatest.com/selenium-playground/
+[night-chain 2026-08-25T00:06:59.484Z] STOPPING tier-2: lambdatest_playground genuine pipeline failure (run_20260825_053502) — fix required
+[night-chain 2026-08-25T00:09:21.012Z] night chain started — waiting for repeatability study
+[night-chain 2026-08-25T00:09:21.016Z] repeatability finished — starting Tier-2 campaign
+[night-chain 2026-08-25T00:09:21.018Z] 8 tier-2 sites queued
+[night-chain 2026-08-25T00:09:21.020Z] === TIER-2 lambdatest_playground (https://www.lambdatest.com/selenium-playground/) ===
+[night-chain 2026-08-25T00:09:21.021Z] START tier2 lambdatest_playground pipeline (attempt 1)
+[night-chain 2026-08-25T00:20:48.633Z] DONE tier2 lambdatest_playground pipeline (attempt 1):   runs\run_20260825_053921\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T00:20:48.637Z] START s1 lambdatest_playground
+[night-chain 2026-08-25T00:20:48.725Z] DONE s1 lambdatest_playground: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\catalog.json | 
+[night-chain 2026-08-25T00:20:48.726Z] START s2 lambdatest_playground
+[night-chain 2026-08-25T00:20:48.795Z] DONE s2 lambdatest_playground: [gap] opportunities: quietPages=5 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\gap_report.json | 
+[night-chain 2026-08-25T00:20:48.795Z] START s4 lambdatest_playground
+[night-chain 2026-08-25T00:21:28.583Z] DONE s4 lambdatest_playground: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\fusion_report.json | 
+[night-chain 2026-08-25T00:21:28.584Z] START ft lambdatest_playground
+[night-chain 2026-08-25T00:21:28.994Z] FAIL ft lambdatest_playground: Command failed: node fusion/execute_fusion_tests.js run_20260825_053921
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T00:21:28.994Z] START s6 lambdatest_playground
+[night-chain 2026-08-25T00:21:29.073Z] DONE s6 lambdatest_playground: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_053921\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T00:21:29.073Z] tier2 lambdatest_playground COMPLETE: run_20260825_053921 status=PARTIAL_FAILURE took=12min
+[night-chain 2026-08-25T00:21:29.074Z] === TIER-2 docs_python (https://docs.python.org/3/) ===
+[night-chain 2026-08-25T00:21:29.074Z] START tier2 docs_python pipeline (attempt 1)
+[night-chain 2026-08-25T00:36:33.948Z] DONE tier2 docs_python pipeline (attempt 1):   runs\run_20260825_055129\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T00:36:33.951Z] START s1 docs_python
+[night-chain 2026-08-25T00:36:34.073Z] DONE s1 docs_python: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\catalog.json | 
+[night-chain 2026-08-25T00:36:34.073Z] START s2 docs_python
+[night-chain 2026-08-25T00:36:34.146Z] DONE s2 docs_python: [gap] opportunities: quietPages=3 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\gap_report.json | 
+[night-chain 2026-08-25T00:36:34.147Z] START s4 docs_python
+[night-chain 2026-08-25T00:37:06.683Z] DONE s4 docs_python: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\fusion_report.json | 
+[night-chain 2026-08-25T00:37:06.684Z] START ft docs_python
+[night-chain 2026-08-25T00:37:07.097Z] FAIL ft docs_python: Command failed: node fusion/execute_fusion_tests.js run_20260825_055129
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T00:37:07.098Z] START s6 docs_python
+[night-chain 2026-08-25T00:37:07.182Z] DONE s6 docs_python: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_055129\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/2); novel targets: 0 | 
+[night-chain 2026-08-25T00:37:07.183Z] tier2 docs_python COMPLETE: run_20260825_055129 status=PARTIAL_FAILURE took=16min
+[night-chain 2026-08-25T00:37:07.183Z] === TIER-2 gutenberg (https://www.gutenberg.org) ===
+[night-chain 2026-08-25T00:37:07.183Z] START tier2 gutenberg pipeline (attempt 1)
+[night-chain 2026-08-25T00:50:28.426Z] DONE tier2 gutenberg pipeline (attempt 1):   runs\run_20260825_060707\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T00:50:28.429Z] START s1 gutenberg
+[night-chain 2026-08-25T00:50:28.528Z] DONE s1 gutenberg: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\catalog.json | 
+[night-chain 2026-08-25T00:50:28.529Z] START s2 gutenberg
+[night-chain 2026-08-25T00:50:28.607Z] DONE s2 gutenberg: [gap] opportunities: quietPages=4 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\gap_report.json | 
+[night-chain 2026-08-25T00:50:28.608Z] START s4 gutenberg
+[night-chain 2026-08-25T00:51:36.090Z] DONE s4 gutenberg: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\fusion_report.json | 
+[night-chain 2026-08-25T00:51:36.091Z] START ft gutenberg
+[night-chain 2026-08-25T00:51:36.504Z] FAIL ft gutenberg: Command failed: node fusion/execute_fusion_tests.js run_20260825_060707
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T00:51:36.504Z] START s6 gutenberg
+[night-chain 2026-08-25T00:51:36.584Z] DONE s6 gutenberg: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_060707\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/5); novel targets: 0 | 
+[night-chain 2026-08-25T00:51:36.585Z] tier2 gutenberg COMPLETE: run_20260825_060707 status=SUCCESS took=14min
+[night-chain 2026-08-25T00:51:36.585Z] === TIER-2 weathersparks (https://weatherspark.com) ===
+[night-chain 2026-08-25T00:51:36.586Z] START tier2 weathersparks pipeline (attempt 1)
+[night-chain 2026-08-25T01:01:41.771Z] DONE tier2 weathersparks pipeline (attempt 1):   runs\run_20260825_062136\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:01:41.773Z] START s1 weathersparks
+[night-chain 2026-08-25T01:01:41.844Z] DONE s1 weathersparks: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\catalog.json | 
+[night-chain 2026-08-25T01:01:41.845Z] START s2 weathersparks
+[night-chain 2026-08-25T01:01:41.910Z] DONE s2 weathersparks: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:01:41.910Z] START s4 weathersparks
+[night-chain 2026-08-25T01:02:20.072Z] DONE s4 weathersparks: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:02:20.072Z] START ft weathersparks
+[night-chain 2026-08-25T01:02:20.489Z] FAIL ft weathersparks: Command failed: node fusion/execute_fusion_tests.js run_20260825_062152
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T01:02:20.489Z] START s6 weathersparks
+[night-chain 2026-08-25T01:02:20.566Z] DONE s6 weathersparks: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/2); novel targets: 0 | 
+[night-chain 2026-08-25T01:02:20.566Z] tier2 weathersparks COMPLETE: run_20260825_062152 status=null took=11min
+[night-chain 2026-08-25T01:02:20.567Z] === TIER-2 sahitest (http://www.sahitest.com/demo/) ===
+[night-chain 2026-08-25T01:02:20.567Z] START tier2 sahitest pipeline (attempt 1)
+[night-chain 2026-08-25T01:08:36.275Z] DONE tier2 sahitest pipeline (attempt 1):   runs\run_20260825_063220\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:08:36.278Z] START s1 sahitest
+[night-chain 2026-08-25T01:08:36.367Z] DONE s1 sahitest: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\catalog.json | 
+[night-chain 2026-08-25T01:08:36.368Z] START s2 sahitest
+[night-chain 2026-08-25T01:08:36.436Z] DONE s2 sahitest: [gap] opportunities: quietPages=0 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:08:36.436Z] START s4 sahitest
+[night-chain 2026-08-25T01:09:19.505Z] DONE s4 sahitest: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:09:19.506Z] START ft sahitest
+[night-chain 2026-08-25T01:09:19.917Z] FAIL ft sahitest: Command failed: node fusion/execute_fusion_tests.js run_20260825_063248
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T01:09:19.918Z] START s6 sahitest
+[night-chain 2026-08-25T01:09:19.996Z] DONE s6 sahitest: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/3); novel targets: 0 | 
+[night-chain 2026-08-25T01:09:19.997Z] tier2 sahitest COMPLETE: run_20260825_063248 status=SUCCESS took=7min
+[night-chain 2026-08-25T01:09:19.998Z] === TIER-2 theinternet_spare_pages (https://the-internet.herokuapp.com/status_codes) ===
+[night-chain 2026-08-25T01:09:19.998Z] START tier2 theinternet_spare_pages pipeline (attempt 1)
+[night-chain 2026-08-25T01:18:46.425Z] DONE tier2 theinternet_spare_pages pipeline (attempt 1):   runs\run_20260825_063920\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:18:46.427Z] START s1 theinternet_spare_pages
+[night-chain 2026-08-25T01:18:46.500Z] DONE s1 theinternet_spare_pages: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\catalog.json | 
+[night-chain 2026-08-25T01:18:46.500Z] START s2 theinternet_spare_pages
+[night-chain 2026-08-25T01:18:46.566Z] DONE s2 theinternet_spare_pages: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:18:46.567Z] START s4 theinternet_spare_pages
+[night-chain 2026-08-25T01:19:40.776Z] DONE s4 theinternet_spare_pages: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:19:40.776Z] START ft theinternet_spare_pages
+[night-chain 2026-08-25T01:19:41.188Z] FAIL ft theinternet_spare_pages: Command failed: node fusion/execute_fusion_tests.js run_20260825_064713
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T01:19:41.188Z] START s6 theinternet_spare_pages
+[night-chain 2026-08-25T01:19:41.259Z] DONE s6 theinternet_spare_pages: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T01:19:41.260Z] tier2 theinternet_spare_pages COMPLETE: run_20260825_064713 status=null took=10min
+[night-chain 2026-08-25T01:19:41.260Z] === TIER-2 phptravels (https://phptravels.com/demo/) ===
+[night-chain 2026-08-25T01:19:41.261Z] START tier2 phptravels pipeline (attempt 1)
+[night-chain 2026-08-25T01:34:05.556Z] DONE tier2 phptravels pipeline (attempt 1):   runs\run_20260825_064941\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:34:05.558Z] START s1 phptravels
+[night-chain 2026-08-25T01:34:05.631Z] DONE s1 phptravels: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\catalog.json | 
+[night-chain 2026-08-25T01:34:05.632Z] START s2 phptravels
+[night-chain 2026-08-25T01:34:05.699Z] DONE s2 phptravels: [gap] opportunities: quietPages=0 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:34:05.700Z] START s4 phptravels
+[night-chain 2026-08-25T01:34:44.619Z] DONE s4 phptravels: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:34:44.619Z] START ft phptravels
+[night-chain 2026-08-25T01:34:45.028Z] FAIL ft phptravels: Command failed: node fusion/execute_fusion_tests.js run_20260825_065652
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T01:34:45.028Z] START s6 phptravels
+[night-chain 2026-08-25T01:34:45.102Z] DONE s6 phptravels: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_065652\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T01:34:45.103Z] tier2 phptravels COMPLETE: run_20260825_065652 status=null took=15min
+[night-chain 2026-08-25T01:34:45.103Z] === TIER-2 openlibrary (https://openlibrary.org) ===
+[night-chain 2026-08-25T01:34:45.104Z] START tier2 openlibrary pipeline (attempt 1)
+[night-chain 2026-08-25T01:49:45.401Z] DONE tier2 openlibrary pipeline (attempt 1):   runs\run_20260825_070445\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:49:45.403Z] START s1 openlibrary
+[night-chain 2026-08-25T01:49:45.492Z] DONE s1 openlibrary: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\catalog.json | 
+[night-chain 2026-08-25T01:49:45.493Z] START s2 openlibrary
+[night-chain 2026-08-25T01:49:45.558Z] DONE s2 openlibrary: [gap] opportunities: quietPages=0 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:49:45.559Z] START s4 openlibrary
+[night-chain 2026-08-25T01:50:34.376Z] DONE s4 openlibrary: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:50:34.376Z] START ft openlibrary
+[night-chain 2026-08-25T01:50:34.789Z] FAIL ft openlibrary: Command failed: node fusion/execute_fusion_tests.js run_20260825_070918
+No fusion_tests.json — run S4 first.
+
+[night-chain 2026-08-25T01:50:34.790Z] START s6 openlibrary
+[night-chain 2026-08-25T01:50:34.862Z] DONE s6 openlibrary: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_070918\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/0); novel targets: 0 | 
+[night-chain 2026-08-25T01:50:34.863Z] tier2 openlibrary COMPLETE: run_20260825_070918 status=null took=16min
+[night-chain 2026-08-25T01:50:34.864Z] START s8 campaign evaluation
+[night-chain 2026-08-25T01:50:34.946Z] DONE s8 campaign evaluation: [s8] Evaluation written: C:\Users\sandeep\pes\vs code\Capstone-Project\testing\CAMPAIGN_EVALUATION.md (10 sites aggregated) | 
+[night-chain 2026-08-25T01:50:34.946Z] night chain finished
