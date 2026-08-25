@@ -21,7 +21,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
 | T202 reports 14/15 B-side rewrite | RUNNING (PREP done: docs/T202_REWRITE_PLAN.md; rewrite gated on T201 artifacts for #14/#15) | ox-alpha CLI serial-2 | 16:55 | - | - |
-| T301 Tier-3 launch | OPEN | - | - | - | - |
+| T301 Tier-3 launch | CLAIMED (PREP scope only - availability preflight + launch runbook; pipeline LAUNCH stays gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
 
