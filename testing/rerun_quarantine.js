@@ -223,6 +223,13 @@ function main() {
         const runId = findRunDir({ url, sinceMs });
         if (!runId) { log(`post ${key}: no qualifying run dir in window — skipping`); continue; }
         log(`post ${key}: using ${runId}`);
+        // Idempotency WARNING (site-18 second-post incident class): if this
+        // run dir was already fusion-chained, a second post will re-run
+        // S4/FT on the SAME artifacts. Deliberate reconciliations may pass
+        // --force in future; today we warn loudly and continue.
+        if (fs.existsSync(path.join(ROOT, 'runs', runId, 'fusion', 'ft_execution_results.json'))) {
+          log(`WARNING post ${key}: ${runId} already has ft_execution_results.json — this is a RE-POST; S4/FT will re-execute on existing artifacts (use only for deliberate reconciliation)`);
+        }
         if (!fusionChain(runId, key)) continue;
         if (!guards(runId, url)) { log(`CONTAMINATION: ${key} (${runId}) failed guards — NOT patching reports`); continue; }
         patchReport(key, num, reportFile, oldRunId, runId);
