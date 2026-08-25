@@ -59,8 +59,8 @@ function holdLock(fn) {
   const lock = path.join(__dirname, '.campaign.lock');
   if (fs.existsSync(lock)) { log('lock held by someone else — aborting'); process.exit(2); }
   fs.writeFileSync(lock, String(process.pid));
-  const done = (code) => { try { fs.unlinkSync(lock); } catch (_) {} process.exit(code); };
-  try { fn(); } catch (e) { log(`FATAL: ${String(e.message).slice(0, 300)}`); done(1); }
+  const release = () => { try { fs.unlinkSync(lock); } catch (_) {} };
+  try { fn(); release(); } catch (e) { log(`FATAL: ${String(e.message).slice(0, 300)}`); release(); process.exit(1); }
 }
 
 function runBoth(key, url) {
