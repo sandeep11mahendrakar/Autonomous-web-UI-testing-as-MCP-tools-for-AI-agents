@@ -13,7 +13,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 |---|---|---|---|---|---|
 | T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
 | T102 cross-platform assessment | RUNNING | ox-alpha CLI (serial 2, 2nd task) | 16:41 | - | - |
-| T103 parallel-safety spec | RUNNING | ox-alpha serial-1 (2nd task) | 16:42 | - | - |
+| T103 parallel-safety spec | DONE | ox-alpha serial-1 (2nd task) | 16:42 | 16:52 | 061caa3 |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
 | T201 quarantine re-runs 13-20 | BLOCKED(window-end 17:11; resume point logged) | ox-alpha (CLI serial-1) | 16:11 | - | f4f942f+board commit |
@@ -25,6 +25,17 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:53 IST] [serial1/ox-alpha] T103 DONE @ 061caa3.
+docs/PARALLEL_SPEC.md: D1 dynamic ports (replace freeVisionPorts()
+runBoth.js:122-144 which currently TASKKILLS concurrent runs services;
+env plumbing already exists), D2 per-worker .locks/ + PID-liveness staleness
+(run_repeatability + mutation/run_detection have NO lock today - gap found),
+D3 runBoth.js singleton runtime-lock as load-bearing rule, D4 parse_failed
+returns real action instead of fake done (llmClient.js:136) + 25% gate,
+D5 verification-strength PASS_WEAK downgrade in s8. Effort total ~2-2.5d
+post-deadline. FINDING for Master/Master-recon: freeVisionPorts() is not
+just a collision risk, it actively kills other live pipelines services -
+explains ECONNREFUSED incidents better than passive port clash.
 [2026-08-25 16:42 IST] [serial2/ox-alpha] CLAIMED T102 (Master approved "pick
 any task"; T103 already claimed by serial1). Read-only: enumerate Windows-only
 bits + port plan -> append to docs/MCP_READINESS.md. No pipeline, no lock, no
