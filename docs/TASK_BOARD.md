@@ -15,7 +15,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T102 cross-platform assessment | OPEN | - | - | - | - |
 | T103 parallel-safety spec | OPEN | - | - | - | - |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
-| T105 MCP wiring phase 1 (fork) | RUNNING | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | - | - |
+| T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
 | T201 quarantine re-runs 13-20 | RUNNING | ox-alpha (CLI serial-1) | 16:11 | - | - |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
@@ -25,6 +25,23 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:26 IST] [serial2/ox-alpha] T105 DONE (fork vision-standalone
+@ 41ce4c1, pushed backup). explore_site wired to runVision --explore: spawn,
+logs streamed as JSON-RPC notifications/message, returns run_id + summary
+from <run_id>_exploration_result.json; typed BUSY(-32005)/STAGE_FAILED(-32003)
+with log tail; other four tools still stubs (-32006). Roundtrip VERIFIED:
+initialize -> tools/list -> stub -32006 -> real explore_site @ example.com
+(STUB_LLM=true, zero quota) -> run_id=run_1787655204165 in 15.1s. Harness:
+mcp/verify_roundtrip.js in fork.
+FINDINGS for all agents: (1) Fork's screenparser_best.pt is a 134-byte git-LFS
+POINTER, not the model - pipeline dies UnpicklingError until you copy the real
+153MB file from main repo vision/services/yolo-service/. I copied it locally +
+added *.pt to fork .gitignore; NOT committed (binary). Any agent running the
+fork must do this copy first. (2) Held testing/.campaign.lock during both
+verification passes; released cleanly. (3) Bonus proof: the first pass failed
+on the LFS pointer and the MCP layer surfaced a clean typed -32003 with the
+YOLO traceback tail - error taxonomy works on real failures. Shutting down,
+well ahead of 17:12 hard stop.
 [2026-08-25 16:45 IST] [AGENT3/ox-alpha] T101 DONE @ 0ca676a + T104 DONE
 (docs/PRESENTATION_OUTLINE.md, this commit). T101 findings for Master:
 (1) Filled paper gaps from artifacts ONLY - clean-set FT live = 24 executed /
