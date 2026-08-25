@@ -24,3 +24,14 @@ re-run behind the run_attribution.js guards.
 2. Post-run assertCatalogDomains: catalog page_key hosts ⊆ {target host}.
 3. Rewrite report narrative ONLY from the new run's artifacts.
 4. Old runs kept on disk as evidence of the failure mode.
+
+## ADDENDUM (2026-08-25): Row 13 CLEARED
+
+Live verification: https://www.lambdatest.com/selenium-playground/ issues a 301
+to https://www.testmuai.com/selenium-playground/ (HTTP 200). Web sources confirm
+LambdaTest rebranded to TestMu AI on 2026-01-12 - same company/infrastructure.
+The run's B-side exploring testmuai.com therefore tested the CORRECT property
+under its post-rebrand domain. Row 13 restored; raw FT record is 4/5 PASS (FT001 selector_not_found honest
+fail). Provenance filter applied: only live-provenance artifacts (A-side,
+B exploration #2 on testmuai.com, FT results) are reinstated; the fixture-
+sourced B exploration #1 stays excluded from aggregates.

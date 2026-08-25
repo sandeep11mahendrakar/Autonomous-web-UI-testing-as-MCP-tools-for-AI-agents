@@ -1,22 +1,22 @@
 # Vision Test-Case Quality Report
 
-Generated: 2026-08-25T09:16:53.858Z — deterministic aggregation over ALL
+Generated: 2026-08-25T11:25:12.579Z — deterministic aggregation over ALL
 campaign runs with B replay results. Every number traces to artifacts.
 
 ## Rubric summary
 
 ```text
-Total B test cases executed:   76
-Passed:                        57 (75%)
+Total B test cases executed:   84
+Passed:                        62 (74%)
 Verification strength:
-  STRONG (value-level asserts): 36
-  MEDIUM (state-change):        33
+  STRONG (value-level asserts): 39
+  MEDIUM (state-change):        38
   WEAK   (body-text fallback):  7
-Total steps executed:          343
-  fill actions (value writes): 107
-Targets re-detected on state:  307
-Stale coordinates prevented:   10
-Unresolved targets (honest):   16
+Total steps executed:          387
+  fill actions (value writes): 123
+Targets re-detected on state:  348
+Stale coordinates prevented:   20
+Unresolved targets (honest):   19
 ```
 
 Interpretation: STRONG = the test asserted a VALUE (field contents, dropdown
@@ -93,7 +93,9 @@ WEAK = pass rested on page-body heuristics; counted honestly against us.
 | 025619 | TC01 | MEDIUM | PASS | 3 | 0 | 3 | Replays an autonomously discovered visual workflow: click(Fiction) -> click(Womens Fiction) -> click |
 | 035039 | TC01 | STRONG | PASS | 2 | 1 | 2 | Replays an autonomously discovered visual workflow: click(Login) -> fill |
 | 055110 | TC01 | STRONG | PASS | 5 | 2 | 5 | Replays an autonomously discovered visual workflow: fill(Jsemam) -> fill -> click(Login) -> click(/  |
+| 055129 | TC01 | STRONG | PASS | 5 | 2 | 5 | Replays an autonomously discovered visual workflow: fill(Jsemam) -> fill -> click(Login) -> click(/  |
 | 060644 | TC01 | STRONG | PASS | 3 | 2 | 3 | Replays an autonomously discovered visual workflow: fill(Jsemam) -> fill -> click(Login) |
+| 060707 | TC01 | STRONG | PASS | 3 | 2 | 3 | Replays an autonomously discovered visual workflow: fill(Jsemam) -> fill -> click(Login) |
 | 063220 | TC01 | MEDIUM | FAIL | 5 | 0 | 5 | Replays an autonomously discovered visual workflow: click(Clicks Page) -> click -> click -> click -> |
 | 063920 | TC01 | STRONG | PASS | 4 | 3 | 4 | Replays an autonomously discovered visual workflow: fill -> fill -> fill -> click(Login) |
 | 063932 | TC01 | STRONG | PASS | 4 | 3 | 4 | Replays an autonomously discovered visual workflow: fill -> fill -> fill -> click(Login) |
@@ -103,6 +105,12 @@ WEAK = pass rested on page-body heuristics; counted honestly against us.
 | 073812 | TC01 | MEDIUM | FAIL | 2 | 0 | 1 | Replays an autonomously discovered visual workflow: click(PRACTICE WEBSITE) -> click -> click |
 | 131135 | TC01 | MEDIUM | PASS | 8 | 0 | 8 | Replays an autonomously discovered visual workflow: click(Fiction) -> click(History) -> click(Scienc |
 | 134803 | TC01 | MEDIUM | PASS | 8 | 0 | 8 | Replays an autonomously discovered visual workflow: click(alt "What's new" documents since Python )  |
+| 143443 | TC01 | MEDIUM | PASS | 8 | 0 | 8 | Replays an autonomously discovered visual workflow: click(load testing.) -> click(Performance testin |
+| 150625 | TC01 | STRONG | PASS | 6 | 2 | 6 | Replays an autonomously discovered visual workflow: click(Alishahryar1 / free-claude-code) -> click( |
+| 153024 | TC01 | MEDIUM | PASS | 8 | 0 | 8 | Replays an autonomously discovered visual workflow: click(Lockerbie bombing trial postponed days b)  |
+| 154120 | TC01 | MEDIUM | FAIL | 5 | 5 | 4 | Replays an autonomously discovered visual workflow: fill -> fill(Search) -> fill -> fill(Search) ->  |
+| 154936 | TC01 | MEDIUM | FAIL | 5 | 5 | 4 | Replays an autonomously discovered visual workflow: fill -> fill(Search) -> fill -> fill(Search) ->  |
+| 163448 | TC01 | MEDIUM | FAIL | 4 | 0 | 3 | Replays an autonomously discovered visual workflow: click(alt "What's new" documents since Python )  |
 
 ## Exemplar STRONG test cases (verbatim from artifacts)
 
@@ -213,10 +221,3 @@ WEAK = pass rested on page-body heuristics; counted honestly against us.
   6. `click` on "Abo" -> OK (resolved via text_match)
   7. `click` on "Contact" -> OK (resolved via text_match)
   8. `fill` on "Your" -> OK [input_value: field now holds "Hello, I have a question about your prod"] (resolved via text_match)
-
-## Quarantine note
-
-8 runs from the Tier-2 night chain (run_20260825_053921 ... run_20260825_070918)
-are EXCLUDED: a concurrency collision made their B-sides explore wrong/fixturesites (see testing/QUARANTINE_TIER2.md). Including them would overstate quality.
-The 76 tests above are from verified on-target runs only.
-
