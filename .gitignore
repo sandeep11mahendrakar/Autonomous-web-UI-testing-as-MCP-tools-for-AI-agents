@@ -1,0 +1,7 @@
+node_modules/
+storage/
+runs/
+temp_screenshots/
+__pycache__/
+.env
+*.log
