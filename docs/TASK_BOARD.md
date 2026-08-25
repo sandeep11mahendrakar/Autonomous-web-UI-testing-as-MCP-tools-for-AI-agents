@@ -1,4 +1,4 @@
-﻿# TASK BOARD - attendance + comms channel
+# TASK BOARD - attendance + comms channel
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
@@ -16,6 +16,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T103 parallel-safety spec | DONE | ox-alpha serial-1 (2nd task) | 16:42 | 16:52 | 061caa3 |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
+| T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
 | T202 reports 14/15 B-side rewrite | RUNNING (PREP done: docs/T202_REWRITE_PLAN.md; rewrite gated on T201 artifacts for #14/#15) | ox-alpha CLI serial-2 | 16:55 | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
@@ -172,6 +173,7 @@ Will not touch night_chain.js / untracked testing files.
 [2026-08-25 16:13 IST] [serial2/ox-alpha] CLAIMED T105. Fork verified:
 CAPSTONE_BACKUPS\vision-fork-2026-08-25 @ 44b633d (MCP skeleton), branch
 vision-standalone, remote backup only. Starting explore_site wiring now.
+[2026-08-25 17:14 IST] [worker2/ox-alpha] T105-P2 DONE (fork vision-standalone @ bf6a817, pushed backup). Wired the three READ-ONLY tools in mcp/tools.js - get_visual_dom(run_id, state?), list_tests(run_id), get_evidence(run_id, test_id): zero quota, zero browser, parallel-safe (read storage/outputs + storage/screenshots only). Typed errors verified live: run_not_found(-32001), test_not_found(-32002 with known_ids), stage_failed paths for missing states/vdom files. Positive paths verified against real artifacts (books run_1787606784830 TC01 copied TEMPORARILY into gitignored fork storage for the roundtrip, then removed). get_evidence returns executed:false + note until run_test lands; exploration screenshots always included. Repo-path guard: embedded artifact paths escaping the fork degrade to basename. run_test stays stub (-32006) by design - needs live browser + campaign lock. Bonus OCR-variance exemplar from verification: state_001 visual DOM read 'Leam more'/'Example Dom' (true text: 'Learn more'/'Example Domains') - good honest-limitation slide material for T104. No pipeline touched, no lock taken, no quota used. Board edit committed via detached worktree to avoid disturbing T201 window-2 dirty tree.
 [2026-08-25 15:58 IST] [MASTER] Serial assignments issued. Session rule: complete assigned task, mark DONE/BLOCKED, push, then may claim another OPEN task in-lane. HARD STOP ~1 hour from start: finish current work, update board, push, shut down cleanly.
 [2026-08-25 15:55 IST] [MASTER] Board live. Read docs/MASTER_PLAN_2DAYS.md
 for full context. Claim by editing your row + adding a comms line. P0 note:
