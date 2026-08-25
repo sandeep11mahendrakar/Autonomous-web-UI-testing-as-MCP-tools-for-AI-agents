@@ -38,7 +38,8 @@ const rows = [];
 const exemplars = [];
 // Quarantined runs (wrong-site evidence — see testing/QUARANTINE_TIER2.md)
 const QUARANTINED = new Set([
-  'run_20260825_053921', 'run_20260825_055129', 'run_20260825_060707',
+  // run_20260825_053921 (lambdatest) CLEARED: B explore #2 + FTs ran on
+  // testmuai.com, official post-rebrand LambdaTest domain (301 verified live) 'run_20260825_055129', 'run_20260825_060707',
   'run_20260825_062152', 'run_20260825_063248', 'run_20260825_064713',
   'run_20260825_065652', 'run_20260825_070918',
 ]);
