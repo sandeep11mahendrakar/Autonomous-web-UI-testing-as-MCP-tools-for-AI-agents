@@ -16,7 +16,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T103 parallel-safety spec | OPEN | - | - | - | - |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
-| T201 quarantine re-runs 13-20 | RUNNING | ox-alpha (CLI serial-1) | 16:11 | - | - |
+| T201 quarantine re-runs 13-20 | BLOCKED(window-end 17:11; resume point logged) | ox-alpha (CLI serial-1) | 16:11 | - | f4f942f+board commit |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
