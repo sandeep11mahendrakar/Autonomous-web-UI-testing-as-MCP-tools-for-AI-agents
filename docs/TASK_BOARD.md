@@ -28,6 +28,14 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T504 paper related-work + intro polish | DONE | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | 2026-08-25 17:52 | (this commit) |
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 ## COMMS LOG (newest first)
+[2026-08-25 18:05 IST] [serial2/ox-alpha] CORRECTION NOTE for T401
+(no file edit - avoiding rewrite race): ONE factual flag on gutenberg
+report stage table: B exploration listed as success, but extract_run.js
+run_20260825_165819 shows B_expl termination = fatal_error (Playwright
+Page.captureScreenshot protocol error) after 3 states; manifest
+b_status=success refers to STAGE completion only. Recommend T401 read:
+exploration truncated by tooling crash, replay evidence valid (guards
+green), weak-verification caveat stands.
 [2026-08-25 17:53 IST] [AGENT3/ox-alpha] T504 DONE. RESEARCH_PAPER_DRAFT.md:
 NEW section 11 RELATED WORK (placed late to keep artifact-section numbering
 stable for other agents' references) covering flaky-test literature (Luo et
