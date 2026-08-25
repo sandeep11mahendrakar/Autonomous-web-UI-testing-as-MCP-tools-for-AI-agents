@@ -71,3 +71,35 @@ T401 gate audit, T402 freeze.
 - MCP readiness: docs/MCP_READINESS.md (+T102 GO-post-review verdict)
 - Fork: vision-fork pushed (vision-standalone branch, git-lfs for weights);
   MCP skeleton phase-1 wired (explore_site); phase-2 read-only tools wired
+
+---
+# OVERNIGHT SESSION UPDATE (2026-08-25 23:10 IST)
+
+## KEY ROTATION (active state)
+- Pipelines (.env): OpenRouter key ending 81c2ad (NEW, verified: intermittent upstream 429s, retries absorb)
+- Groq fallback (.env GROQ_API_KEY): NEW key ending 99G - gpt-oss-120b verified clean JSON
+- Zen gateway key ReUj...7kxV: RESERVED for tomorrow morning work - DO NOT use tonight
+- Old keys 1/2 (47c9..., d8af...) DISCARDED by user
+- Old 3cca13 key: reserved for agent sessions only, removed from pipeline .env
+
+## OVERNIGHT ASSIGNMENTS (directive D5 on TASK_BOARD)
+- W1-W4 (already prompted): Tier-3 sites #21 hn / #22 text.npr / #23 lite.ddg / #24 archive.org, then self-serve #25-30. Round-robin via .campaign.lock release between sites.
+- W5 (prompt below): self-serve overflow + quota-death recovery worker.
+- W6 (prompt below): MCP BUILD in C:\\Users\\sandeep\\pes\\vs code\\new mcp testing ground (isolated clone of vision fork). Local commits ONLY - no pushes tonight. Morning: Master reviews then merges.
+- T604/T605 capability-flags work: PARKED until morning review.
+
+## MORNING CHECKLIST (in order)
+1. Review W6 local commits in new mcp testing ground; merge to vision-fork/after-tier-2 as approved; push.
+2. Verify Tier-3 overnight results: folder_purity on every new run dir, INDEX rows, s8 regen.
+3. Gate audit T401 over final clean dataset.
+4. Fill RESEARCH_PAPER_DRAFT gaps from final numbers (web-SOTA task).
+5. GitHub cleanup: README rewrite, MIT LICENSE file, artifact graphs (coverage curves, fusion-% per site, quality rubric distribution), repo description/topics.
+6. Retrospective incorporation: docs/RETROSPECTIVE_TIER2.md section 4 major-change approval decisions.
+
+## REMAINING TO FINAL PROJECT (MIT-licensed, hands-off)
+1. Tier-3 completion (overnight) -> ~26-30 sites total
+2. T401 gate audit pass
+3. MCP end-to-end verified (run_test live) + merged
+4. Paper GAPs filled + final polish (external AI)
+5. README/LICENSE/graphs/artifacts cleanup
+6. Final tag campaign-v2-end + push
