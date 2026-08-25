@@ -5,3 +5,6 @@ temp_screenshots/
 __pycache__/
 .env
 *.log
+
+# model weights are large binaries; keep them local-only
+*.pt

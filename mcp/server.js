@@ -1,24 +1,26 @@
 'use strict';
 
 /**
- * mcp/server.js — SKELETON MCP server (stdio, JSON-RPC 2.0) for the Vision
+ * mcp/server.js — MCP server (stdio, JSON-RPC 2.0) for the Vision
  * architecture. Zero dependencies, Node >= 18.
  *
  * Exposes five tools (see mcp/tools.js): explore_site, get_visual_dom,
- * list_tests, run_test, get_evidence. All tool calls currently return the
- * typed error -32006 not_implemented — no pipeline logic is wired yet.
+ * list_tests, run_test, get_evidence. PHASE 1: explore_site is wired to
+ * `runVision.js --explore` (spawn + streamed logs); the other four still
+ * return the typed error -32006 not_implemented.
  *
  * Protocol implemented:
  *   initialize / initialized notification
  *   tools/list
- *   tools/call            -> typed stub error
+ *   tools/call            -> explore_site runs async; others typed stub error
+ *   notifications/message -> pipeline log lines from explore_site
  *   ping                  -> {}
  *   anything else         -> -32601 method_not_found
  *
- * Run: node mcp/server.js   (speaks one JSON-RPC message per stdin line)
+ * Run: node mcp/server.js   (speaks one JSON message per stdin line)
  */
 
-const { TOOLS, callTool } = require('./tools');
+const { TOOLS, callTool, setLogSink } = require('./tools');
 const pkg = require('../package.json');
 
 const PROTOCOL_VERSION = '2024-11-05';
@@ -50,13 +52,12 @@ function validateArgs(tool, args) {
 function handleMessage(msg) {
   const id = typeof msg.id === 'undefined' ? null : msg.id;
   const isNotification = typeof msg.id === 'undefined';
-
   switch (msg.method) {
     case 'initialize':
       return ok(id, {
         protocolVersion: PROTOCOL_VERSION,
         capabilities: { tools: {} },
-        serverInfo: { name: 'vision-mcp', version: `0.1.0-skeleton (${pkg.name})` },
+        serverInfo: { name: 'vision-mcp', version: `0.2.0-phase1 (${pkg.name})` },
       });
 
     case 'notifications/initialized':
@@ -82,19 +83,36 @@ function handleMessage(msg) {
       }
       const res = callTool(name, args);
       // MCP wraps handler results in content blocks; errors surface as isError.
-      if (res.error) {
+      const wrap = (r) => {
+        if (r && r.error) {
+          return ok(id, {
+            content: [{ type: 'text', text: JSON.stringify(r.error) }],
+            isError: true,
+          });
+        }
         return ok(id, {
-          content: [{ type: 'text', text: JSON.stringify(res.error) }],
-          isError: true,
+          content: [{ type: 'text', text: JSON.stringify((r && r.result) || {}) }],
         });
+      };
+      // explore_site returns a Promise<{result|error}> — respond when settled.
+      if (res && typeof res.then === 'function') {
+        return isNotification
+          ? null
+          : res.then(wrap).catch((e) => err(id, -32603, 'internal error', String(e && e.message)));
       }
-      return ok(id, { content: [{ type: 'text', text: JSON.stringify(res.result ?? {}) }] });
+      return isNotification ? null : wrap(res);
     }
 
     default:
       return isNotification ? null : err(id, -32601, `method not found: ${msg.method}`);
   }
 }
+
+// Streamed pipeline logs (from explore_site) go out as logging
+// notifications so they never pollute response ordering on stdout.
+setLogSink((line) =>
+  write({ jsonrpc: '2.0', method: 'notifications/message', params: { level: 'info', data: line } })
+);
 
 let buffer = '';
 process.stdin.setEncoding('utf8');
@@ -112,12 +130,21 @@ process.stdin.on('data', (chunk) => {
       write(err(null, -32700, 'parse error'));
       continue;
     }
-    const out = handleMessage(msg);
-    if (out) write(out);
+    // explore_site resolves asynchronously; responses may arrive out of
+    // order relative to later requests. Notifications stay synchronous.
+    Promise.resolve(handleMessage(msg))
+      .then((out) => {
+        if (out) write(out);
+      })
+      .catch((e) => {
+        if (typeof msg.id !== 'undefined') {
+          write(err(msg.id, -32603, 'internal error', String(e && e.message)));
+        }
+      });
   }
 });
 process.stdin.on('end', () => process.exit(0));
 
 // Signal readiness on stderr so harnesses can detect startup without
 // polluting the stdout JSON-RPC channel.
-process.stderr.write('[vision-mcp] skeleton server ready on stdio\n');
+process.stderr.write('[vision-mcp] server ready on stdio\n');

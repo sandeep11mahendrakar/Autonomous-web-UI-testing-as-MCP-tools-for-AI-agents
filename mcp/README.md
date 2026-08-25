@@ -1,8 +1,10 @@
-# vision-mcp (skeleton)
+# vision-mcp
 
 Stdio MCP server (JSON-RPC 2.0, zero dependencies) exposing the Vision
-architecture as five tools. **All tool calls are stubs** returning the typed
-error `-32006 not_implemented` until real pipeline wiring lands.
+architecture as five tools. **PHASE 1: `explore_site` is fully wired** — it
+spawns `node runVision.js --explore <url>`, streams pipeline logs as
+`notifications/message`, and returns the run's `run_id` + summary. The other
+four tools are still stubs returning the typed error `-32006`.
 
 Design contract + production gap analysis: `docs/MCP_READINESS.md`
 (in the main Capstone repo).
@@ -21,6 +23,21 @@ Then speak JSON-RPC over stdin, one message per line:
 {"jsonrpc":"2.0","id":2,"method":"tools/list"}
 {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"explore_site","arguments":{"url":"https://example.com"}}}
 ```
+
+## Roundtrip verification (no manual speaking needed)
+
+```bash
+STUB_LLM=true node mcp/verify_roundtrip.js https://example.com
+```
+
+Runs initialize -> tools/list -> stub call (-32006) -> a real `explore_site`
+pass, asserting each step. With `STUB_LLM=true` the exploration makes no LLM
+API calls; without it the inherited `.env` provider/key/quota is used.
+
+Environment knobs:
+- `MCP_EXPLORE_TIMEOUT_MS` — wall-clock cap per explore_site call (default 30 min)
+- `MCP_VERIFY_TIMEOUT_MS` — cap for verify_roundtrip.js (default 25 min)
+- `EXPLORE_MAX_STEPS` / `max_steps` arg — explorer step limit
 
 ## Tools
 
