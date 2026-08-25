@@ -1,0 +1,93 @@
+﻿'use strict';
+/** gen_tier2_reports.js - render per-site TEMPLATE reports from artifacts. */
+const fs = require('fs');
+const path = require('path');
+const { summarize } = require('./extract_run');
+const NOTES = [
+  ...require('./tier2_notes_1'),
+  ...require('./tier2_notes_2'),
+  ...require('./tier2_notes_3'),
+];
+const OUT_DIR = path.join(__dirname, 'site_reports');
+fs.mkdirSync(OUT_DIR, { recursive: true });
+function fmt(v) { return v === null || v === undefined ? '-' : String(v); }
+for (const s of NOTES) {
+  const ex = summarize(s.runId);
+  const m = ex.manifest || {};
+  const A = ex.A ? (ex.A.totals || {}) : {};
+  const B = ex.B ? ex.B.summary : null;
+  const S1 = ex.S1 || {};
+  const S2 = ex.S2 || {};
+  const S4 = ex.S4 || {};
+  const FT = ex.FT ? ex.FT.summary : null;
+  const dash = ex.DASH && ex.DASH.headline;
+  const L = [];
+  L.push('# SITE TEST REPORT - ' + s.name);
+  L.push('');
+  L.push('## 1. Metadata');
+  L.push('');
+  L.push('| Field | Value |');
+  L.push('|---|---|');
+  L.push('| Site | ' + s.name + ' |');
+  L.push('| URL | ' + s.url + ' |');
+  L.push('| Test date | ' + s.date + ' |');
+  L.push('| Unified run ID | `' + s.runId + '` |');
+  L.push('| Run folder | `runs/' + s.runId + '/` |');
+  L.push('| LLM (A/B) exploration | Groq gpt-oss-120b / gpt-oss-20b (TPM/TPD-paced night run) |');
+  L.push('| LLM (S4/FT) completion | OpenRouter stealth/ox-alpha, reasoning=low, FUSION_MAX_TOKENS=4000 |');
+  L.push('| Repo state | branch capstone-tier2-prep |');
+  L.push('| Report status | FINAL |');
+  L.push('');
+  L.push('## 2. Verdict snapshot');
+  L.push('');
+  L.push('| Stage | Result |');
+  L.push('|---|---|');
+  L.push('| Overall run | ' + fmt(m.overall) + ' |');
+  const aDesc = A.steps ? (' (' + A.steps + ' steps / ' + A.states + ' states / ' + A.unique_urls + ' urls; termination: ' + fmt(ex.A.termination) + ')') : ' (summary not written - see notes)';
+  L.push('| A exploration | ' + fmt(m.a_status) + aDesc + ' |');
+  L.push('| A test generation | ' + ((ex.A_tests || []).length) + ' test case(s) |');
+  L.push('| B execution | pass_rate=' + (B ? B.pass_rate : '-') + ' (' + (B ? B.total : 0) + ' test(s)); weak_verifications=' + (B ? B.weak_verifications : '-') + ' |');
+  L.push('| S1 catalog | elements=' + fmt(S1.elements) + ' behaviors=' + fmt(S1.behaviors) + ' pages=' + fmt(S1.pages) + ' conflicts=' + fmt(S1.conflicts) + ' |');
+  L.push('| S2 gaps | common=' + fmt(S2.el_common) + ' a_only=' + fmt(S2.el_a_only) + ' b_only=' + fmt(S2.el_b_only) + ' uncovered=' + fmt(S2.actionable_uncovered) + ' bh_uncovered=' + fmt(S2.bh_uncovered) + ' |');
+  L.push('| S4 synthesis | offered=' + fmt(S4.offered) + ' candidates=' + fmt(S4.candidates) + ' accepted=' + fmt(S4.accepted) + ' rejected=' + fmt(S4.rejected) + ' grounded=true |');
+  L.push('| FT live execution | ' + (FT ? (FT.passed + '/' + FT.total + ' PASS (' + FT.steps_passed + '/' + FT.steps_total + ' steps)') : 'not executed (no accepted tests)') + ' |');
+  L.push('| Dashboard | pct_fusion=' + (dash ? dash.pct_final_tests_attributable_to_fusion : '-') + '% novel_targets=' + (dash ? dash.novel_targets_exercised_by_fusion : '-') + ' |');
+  L.push('');
+  L.push('**Verdict:** ' + s.verdict);
+  L.push('');
+  L.push('## 3. Architecture results');
+  L.push('');
+  L.push('### A (DOM): ' + s.aNotes);
+  L.push('');
+  L.push('### B (vision): ' + s.bNotes);
+  L.push('');
+  L.push('### A/B comparison: ' + s.cmp);
+  L.push('');
+  L.push('## 4. SITE bugs detected');
+  L.push('');
+  L.push(s.siteBugs);
+  L.push('');
+  L.push('## 5. PIPELINE bugs and fixes during this test');
+  L.push('');
+  L.push(s.pipeBugs);
+  L.push('');
+  L.push('## 6. Where the project lagged');
+  L.push('');
+  L.push(s.lagged);
+  L.push('');
+  L.push('## 7-10. Assets and reproduction');
+  L.push('');
+  L.push('All artifacts under runs/' + s.runId + '/ per standard tree (TEMPLATE section 8).');
+  L.push('');
+  L.push('```bash');
+  L.push('node runBoth.js ' + s.url);
+  L.push('node fusion/s1_build_catalog.js ' + s.runId);
+  L.push('node fusion/s2_gap_report.js ' + s.runId);
+  L.push('node fusion/s4_fusion_synthesis.js ' + s.runId);
+  L.push('node fusion/execute_fusion_tests.js ' + s.runId);
+  L.push('node fusion/s6_dashboard.js ' + s.runId);
+  L.push('```');
+  L.push('');
+  fs.writeFileSync(path.join(OUT_DIR, s.key + '_2026-08-25.md'), L.join('\n'));
+  console.log('wrote', s.key);
+}

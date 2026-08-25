@@ -1,0 +1,40 @@
+'use strict';
+// Tier-2 report notes, part 1 (sites 11-13)
+module.exports = [
+  {
+    key: 'books_toscrape', name: 'Books to Scrape', url: 'https://books.toscrape.com',
+    runId: 'run_20260825_025619', date: '2026-08-25',
+    verdict: 'Full pipeline completed after quota-delayed fusion completion; Fusion delivered 75% attribution with 3/3 FT PASS - best-yet fusion result at time of run.',
+    aNotes: 'Killed at the 15-min orchestrator cap mid-exploration: Groq daily token cap (200k TPD) forced slow deterministic fallbacks. Partial memory log + test cases recovered.',
+    bNotes: 'Single composed replay PASSED; verification method was body_text_fallback (weak, honestly flagged). Stale-coordinate prevention fired once.',
+    cmp: 'B dominated catalog space 258:2 (A starved by timeout), yet Fusion still found executable targets from A-side selectors - complementary perception in action.',
+    siteBugs: 'None claimed - coverage insufficient to conclude.',
+    pipeBugs: 'Defect #20: FT executor crashed resolving behavior refs through the elements Map; fixed by iterating CATALOG_INDEX.elements.values(). Also ox-alpha reasoning consumed FUSION_MAX_TOKENS=1500 before emitting JSON; fixed with FUSION_LLM_REASONING=low + FUSION_MAX_TOKENS=4000 (verified 0 to 3 accepted tests).',
+    lagged: 'Groq free-tier TPM/TPD caps dominate unattended runs; A starvation shrank the selector space available to FT grounding.',
+    recs: 'Re-run A on ox-alpha post-reset for a non-starved catalog.',
+  },
+  {
+    key: 'quotes_toscrape', name: 'Quotes to Scrape', url: 'https://quotes.toscrape.com',
+    runId: 'run_20260825_035039', date: '2026-08-25',
+    verdict: 'Pipeline completed with quota-delayed fusion; 2 grounded Fusion tests accepted, live 1/2 PASS (one honest semantic FAIL), 66.7% fusion-attributable.',
+    aNotes: 'Same Groq TPD timeout pattern as books (15-min cap hit mid-exploration); partial artifacts recovered.',
+    bNotes: 'Login fill replayed successfully with input_value verification (strong signal); 1/1 PASS.',
+    cmp: 'Tiny single-page catalog; validator correctly rejected 3 candidates that clicked navigate-behaviors as click steps (action_mismatch).',
+    siteBugs: 'None claimed - insufficient coverage to conclude.',
+    pipeBugs: 'none beyond shared defect #20 / reasoning-token fixes documented in books report.',
+    lagged: 'A timeout again; single-page DOM limits workflow composition depth.',
+    recs: 'Re-run with healthy provider budget; consider /login page as an explicit flow target.',
+  },
+  {
+    key: 'lambdatest_playground', name: 'LambdaTest Selenium Playground', url: 'https://www.lambdatest.com/selenium-playground/',
+    runId: 'run_20260825_053921', date: '2026-08-25',
+    verdict: 'STANDOUT RUN: Fusion generated 5 tests, ALL 5 PASSED live (10/11 steps), 100% fusion-attributable, 11 novel targets - strongest Fusion result of the entire campaign.',
+    aNotes: 'Completed under Groq TPM pacing (429-waits absorbed by new retry layer).',
+    bNotes: 'Replay suite passed at 1.0 pass rate.',
+    cmp: 'Fusion found and verified element surfaces neither architecture had exercised; zero rejections from the grounding validator.',
+    siteBugs: 'No application defects claimed; playground behaved per spec.',
+    pipeBugs: 'none - clean run (post defect-#20 fix).',
+    lagged: 'One FT step failed honestly (semantic_verification class) within the 5-test suite.',
+    recs: 'Use this site as the regression showcase for Fusion value.',
+  },
+];

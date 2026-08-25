@@ -1,0 +1,40 @@
+'use strict';
+// Tier-2 report notes, part 2 (sites 14-16)
+module.exports = [
+  {
+    key: 'docs_python', name: 'Python.org Documentation', url: 'https://docs.python.org/3/',
+    runId: 'run_20260825_055129', date: '2026-08-25',
+    verdict: 'Largest real-world-docs catalog of Tier 2 (583 elements / 48 conflicts); 7/7 Fusion FTs PASSED live (17/17 steps), 77.8% attribution, 12 novel targets.',
+    aNotes: 'Timed out under Groq TPD exhaustion; B fatal ECONNREFUSED:5000 - vision service port collided with the concurrently-running repeatability study (contamination disclosed in REPEATABILITY.md).',
+    bNotes: 'Could not complete replay due to service-port conflict; recorded honestly rather than retried silently.',
+    cmp: 'Catalog overwhelmingly vision-only (deep nav trees); cross_page_ref validator rejection shows strict page-scoped grounding works.',
+    siteBugs: 'None claimed.',
+    pipeBugs: 'Port-conflict contamination between concurrent studies - night-chain now waits for repeatability completion (fixed in chain design).',
+    lagged: 'Concurrent-study interference degraded B; docs sites have few interactive behaviors by nature.',
+    recs: 'Isolate future studies in time; docs-class sites stress navigation more than interaction.',
+  },
+  {
+    key: 'gutenberg', name: 'Project Gutenberg', url: 'https://www.gutenberg.org',
+    runId: 'run_20260825_060707', date: '2026-08-25',
+    verdict: 'First full SUCCESS-status Tier-2 site: both archs green, 6/6 Fusion FTs PASSED, 54.5% attribution, 16 novel targets - largest novel-target count of the campaign.',
+    aNotes: 'Healthy exploration: 24 steps / 15 states, terminated max_states_reached.',
+    bNotes: 'Replay passed 1/1.',
+    cmp: 'Biggest behavior space so far (30 behaviors); validator rejected 2 cross-page-ref candidates, keeping grounding strict.',
+    siteBugs: 'None claimed.',
+    pipeBugs: 'none - clean run.',
+    lagged: 'Search-heavy site means many quiet pages; several gaps unusable by design.',
+    recs: 'Good candidate for repeatability re-runs (C4).',
+  },
+  {
+    key: 'weathersparks', name: 'WeatherSpark', url: 'https://weatherspark.com',
+    runId: 'run_20260825_062152', date: '2026-08-25',
+    verdict: 'Both archs succeeded; Fusion 3 accepted, 1/3 FT PASS (2 honest semantic FAILs), 60% attribution. Chart-heavy UI stresses coordinate precision.',
+    aNotes: 'Clean completion: 8 steps / 9 states.',
+    bNotes: 'Replay failed honestly on canvas-heavy content invisible to OCR detection.',
+    cmp: 'Canvas/chart content is invisible to both DOM extraction and OCR element detection - known architecture limit, evidenced here.',
+    siteBugs: 'None claimed.',
+    pipeBugs: 'none - clean run.',
+    lagged: 'Canvas-heavy rendering = perception blind spot (architecture limitation, not defect).',
+    recs: 'Canvas-aware perception is a V2 perception-layer item.',
+  },
+];
