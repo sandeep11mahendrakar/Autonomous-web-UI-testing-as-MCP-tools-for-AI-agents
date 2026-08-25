@@ -16,6 +16,13 @@
 
 ## 2. Verdict snapshot
 
+> **Scope note (T202):** the table and verdict line below describe the ORIGINAL
+> run `run_20260825_055129`, whose B side was fixture-sourced (host mismatch,
+> QUARANTINE_TIER2 row 14). They are kept verbatim as contamination evidence
+> and are NOT citable. The current authoritative figures are in
+> [Re-run (post-quarantine)](#re-run-post-quarantine) at the bottom of this
+> report, from `run_20260825_163448` (all attribution guards green).
+
 | Stage | Result |
 |---|---|
 | Overall run | PARTIAL_FAILURE |
@@ -34,7 +41,14 @@
 
 ### A (DOM): Timed out under Groq TPD exhaustion; B fatal ECONNREFUSED:5000 - vision service port collided with the concurrently-running repeatability study (contamination disclosed in REPEATABILITY.md).
 
-### B (vision): Could not complete replay due to service-port conflict; recorded honestly rather than retried silently.
+### B (vision): Post-quarantine re-run (`run_20260825_163448`): exploration
+terminated shallowly (`max_depth_reached`; 2 states observed — the docs tree is
+link-dense but visually static, so YOLO+OCR surfaced few actionable targets).
+The single generated replay test FAILED live: 1 step's verification method was
+skipped and 1 target unresolved, while the stale-coordinate guard correctly
+prevented 2 out-of-date clicks (weak_verifications=0 — no fake passes). The
+original run's B row in §2 is quarantined evidence (fixture-sourced host) and
+is no longer citable.
 
 ### A/B comparison: Catalog overwhelmingly vision-only (deep nav trees); cross_page_ref validator rejection shows strict page-scoped grounding works.
 
@@ -78,3 +92,32 @@ node fusion/s6_dashboard.js run_20260825_055129
 - **Guards passed:** findRunDir(manifest-url match) + assertCatalogDomains + assertVisionStartUrls (audit addendum)
 - **FT summary:** `1/8 PASS (12.5%)`
 - **Narrative policy:** figures above come ONLY from the new run's artifacts.
+
+### Full stage results (all values from `testing/extract_run.js run_20260825_163448`)
+
+| Stage | Result |
+|---|---|
+| Overall run | PARTIAL_FAILURE |
+| A exploration | timeout again at the internal 900s cap (third occurrence on this mega-DOM site) |
+| A test generation | 0 test case(s) |
+| B execution | 0/1 PASS (FAILED live; verification skipped x1, unresolved target x1, stale-coordinate guard blocked x2, weak_verifications=0) |
+| B exploration | `max_depth_reached`, 2 states observed, source_url verified `https://docs.python.org/3/` |
+| S1 catalog | elements=605 behaviors=17 pages=17 conflicts=56 |
+| S4 synthesis | offered=19 candidates=11 accepted=8 rejected=3 (2× max_tests_reached, 1× action_mismatch; grounding strict) |
+| FT live execution | 1/8 PASS (9/16 steps), targets_preverified=1 |
+| Dashboard | pct_fusion=88.9% novel_targets=10 |
+
+### Narrative
+
+Fusion attribution is high (88.9%) for a structural reason: A timed out and
+contributed zero tests, so nearly every executed fusion test is novel by
+construction. The honest headline is the absolute FT pass rate: 1/8 against
+the original contaminated run's 7/7. Under A-timeout conditions the fusion
+chain loses A's grounded candidates and leans on vision-only targets whose
+live verification mostly fails — consistent with the decontaminated pattern
+first seen in `run_20260825_134803` (2/8). B's own replay failure (skipped
+verification + unresolved target, with two stale clicks prevented by the
+guard) is recorded as a real finding about visually-static documentation
+sites, not retried into a pass. Report status stays PARTIAL_FAILURE; no
+QUARANTINE marker remains because all three attribution guards passed on
+artifacts whose hosts match the manifest.
