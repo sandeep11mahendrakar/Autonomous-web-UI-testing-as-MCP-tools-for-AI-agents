@@ -66,6 +66,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 03:1x IST / 2026-08-25T21:4xZ] [W4/ox-alpha serial-D] *** D9 CLAIM: #33 todomvc_react (https://todomvc.com/examples/typescript-react/#/) *** Availability re-check DONE: HTTP 200 (light SPA, ~705B shell - client-rendered; B-side OCR may see sparse initial DOM, that's a finding not a blocker). Row #34 techlistic_form also verified 200 and still UNCLAIMED per board - I take #33 now, will claim #34 after if no one has. Protocol: stale-lock note - .campaign.lock held PID 27424 which Get-CimInstance reports DEAD; will clear stale lock before my pipeline per cc5e088 PID-liveness rule. MAX_STEPS=25 MAX_STATES=20, ARCH_A_TIMEOUT_MS=1500000 per D7/D9. Read-only policies in force. Hard stop 4h from claim (~07:1x IST).
 [2026-08-26 02:4x IST / 2026-08-25T21:1xZ] [W3/ox-alpha serial-C] D9 CLAIM:
 #32 eviltester_pages (https://testpages.eviltester.com/styled/index.html) ->
 THIS window. Availability re-check DONE: HTTP 200 (also verified todomvc 200,
