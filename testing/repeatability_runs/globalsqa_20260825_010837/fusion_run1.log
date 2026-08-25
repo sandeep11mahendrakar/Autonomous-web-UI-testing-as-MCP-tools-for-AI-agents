@@ -1,0 +1,45 @@
+
+===== node fusion/s1_build_catalog.js run_20260825_010837 @ 2026-08-24T19:53:37.374Z =====
+[s1] Observations: 161
+[s1] Canonical pages: 2 (multi-arch: 0)
+[s1] Canonical elements: 89
+[s1] Canonical behaviors: 2
+[s1] Conflicts: 18
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\catalog.json
+
+===== node fusion/s2_gap_report.js run_20260825_010837 @ 2026-08-24T19:53:37.452Z =====
+[gap] elements: {"common":0,"a_only":2,"b_only":87,"actionable_uncovered":64,"covered":0,"coverage_pct":0}
+[gap] behaviors: {"common":0,"a_only":1,"b_only":1,"uncovered":2,"covered":0,"coverage_pct":0}
+[gap] conflicts: 18
+[gap] anomalies: {"rare":44,"low_confidence":0,"multi_position":44}
+[gap] opportunities: quietPages=0
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\gap_report.json
+
+===== node fusion/s4_fusion_synthesis.js run_20260825_010837 @ 2026-08-24T19:53:37.538Z =====
+[s4] gap candidates offered: 3 {"uncovered_behavior":1,"uncovered_actionable_element":2}
+[s4] prompt chars: 2374 (~594 tokens estimated)
+[s4] ONE Fusion call -> groq:openai/gpt-oss-120b (max_tokens=1500) ...
+[s4] raw response chars: 1806 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 3
+[s4] accepted: 2  rejected: 1
+[s4]   REJECT #0: unknown_source_gap_id — gap_bh_1owm57p
+[s4] gap ids used: gap_el_174e0tq, gap_el_zlm7dk
+[s4] all accepted grounded: true
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\fusion_report.json
+
+===== node fusion/execute_fusion_tests.js run_20260825_010837 @ 2026-08-24T19:53:40.698Z =====
+[exec] Executing 2 Fusion test(s) from C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837
+
+[exec] === FT001: Fill the search field using element el_174e0tq and verify the value is entered.
+[exec]   step 1 fill     el_174e0tq                                         -> PASS (filled "conflictA", read back "conflictA")
+[exec] RESULT FT001: PASS
+
+[exec] === FT002: Fill the search field using element el_zlm7dk and verify the value is entered.
+[exec]   step 1 fill     el_zlm7dk                                          -> PASS (filled "conflictB", read back "conflictB")
+[exec] RESULT FT002: PASS
+
+[exec] Summary: {"total":2,"passed":2,"failed":0,"steps_total":2,"steps_passed":2,"targets_preverified":0,"warnings":2}
+[exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_010837\fusion\ft_execution_results.json
+[exec] Evidence: fusion\ft_execution_evidence/

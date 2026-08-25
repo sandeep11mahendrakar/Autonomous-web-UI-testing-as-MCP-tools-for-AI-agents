@@ -1,0 +1,238 @@
+
+===== node runBoth.js https://www.saucedemo.com @ 2026-08-24T18:31:26.873Z =====
+[RUN] Run ID: run_20260825_000126
+[RUN] URL: https://www.saucedemo.com
+[RUN] Auth seed: not provided
+[RUN] Output tree: runs\run_20260825_000126
+[RUN] GROQ_API_KEY available: true
+[RUN] ARCH-A LLM: provider=groq model=(provider default) key=set
+[RUN] ARCH-B LLM: provider=groq model=(provider default) key=set
+[ARCH-A] Starting... (DOM + memory-log exploration)
+[ARCH-B] Starting... (Vision pipeline: capture -> YOLO/OCR -> visual DOM -> LLM tests -> execution)
+[ARCH-B] [run] Target: https://www.saucedemo.com
+[ARCH-B] [run] Starting services...
+[ARCH-B] (node:30528) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
+[ARCH-B] [merge] [merge] Merge service running on :5003
+[ARCH-A] [explore] Loading homepage: https://www.saucedemo.com
+[ARCH-B] [browser] [browser] Browser service running on :5004
+[ARCH-B] [ocr]  * Serving Flask app 'ocr'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [ocr] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5002
+[ARCH-B]  * Running on http://192.168.0.113:5002
+[ARCH-B] [ocr] Press CTRL+C to quit
+[ARCH-B] [yolo] [yolo] Loading model: screenparser_best.pt (conf=0.15, imgsz=640)
+[ARCH-B] [yolo] Model loaded. Classes: 55
+[ARCH-B]  * Serving Flask app 'detect'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [yolo] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5001
+[ARCH-B]  * Running on http://192.168.0.113:5001
+[ARCH-B] [yolo] Press CTRL+C to quit
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:31] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] YOLO service ready
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:31] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] OCR service ready
+[ARCH-B] [run] Merge service ready
+[ARCH-B] [gateway] [gateway] Vision gateway running on :5000
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:32] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:32] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] Vision gateway ready
+[ARCH-B] [run] All services healthy. Starting autonomous exploration...
+[ARCH-A] [explore] Extracting homepage elements...
+[ARCH-A] [explore] Homepage elements found: 3
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:36] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:38] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:38] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 @ https://www.saucedemo.com/ (20 elements)
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-2","value":"standard_user","reason":"Fill username field with provided example credential"}
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:41] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:41] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:41] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 --fill(text_input:)--> state_002 @ https://www.saucedemo.com/
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-1","value":"standard_user","reason":"Fill username field with example credential"}
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:44] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:44] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:44] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --fill(text_input:)--> state_003 @ https://www.saucedemo.com/
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-2","value":"standard_user","reason":"Fill username field with example credential"}
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:01:48] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:48] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:01:48] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_003 --fill--> repeated state, going back
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: We need to choose next action. We have a login page with username and password fields? The detected elements: elem-6 is a text_input at y=230. There's also a button "Login" at y=326. There are also li
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: We need to choose one next action. We have a login page with username and password fields. The text inputs: elem-6 is a text_input with empty text. There's no password field listed? The list shows onl
+[ARCH-B] [explore] Anti-laziness floor: 3/6 steps with untried candidates — refusing "done".
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 2915ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: We need to choose next action. We have a login page with username and password fields. The text inputs: elem-6 is a text_input at y=230. There's no other text input. But we need two fields: username a
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 9508ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-B] [llm] Raw response: We need to choose one next action. We have a login page with username and password fields. We see elementId elem-6 is a text_input with empty text. That is likely the username field. We also have link
+[ARCH-B] [explore] Anti-laziness fallback: click on element elem-0.
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:02:07] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:07] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:07] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_003 --click(button:Login)--> state_005 @ https://www.saucedemo.com/
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 10670ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-3","value":"","reason":"Click the 'standard_user' link to log in."}
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:02:20] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:20] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:20] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_005 --click--> repeated state, going back
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 6350ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-B] [llm] Raw response: We need to choose next action. We have a login page with username and password fields? The list shows elementId 14 is a search_field with text "standard". That might be the username field? But it's a 
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 10903ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: We need to choose one next action. We have a login page with username and password fields? The detected elements: button "Login" (elem-0). There are also links for user types: secret_sauce, performanc
+[ARCH-B] [explore] Anti-laziness floor: 5/6 steps with untried candidates — refusing "done".
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 10805ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: {"action":"fill","elementId":"elem-14","value":"standard_user","reason":"Fill username field with example credential"}
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:02:54] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:54] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:02:54] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_005 --fill--> repeated state, going back
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 5735ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: We need to choose next action. We have a login page with username and password fields? The elements list includes only buttons and links. No input fields detected. But we need to fill credentials. May
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 10400ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: We need to choose one next action. We have candidates: elem-0 button "Login" (alreadyTried false). elem-1 link "do not match any user in" (text weird). elem-2 link "secret_sauce". elem-7 link "perform
+[ARCH-B] [run] Exploration summary:
+[ARCH-B] {
+[ARCH-B]   "total_steps": 6,
+[ARCH-B]   "total_states": 4,
+[ARCH-B]   "unique_states": 4,
+[ARCH-B]   "unique_urls": 1,
+[ARCH-B]   "repeated_states_skipped": 3,
+[ARCH-B]   "action_errors": 0,
+[ARCH-B]   "click_actions": 2,
+[ARCH-B]   "fill_actions": 4,
+[ARCH-B]   "scroll_actions": 0,
+[ARCH-B]   "submit_actions": 0,
+[ARCH-B]   "generated_tests": 1,
+[ARCH-B]   "avg_steps_per_test": 3
+[ARCH-B] }
+[ARCH-B] [run] Termination: llm_done
+[ARCH-B] [run] Visited URLs:
+[ARCH-B]   https://www.saucedemo.com/
+[ARCH-B] [run] Test cases from history: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787596292474_exploration.json
+[ARCH-B] [run] Evidence: storage/screenshots/run_1787596292474
+[ARCH-B] [run] Shutting down services...
+[ARCH-B] [execute] Test cases: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787596292474_exploration.json (1 tests)
+[ARCH-B] [execute] Base URL:   https://www.saucedemo.com
+[ARCH-B] [execute] Run ID:     run_1787596292474 (evidence: storage/screenshots/run_1787596292474/)
+[ARCH-B] [execute] Vision services not running — starting them for closed-loop execution...
+[ARCH-B] (node:12600) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
+[ARCH-B] [execute] Vision services started (5 spawned, 0 already healthy) — re-detection enabled.
+[ARCH-B] [execute] Test 1/1: TC01
+[ARCH-B] [execute]   Objective: Replays an autonomously discovered visual workflow: fill -> fill -> click(Login)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-B] [execute]   Result: PASS
+[ARCH-B] [execute] Vision services started by this run were shut down.
+[ARCH-B] =========================================
+[ARCH-B] [execute] Suite finished: 1 passed, 0 failed, 0 errors (of 1)
+[ARCH-B] [execute] Report saved to C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\execution_results.json
+[ARCH-B] =========================================
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198366, Requested 2335. Please try again in 5m2.832s. Need more tokens? Upgrade to Dev Tier today at https://c
+[ARCH-A] [explore] ▶ Flow 1/1: Base → https://www.saucedemo.com
+[ARCH-A] [explore] Flow discovery failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198366, Requested 2335. Please try again in 5m2.832s. Need more tokens? Upgrade to Dev Tier today at https://c
+[ARCH-A] [explore] No flows discovered — falling back to single-flow base exploration.
+[ARCH-A] [explore] ══ Step 1 (Flow: Base, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198034, Requested 2794. Please try again in 5m57.696s. Need more tokens? Upgrade to Dev Tier today at https://
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197714, Requested 2812. Please try again in 3m47.232s. Need more tokens? Upgrade to Dev Tier today at https://
+[ARCH-A] [explore] Deterministic fallback candidate: INPUT "#user-name"
+[ARCH-A] [llmClient] Executing: fill "#user-name" with "Username"
+[ARCH-A] [explore] Step 1: fill "#user-name" → state_002 @ https://www.saucedemo.com/
+[ARCH-A] [memoryLog] Saved 1 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\states.json
+[ARCH-A] [memoryLog] Saved 1 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\transitions.json
+[ARCH-A] [explore] ══ Step 2 (Flow: Base, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 197387, Requested 2837. Please try again in 1m36.767999999s. Need more tokens? Upgrade to Dev Tier today at ht
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 56660ms (attempt 4/6)
+[ARCH-A] [llmClient] Raw response: {"action":"fill","elementId":1,"selector":"#password","value":"secret_sauce","url":null,"reason":"Fill the required password field before submitting t
+[ARCH-A] [llmClient] Executing: fill "#password" with "secret_sauce"
+[ARCH-A] [explore] Step 2: fill "#password" → state_003 @ https://www.saucedemo.com/
+[ARCH-A] [memoryLog] Saved 2 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 3 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\states.json
+[ARCH-A] [memoryLog] Saved 2 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\dom\transitions.json
+[ARCH-A] [explore] ══ Step 3 (Flow: Base, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199674, Requested 1068. Please try again in 5m20.544s. Need more tokens? Upgrade to Dev Tier today at https://
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] Timeout (15 min) — terminating process tree...
+[RUN] Collecting artifacts into unified run tree...
+
+=========================================
+[RUN] Architecture A: timeout
+[RUN] Architecture B: success
+[RUN] Overall run: PARTIAL_FAILURE
+[RUN] Results:
+  DOM:    runs\run_20260825_000126\dom
+       -> test_cases.json
+  VISION: runs\run_20260825_000126\vision
+       -> 13 artifact(s)
+Manifest:
+  runs\run_20260825_000126\run_manifest.json
+=========================================

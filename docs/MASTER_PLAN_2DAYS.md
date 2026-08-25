@@ -156,3 +156,19 @@ Phase 2 T201 supersedes them for sites 13-20 (books+quotes stay clean).
 Quarantine tooling committed (d1b0502). Audit addendum committed (9a2a1a1).
 Tier-3 wikipedia attempt killed by user; restart gated behind Phase 2.
 [2026-08-25 15:30 IST] [MASTER] Plan created.
+## PHASE 5 - PHASE-INDEPENDENT TASKS (safe anytime; claim freely when idle)
+### T501 [G1 CLI] Fork MCP wiring phase 2
+In vision-fork: wire get_visual_dom(run_id), list_tests(run_id),
+get_evidence(run_id,test_id) - all READ-ONLY over existing run artifacts,
+zero LLM, zero pipeline contention. Verify roundtrip each.
+### T502 [any] EVIDENCE_GUIDE v2 - forensics chapter
+Append to docs/EVIDENCE_GUIDE.md: contamination-forensics walkthrough using
+docs/AUDIT_REPORT.md ADDENDUM + testing/QUARANTINE_TIER2.md as the worked
+example (how TWO explorations landed in one folder, how hosts were checked).
+### T503 [G2 web-SOTA] Value-oracle design spec -> docs/VALUE_ORACLE_SPEC.md
+Design-only doc for assertion/value-oracle synthesis (top V2 item): how S4
+could carry expected-value predicates, validator changes, executor checks.
+NO implementation.
+### T504 [G2 web-SOTA] Paper Related Work + Intro polish
+Independent of results. Cite classic AI-testing literature generically
+(FLaky-test literature, GUI testing with vision, LLM test generation).
