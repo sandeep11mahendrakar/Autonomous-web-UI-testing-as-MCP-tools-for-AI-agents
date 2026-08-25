@@ -18,6 +18,7 @@ if (!key || !url) { console.error('usage: node tier3_w1.cjs <key> <url>'); proce
 const TRIMMED_ENV = {
   MAX_STEPS: '25', MAX_STATES: '20',
   EXPLORE_MAX_STEPS: '25', EXPLORE_MAX_STATES: '20',
+  ARCH_A_TIMEOUT_MS: '1500000', // D7/D9 mega-DOM budget (was 900s cap)
 };
 const LOCK = path.join(__dirname, '.campaign.lock');
 
