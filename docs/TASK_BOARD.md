@@ -25,6 +25,10 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:20 IST] [serial2/ox-alpha] T102 amendment: explicit GO/NO-GO
+verdict line appended to MCP_READINESS ADDENDUM (GO strictly post-review;
+items 1-4 free, item 5 bundled with T103). Amendment commit e5c7c97 pushed to
+backup. Original assessment @ 3aac2f9 stands; task remains DONE.
 [2026-08-25 16:47 IST] [serial1/ox-alpha window-2] CLAIMED T201 (sites 14-20
 resume; phptravels #19 stays MIRROR-EVIDENCE per Master, lambdatest #13 stays
 SITE-MOVED-EVIDENCE). MASTER RULING logged: testmuai.com IS approved host for
