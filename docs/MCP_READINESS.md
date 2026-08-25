@@ -282,3 +282,7 @@ _implementation is POST-DEADLINE by Master Plan §0.6._
   real regression surface (every service + both explorers read ports).
 - **Recommended order:** 2 → 1 → 3 → 4 (safe, testable increments), 5 last and
   only alongside the T103 lockfile/port work so both land as one reviewed change.
+- **GO/NO-GO: GO — but strictly AFTER the capstone review.** NO-GO before the
+  deadline (zero user-visible benefit, nonzero regression risk per §0.6).
+  Post-review GO applies to items 1–4 immediately; item 5 GO only when bundled
+  with T103's dynamic-port work.
