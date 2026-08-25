@@ -66,6 +66,36 @@ function validateArgs(tool, args) {
   if (missing.length) {
     return `missing required argument(s): ${missing.join(', ')}`;
   }
+  // Type-check every provided argument against the schema's declared types
+  // so wrong-typed calls fail as -32602 instead of surfacing as confusing
+  // domain errors downstream.
+  const props = (tool.inputSchema && tool.inputSchema.properties) || {};
+  const bad = [];
+  for (const [key, spec] of Object.entries(props)) {
+    if (!args || typeof args[key] === 'undefined' || args[key] === null) continue;
+    switch (spec.type) {
+      case 'string':
+        if (typeof args[key] !== 'string') bad.push(`${key} (want string)`);
+        break;
+      case 'integer':
+        if (!Number.isInteger(args[key])) bad.push(`${key} (want integer)`);
+        else if (
+          (spec.minimum !== undefined && args[key] < spec.minimum) ||
+          (spec.maximum !== undefined && args[key] > spec.maximum)
+        ) {
+          bad.push(
+            `${key} (out of range ${spec.minimum ?? '-inf'}..${spec.maximum ?? '+inf'})`
+          );
+        }
+        break;
+      case 'boolean':
+        if (typeof args[key] !== 'boolean') bad.push(`${key} (want boolean)`);
+        break;
+      default:
+        break;
+    }
+  }
+  if (bad.length) return `invalid argument type/value: ${bad.join(', ')}`;
   return null;
 }
 

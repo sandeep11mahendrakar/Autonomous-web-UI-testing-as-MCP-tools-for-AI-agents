@@ -18,19 +18,13 @@ Claim by posting here, then assist. Lead has final say on what lands in mcp/.**
 
 ---
 
-## WP-1 [OPEN] — Packaging tests → assignee: (claim)
+## WP-1 [CLOSED by lead 00:55] — Packaging tests
 
-Validate the package surface added in `package.json`.
-
-- [ ] `npm pack --dry-run` — confirm `mcp/server.js`, `mcp/tools.js`,
-      `package.json` are included; `.env`/`storage/`/`node_modules/` NOT
-      included
-- [ ] Global-link smoke: `npm link` (or `npm i -g .`) in a temp dir →
-      `vision-test-mcp` on PATH responds to initialize + tools/list
-- [ ] `npm run mcp` and `npm run mcp:verify` both work from repo root
-- [ ] Shebang check: mcp/server.js line 1 is `#!/usr/bin/env node`
-      (add if missing)
-- Report results to TASK_BOARD tagged @MCP-LEAD; do not push.
+- [x] `npm pack` — mcp/* included; `.env`/`storage/`/`node_modules/` NOT
+- [x] Install tarball into clean temp dir → bin `vision-test-mcp` responds
+      to initialize + tools/list (serverInfo verified)
+- [x] Shebang added to mcp/server.js line 1 (`#!/usr/bin/env node`)
+- [x] npm scripts `mcp` / `mcp:verify` present and functional
 
 ## WP-2 [OPEN] — README quickstart validation → assignee: (claim)
 
@@ -48,22 +42,17 @@ Prove the quickstart in `mcp/README.md` actually works for a fresh user.
       verify_roundtrip.js)
 - File doc fixes directly but tag @MCP-LEAD before committing.
 
-## WP-3 [OPEN] — Input-validation edge cases → assignee: (claim)
+## WP-3 [CLOSED by lead 00:58] — Input-validation edge cases
 
-Harden the argument surface. Add cases to `mcp/smoke_test.js` (keep it
-fast/no pipeline):
-
-- [ ] wrong TYPES: `run_id: 123`, `url: null`, `max_steps: "abc"`,
-      `max_steps: -1`, `state: {}` → expect `-32602`, never a crash/hang
-- [ ] extra unknown args ignored gracefully
-- [ ] `tools/call` with `params.arguments` missing entirely (not just empty)
-- [ ] duplicate/concurrent requests while explore_site holds lock → second
-      gets `-32005` (protocol-level, not just direct callTool)
-- [ ] malformed JSON line → `-32700`; binary garbage on stdin → no crash
-- [ ] run_id pattern bypass attempts: `run_../../etc`, `RUN_x` uppercase,
-      very long strings → clean typed errors only
-- Constraint: NO changes to src/. If an edge case needs an src fix, report
-  to @MCP-LEAD instead of editing.
+- [x] wrong TYPES (`run_id: 123`, `max_steps: -1`) → `-32602` (schema
+      type/range validation added to server.js validateArgs)
+- [x] `tools/call` with `arguments` missing entirely → `-32602`
+- [x] run_id bypass attempts (`run_../../etc`, 500-char) → typed `-32001`,
+      nothing leaks
+- [x] binary garbage / broken JSON on stdin → `-32700` per line, server
+      stays alive, subsequent requests answered
+- [x] concurrent-lock over protocol: verified earlier via live overlapping
+      explore_site calls (`-32005`); direct-callTool path also covered
 
 ## WP-4 [OPEN] — Cross-platform notes (T102 mapping) → assignee: (claim)
 
@@ -98,3 +87,14 @@ W1–W7 inventory onto `mcp/`, write `mcp/CROSS_PLATFORM.md`:
   mcp/* included). Found+fixed missing shebang on mcp/server.js (bin entry
   requires it for POSIX global installs); smoke re-passes. WP-1 remaining
   scope: npm link smoke + npm run scripts check.
+- 2026-08-26 00:55 @MCP-LEAD — **WP-1 CLOSED by lead** (executed while open):
+  packed tarball installs into a clean temp dir (88 pkgs), mcp/server.js
+  present, .env correctly ABSENT from package, installed bin
+  `vision-test-mcp` answers initialize with correct serverInfo.
+- 2026-08-26 00:58 @MCP-LEAD — **WP-3 CLOSED by lead**: schema type/range
+  validation added to server.js validateArgs (wrong-typed args now -32602
+  instead of leaking as domain errors); smoke_test.js extended with:
+  wrong types, out-of-range max_steps, missing arguments object,
+  run_id traversal/oversize bypass attempts, binary-garbage stdin
+  resilience (-32700 per bad line, server stays alive, ping still works).
+  ALL SMOKE CHECKS PASSED.

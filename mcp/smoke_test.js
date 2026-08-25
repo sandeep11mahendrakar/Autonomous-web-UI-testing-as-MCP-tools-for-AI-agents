@@ -92,6 +92,52 @@ function fail(why) {
   }
   console.log('ok - explore_site "not-a-url" -> isError with -32602');
 
+  // ---- WP-3 edge cases -----------------------------------------------------
+
+  // wrong TYPES -> -32602 (schema type validation)
+  const wrongType = await request('tools/call', {
+    name: 'list_tests',
+    arguments: { run_id: 123 },
+  });
+  if (!wrongType.error || wrongType.error.code !== -32602) {
+    fail(`wrong-type run_id: ${JSON.stringify(wrongType).slice(0, 300)}`);
+  }
+  console.log('ok - list_tests run_id:123 -> -32602');
+
+  const badRange = await request('tools/call', {
+    name: 'explore_site',
+    arguments: { url: 'https://example.com', max_steps: -1 },
+  });
+  const badRangeText = badRange.error
+    ? ''
+    : (badUrl.result && badRange.result.isError ? badRange.result.content[0].text : '');
+  if (
+    !(badRange.error && badRange.error.code === -32602) &&
+    !/-32602/.test(badRangeText)
+  ) {
+    fail(`max_steps:-1 handling: ${JSON.stringify(badRange).slice(0, 300)}`);
+  }
+  console.log('ok - explore_site max_steps:-1 -> -32602');
+
+  // arguments object missing entirely -> treated as {} -> -32602 missing args
+  const noArgs = await request('tools/call', { name: 'list_tests' });
+  if (!noArgs.error || noArgs.error.code !== -32602) {
+    fail(`missing arguments object: ${JSON.stringify(noArgs).slice(0, 300)}`);
+  }
+  console.log('ok - tools/call without arguments -> -32602');
+
+  // run_id traversal / pattern bypass attempts -> typed -32001, nothing leaks
+  for (const evil of ['run_../../etc', 'run_' + 'x'.repeat(500)]) {
+    const evo = await request('tools/call', {
+      name: 'list_tests',
+      arguments: { run_id: evil },
+    });
+    if (!evo.result || !evo.result.isError || !/-32001/.test(evo.result.content[0].text)) {
+      fail(`evil run_id (${evil.slice(0, 12)}...): ${JSON.stringify(evo).slice(0, 300)}`);
+    }
+  }
+  console.log('ok - run_id traversal/oversize attempts -> typed -32001 only');
+
   console.log('\nALL SMOKE CHECKS PASSED');
   server.kill();
   setTimeout(() => process.exit(0), 200);
