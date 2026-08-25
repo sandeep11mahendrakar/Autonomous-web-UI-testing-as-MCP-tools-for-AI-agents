@@ -1,5 +1,7 @@
 # Site Testing Index
 
+<!-- Regenerated 2026-08-25T13:15:45.996Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+
 Ledger of all site tests. One row per report; keep in sync with the files in
 this folder. Aggregate metrics (pass rates, mean coverage) should be
 recalculated from this table as the campaign grows.
@@ -61,11 +63,11 @@ recalculated from this table as the campaign grows.
 ## TIER 2 (sites 11-20) - night campaign 2026-08-25
 
 | 11 | Books to Scrape | https://books.toscrape.com | 2026-08-25 | `books_toscrape_2026-08-25.md` | `run_20260825_131135` | OK 8 steps/8 states | OK 1/1 PASS | 5/5 grounded | 4/5 PASS | **71.4%** |
-| 12 | Quotes to Scrape | https://quotes.toscrape.com | 2026-08-25 | `quotes_toscrape_2026-08-25.md` | `run_20260825_131756` | OK 8 steps/5 states | PARTIAL no test cases | 5/5 accepted | 4/5 PASS | **83.3%** |
- LambdaTest Playground | https://www.lambdatest.com/selenium-playground/ | 2026-08-25 | `lambdatest_playground_2026-08-25.md` | `run_20260825_133122` | TIMEOUT (internal 900s) | PARTIAL no test cases | 4/5 grounded | 1/4 PASS | **100%*** |
-| 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_163448` | 11 states (A timeout @900s cap) | 9 states/596 elems | 8/9 fusion-created | 1/8 PASS (12.5%) | **88.9%** |
-| 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_165819` | 4 states (0 tests) | 4 states/202 elems | 4/5 fusion-created | 4/4 PASS (100%) | **80%** |
-| 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_173233` | 9 states (0 tests) | 2 states/28 elems | 8/8 fusion-created | 5/8 PASS (62.5%) | **100%** |
+| 12 | Quotes to Scrape | https://quotes.toscrape.com | 2026-08-25 | `quotes_toscrape_2026-08-25.md` | `run_20260825_131756` | OK 8 steps/5 states | PARTIAL no test cases | 5/7 grounded | 4/5 PASS | **83.3%** |
+| 13 | LambdaTest Playground | https://www.lambdatest.com/selenium-playground/ | 2026-08-25 | lambdatest_playground_2026-08-25.md | un_20260825_133122 | ✅ A explored (SITE-MOVED-EVIDENCE: testmuai.com rebrand verified) | ✅ B explore #2 genuine | 5/5 grounded | 4/5 PASS | **100%** |
+| 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_163448` | 11 states (A timeout @900s cap) | 9 states/596 elems | 8/11 grounded | 1/8 PASS | **88.9%** |
+| 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_165819` | 4 states (0 tests) | 4 states/202 elems | 4/5 grounded | 4/4 PASS | **80%** |
+| 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_173233` | 9 states (0 tests) | 2 states/28 elems | 8/12 grounded | 5/8 PASS | **100%** |
 | 17 | 🚫 QUARANTINED-WRONG-SITE · SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_063248` | OK 8 steps / 8 states | FAIL-HONEST ? 0/1 honest fail (frames) | 2/2 grounded | 0/2 FAIL | **40%** |
 | 18 | 🚫 QUARANTINED-WRONG-SITE · The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_064713` | OK 11 steps / 9 states | FAIL-HONEST ? 0/1 honest fail | 2/4 grounded (action_mismatch) | 1/2 PASS | **40%** |
 | 19 | 🚫 QUARANTINED-WRONG-SITE · PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_065652` | OK 11 steps / 9 states | FAIL-HONEST ? 0/1 honest fail | 4/5 grounded | 0/4 FAIL (demoblaze mirror!) | **66.7%*** |

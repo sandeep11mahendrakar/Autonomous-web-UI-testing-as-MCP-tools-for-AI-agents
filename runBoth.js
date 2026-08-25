@@ -244,8 +244,52 @@ function collectArchitectureA(domDir) {
   return copied;
 }
 
-function collectArchitectureB(visionDir, startedAt) {
+// KNOWN_ALIASES: hosts that legitimately belong to a target site (verified).
+// Format: { canonicalHost: [aliasHosts...] }. Cite verification in comments.
+const KNOWN_ALIASES = {
+  'www.lambdatest.com': ['testmuai.com', 'www.testmuai.com'], // LambdaTest rebranded to TestMu AI 2026-01-12 (301 verified live)
+};
+
+function hostMatchesTarget(hostA, hostB) {
+  if (!hostA || !hostB) return false;
+  const norm = (h) => String(h).toLowerCase().replace(/^www\./, '');
+  const a = norm(hostA);
+  const b = norm(hostB);
+  if (a === b) return true;
+  for (const [canon, aliases] of Object.entries(KNOWN_ALIASES)) {
+    const set = new Set([canon, ...aliases].map(norm));
+    if (set.has(a) && set.has(b)) return true;
+  }
+  return false;
+}
+
+/**
+ * Provenance guard (audit remediation): an exploration result is only this
+ * run's artifact if its start_url host matches the manifest URL host
+ * (redirect aliases allowed). Anything else stays OUT of the run folder.
+ */
+function explorationBelongsToRun(resultObj, manifestUrl) {
+  const src = resultObj?.start_url || resultObj?.source_url || null;
+  if (!src) return { ok: true, via: 'no_start_url' }; // legacy files pass through
+  try {
+    const manifestHost = new URL(manifestUrl).host;
+    const srcHost = new URL(src).host;
+    if (hostMatchesTarget(srcHost, manifestHost)) return { ok: true, via: 'host_match' };
+    // localhost fixtures are NEVER part of a remote-site run
+    if (/^(127\.0\.0\.1|localhost)$/.test(srcHost)) {
+      return { ok: false, via: `localhost_fixture (${src})` };
+    }
+    return { ok: false, via: `foreign_host (${srcHost})` };
+  } catch (_) {
+    return { ok: true, via: 'unparseable_url' };
+  }
+}
+
+function j(p){ try { return JSON.parse(fs.readFileSync(p,String.fromCharCode(117,116,102,56))); } catch(_) { return null; } }
+
+function collectArchitectureB(visionDir, startedAt, manifestUrl) {
   const copied = [];
+  const rejected = [];
   const shotsRoot = path.join(VISION_DIR, 'storage', 'screenshots');
   if (fs.existsSync(shotsRoot)) {
     for (const dir of fs.readdirSync(shotsRoot)) {
@@ -261,10 +305,29 @@ function collectArchitectureB(visionDir, startedAt) {
   fs.mkdirSync(destOut, { recursive: true });
   for (const f of fs.readdirSync(outs)) {
     const full = path.join(outs, f);
-    if (fs.statSync(full).isFile() && fs.statSync(full).mtimeMs >= startedAt - 5000) {
-      fs.copyFileSync(full, path.join(destOut, f));
-      copied.push(`outputs/${f}`);
+    if (!fs.statSync(full).isFile() || fs.statSync(full).mtimeMs < startedAt - 5000) continue;
+    // Provenance check on exploration results (audit F-01/F-02 remediation:
+    // the mtime window previously stitched OTHER studies' explorations into
+    // this run's folder - the root cause of the Tier-2 quarantine).
+    let belongs = true;
+    if (/exploration_result/.test(f)) {
+      const r = j(full);
+      const verdict = explorationBelongsToRun(r, manifestUrl);
+      if (!verdict.ok) {
+        belongs = false;
+        rejected.push(`${f}: ${verdict.via}`);
+        log('RUN', `PROVENANCE REJECT ${f} -> ${verdict.via} (quarantined out of run folder)`);
+        continue;
+      }
     }
+    fs.copyFileSync(full, path.join(destOut, f));
+    copied.push(`outputs/${f}`);
+  }
+  if (rejected.length && manifestUrl) {
+    try {
+      fs.writeFileSync(path.join(visionDir, 'CONTAMINATION_REJECTS.json'),
+        JSON.stringify({ manifest_url: manifestUrl, rejected, at: new Date().toISOString() }, null, 2));
+    } catch (_) {}
   }
   return copied;
 }
@@ -401,7 +464,7 @@ function parseAuthSeed() {
 
   log('RUN', 'Collecting artifacts into unified run tree...');
   const aCopied = collectArchitectureA(domDir);
-  const bCollected = collectArchitectureB(visionDir, runStartedAt);
+  const bCollected = collectArchitectureB(visionDir, runStartedAt, url);
   const archB = { ...archBraw, collected: bCollected };
 
   const overall = archA.status === 'success' && archB.status === 'success'
