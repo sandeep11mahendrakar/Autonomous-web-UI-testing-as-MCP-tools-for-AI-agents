@@ -90,16 +90,18 @@ async function oneRun(siteKey, url, outDir, i) {
   const dd = readJson(path.join(runDir, 'fusion', 'dashboard_data.json'));
   const bExec = readJson(path.join(runDir, 'vision', 'outputs', 'execution_results.json'));
   const ftExec = readJson(path.join(runDir, 'fusion', 'ft_execution_results.json'));
+  // exploration_summary schema: totals.{steps,states,...}, visited_urls[]
+  const aTotals = aSummary.totals || {};
 
   return {
     run: i + 1,
     run_id: runId,
     overall_status: manifest.overall_status || null,
     exploration: {
-      a_steps: aSummary.total_steps ?? aSummary.steps ?? null,
-      a_states: Array.isArray(aSummary.states) ? aSummary.states.length : (aSummary.states_count ?? null),
-      a_urls: Array.isArray(aSummary.urls_visited) ? aSummary.urls_visited.length : null,
-      b_steps: (bExec?.results || []).length ? (bExec.summary?.total ?? null) : null,
+      a_steps: aTotals.steps ?? null,
+      a_states: aTotals.states ?? null,
+      a_urls: aTotals.unique_urls ?? (Array.isArray(aSummary.visited_urls) ? aSummary.visited_urls.length : null),
+      b_steps: bExec ? bExec.summary?.total ?? null : null,
     },
     tests: {
       a_test_cases: (readJson(path.join(runDir, 'dom', 'test_cases.json')) || []).length || null,
