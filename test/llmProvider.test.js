@@ -179,6 +179,68 @@ test('HTTP errors carry .status and do not include the Authorization header valu
   }
 });
 
+// ── token usage JSONL logging (counts only — never keys/prompts) ─────────────
+
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+test('chatCompletion appends {provider, model, usage} counts to the JSONL log', async () => {
+  const logPath = path.join(os.tmpdir(), `llm_usage_test_${Date.now()}.jsonl`);
+  process.env.LLM_USAGE_LOG_PATH = logPath;
+  const realFetch = global.fetch;
+  global.fetch = async () => ({
+    ok: true,
+    json: async () => ({
+      choices: [{ message: { content: 'ok' } }],
+      usage: { prompt_tokens: 120, completion_tokens: 30, total_tokens: 150 },
+    }),
+  });
+  try {
+    await chatCompletion(
+      { provider: 'groq', apiKey: 'secret-key-should-not-appear', baseUrl: 'https://x', model: 'm1' },
+      { messages: [{ role: 'user', content: 'SECRET PROMPT TEXT' }] }
+    );
+    const lines = fs.readFileSync(logPath, 'utf8').trim().split('\n');
+    assert.equal(lines.length, 1);
+    const rec = JSON.parse(lines[0]);
+    assert.equal(rec.provider, 'groq');
+    assert.equal(rec.model, 'm1');
+    assert.equal(rec.prompt_tokens, 120);
+    assert.equal(rec.completion_tokens, 30);
+    assert.equal(rec.total_tokens, 150);
+    assert.ok(rec.ts); // timestamped
+    const raw = lines[0];
+    assert.ok(!raw.includes('secret-key-should-not-appear'), 'API key must never be logged');
+    assert.ok(!raw.includes('SECRET PROMPT TEXT'), 'prompts must never be logged');
+  } finally {
+    global.fetch = realFetch;
+    delete process.env.LLM_USAGE_LOG_PATH;
+    fs.rmSync(logPath, { force: true });
+  }
+});
+
+test('chatCompletion skips usage logging when the provider sends no usage block', async () => {
+  const logPath = path.join(os.tmpdir(), `llm_usage_test_none_${Date.now()}.jsonl`);
+  process.env.LLM_USAGE_LOG_PATH = logPath;
+  const realFetch = global.fetch;
+  global.fetch = async () => ({
+    ok: true,
+    json: async () => ({ choices: [{ message: { content: 'ok' } }] }), // no usage
+  });
+  try {
+    await chatCompletion(
+      { provider: 'groq', apiKey: 'k', baseUrl: 'https://x', model: 'm' },
+      { messages: [] }
+    );
+    assert.equal(fs.existsSync(logPath), false, 'no record without a usage block');
+  } finally {
+    global.fetch = realFetch;
+    delete process.env.LLM_USAGE_LOG_PATH;
+    fs.rmSync(logPath, { force: true });
+  }
+});
+
 test('supported providers list contains exactly groq and openrouter', () => {
   assert.deepEqual([...SUPPORTED_PROVIDERS].sort(), ['groq', 'openrouter']);
 });
