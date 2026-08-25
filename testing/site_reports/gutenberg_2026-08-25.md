@@ -62,3 +62,11 @@ node fusion/s4_fusion_synthesis.js run_20260825_060707
 node fusion/execute_fusion_tests.js run_20260825_060707
 node fusion/s6_dashboard.js run_20260825_060707
 ```
+
+## Re-run (post-quarantine)
+
+- **New run:** `run_20260825_165819` (replaces quarantined `run_20260825_060707`; old run kept on disk as evidence of the failure mode — see testing/QUARANTINE_TIER2.md)
+- **Manifest status:** PARTIAL_FAILURE
+- **Guards passed:** findRunDir(manifest-url match) + assertCatalogDomains + assertVisionStartUrls (audit addendum)
+- **FT summary:** `4/4 PASS (100%)`
+- **Narrative policy:** figures above come ONLY from the new run's artifacts.
