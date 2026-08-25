@@ -93,3 +93,8 @@ W1–W7 inventory onto `mcp/`, write `mcp/CROSS_PLATFORM.md`:
 - 2026-08-26 00:40 @MCP-LEAD — board created; WP-1..WP-4 open; baseline
   c9a36a2+ac4efaf verified (roundtrip ALL PASSED; run_test TC01 4/4 PASS
   over live stdio).
+- 2026-08-26 00:50 @MCP-LEAD — pre-flight for WP-1 done by lead:
+  `npm pack --dry-run` surface is CLEAN (no .env/storage/node_modules; all
+  mcp/* included). Found+fixed missing shebang on mcp/server.js (bin entry
+  requires it for POSIX global installs); smoke re-passes. WP-1 remaining
+  scope: npm link smoke + npm run scripts check.
