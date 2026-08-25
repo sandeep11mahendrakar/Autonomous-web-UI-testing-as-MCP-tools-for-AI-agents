@@ -1,0 +1,126 @@
+{
+  "saucedemo": [
+    {
+      "run": 1,
+      "run_id": "run_20260825_062152",
+      "overall_status": "SUCCESS",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": 1,
+        "b_pass_rate": 0,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": 0,
+      "llm_calls": 0,
+      "duration_min": 13.7
+    },
+    {
+      "run": 2,
+      "run_id": "run_20260825_063248",
+      "overall_status": "SUCCESS",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": 1,
+        "b_pass_rate": 0,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": 0,
+      "llm_calls": 0,
+      "duration_min": 11.3
+    },
+    {
+      "run": 3,
+      "run_id": "run_20260825_063932",
+      "overall_status": "SUCCESS",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": 1,
+        "b_pass_rate": 1,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": 11.4
+    }
+  ],
+  "demoblaze": [
+    {
+      "run": 1,
+      "run_id": "run_20260825_064941",
+      "overall_status": null,
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": null
+      },
+      "tests": {
+        "a_test_cases": null,
+        "b_pass_rate": null,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": null
+    },
+    {
+      "run": 2,
+      "run_id": "run_20260825_070445",
+      "overall_status": null,
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": null
+      },
+      "tests": {
+        "a_test_cases": null,
+        "b_pass_rate": null,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": null,
+      "llm_calls": null,
+      "duration_min": null
+    },
+    {
+      "run": 3,
+      "run_id": "run_20260825_070918",
+      "overall_status": "PARTIAL_FAILURE",
+      "exploration": {
+        "a_steps": null,
+        "a_states": null,
+        "a_urls": null,
+        "b_steps": 1
+      },
+      "tests": {
+        "a_test_cases": 1,
+        "b_pass_rate": 0,
+        "ft_total": 0,
+        "ft_passed": 0
+      },
+      "fusion_pct": 0,
+      "llm_calls": 0,
+      "duration_min": 13.2
+    }
+  ]
+}
