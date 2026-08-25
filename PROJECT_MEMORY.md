@@ -314,7 +314,35 @@ Branch `after-tier-2`, all work pushed to `backup` remote.
    flight at last update. LESSON now thrice-proven: runBoth.js does not
    self-enforce .campaign.lock - driver-level locking is load-bearing.
 
+4c. **D9 REPLACEMENT LANE COMPLETE (2026-08-26 ~06:5x IST, replacement worker)**:
+    all three assigned sites closed, every cycle lock-held, zero quarantined
+    rows added.
+    - **Defect-#24 guard landed @ 97a29cb**: lib/provenanceGuard.js +
+      runBoth PROVENANCE_FILE_RE now provenance-filter test_cases_*exploration.json
+      AND execution_results.json (previously exploration_result only); 12
+      regression tests (test/provenance_guard.test.js); suites 155/155. The
+      round-2 audit verified it live and SUB-MASTER gated other lanes on
+      pull>=97a29cb (directive F4-02).
+    - **#31 magento_luma BLOCKED-HONEST @ 8bcc47f**: full protocol executed
+      (run_20260826_004650 purity PURE 4/4) but the site serves a Cloudflare
+      526 origin-SSL error page (4 HTTP probes over ~3h + in-run evidence:
+      A blocked-nav warnings to cloudflare 5xx-error pages, B
+      no_valid_candidate). CF-error-page S1/S4/FT numbers flagged NOT citable;
+      retry only when a probe returns non-526.
+    - **#32 eviltester_pages CLEARED-BY-RERUN @ 93a010f**: run_20260826_005704
+      manifest SUCCESS both archs; A 19 steps/20 states/19 URLs 0 errors;
+      B replay 1/1 PASS (body_text_fallback weak x1 disclosed); S1 616 elems/
+      24 pages; S4 offered 5 accepted 3 ZERO rejections; FT live 1/3 - both
+      fails no_post_action_change on live-probe-passing buttons (scroll_y
+      shift implies unseen DOM effect) = concrete value-oracle-gap evidence;
+      pct_fusion 42.9%, novel targets 5.
+    - **#17 sahitest CLEARED-BY-RERUN @ b2ad7ff**: run_20260826_010716 SUCCESS
+      both archs; FT live 3/3 PASS (9/9 steps); S4 offered 3 accepted 3 zero
+      rejections; pct_fusion 60%, novel targets 4; B replay 0/1 honest FAIL
+      (verification method none). Supersedes voided run_20260825_194511 per
+      Master directive.
+
 REMAINING for full campaign: finish Tier 3 in-flight runs (#27, #35), Master
-consolidation regen at window end, Tier 4 (31-40), sites 41-50
-(repeatability+wildcards), clean C4 repeatability re-run, capstone report
-finalization (T402 freeze).
+consolidation regen at window end (must include the three replacement-lane
+rows above), Tier 4 (31-40), sites 41-50 (repeatability+wildcards), clean C4
+repeatability re-run, capstone report finalization (T402 freeze).
