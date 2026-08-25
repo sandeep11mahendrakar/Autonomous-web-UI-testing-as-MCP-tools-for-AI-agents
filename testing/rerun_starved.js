@@ -48,7 +48,12 @@ function latestRun() {
     for (const [key, url] of SITES) {
       const startedAt = Date.now();
       run(`${key} pipeline`, 'runBoth.js', url, 40 * 60 * 1000);
-      const latest = latestRun();
+      // VERIFIED attribution (P1b guard): manifest URL must match launched URL.
+      const { findRunDir } = require('./run_attribution');
+      const latest = findRunDir({ url, sinceMs: startedAt }) || latestRun();
+      if (!findRunDir({ url, sinceMs: startedAt })) {
+        log(`CONTAMINATION GUARD: no run dir with manifest url=${url} created this attempt; falling back to newest dir (${latest})`);
+      }
       const status = (() => {
         try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'runs', latest, 'run_manifest.json'), 'utf8')).overall_status; } catch (_) { return '?'; }
       })();
@@ -57,6 +62,12 @@ function latestRun() {
       run(`s4 ${key}`, 'fusion/s4_fusion_synthesis.js', latest, 15 * 60 * 1000);
       run(`ft ${key}`, 'fusion/execute_fusion_tests.js', latest, 20 * 60 * 1000);
       run(`s6 ${key}`, 'fusion/s6_dashboard.js', latest, 10 * 60 * 1000);
+      // Post-run contamination guard (same policy as night_chain.js)
+      const { assertCatalogDomains } = require('./run_attribution');
+      const guard = assertCatalogDomains(latest, url);
+      if (!guard.ok) {
+        log(`CONTAMINATION: ${key} (${latest}) catalog foreign hosts [${guard.foreignHosts.join(', ')}] — investigate before trusting fusion %`);
+      }
       log(`${key} COMPLETE: ${latest} status=${status} took=${Math.round((Date.now() - startedAt) / 60000)}min`);
     }
     log('all re-runs finished');

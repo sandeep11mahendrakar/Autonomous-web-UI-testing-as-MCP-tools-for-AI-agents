@@ -60,10 +60,10 @@ recalculated from this table as the campaign grows.
 
 ## TIER 2 (sites 11-20) - night campaign 2026-08-25
 
-| 11 | Books to Scrape | https://books.toscrape.com | 2026-08-25 | `books_toscrape_2026-08-25.md` | `run_20260825_025619` | OK ? timeout (Groq TPD) | OK 1/1 PASS (weak verif) | 3/4 grounded | 3/3 PASS | **75%** |
-| 12 | Quotes to Scrape | https://quotes.toscrape.com | 2026-08-25 | `quotes_toscrape_2026-08-25.md` | `run_20260825_035039` | OK ? timeout (Groq TPD) | OK 1/1 PASS (input_value) | 2/5 grounded (3 action_mismatch) | 1/2 PASS | **66.7%** |
-| 13 | LambdaTest Playground | https://www.lambdatest.com/selenium-playground/ | 2026-08-25 | `lambdatest_playground_2026-08-25.md` | `run_20260825_053921` | OK Groq-paced | OK 1.0 pass rate | 5/5 grounded, 0 rejected | 4/5 PASS | **100%** |
-| 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_055129` | TIMEOUT ? timeout (Groq TPD) | PORT-CONFLICT port conflict (contamination disclosed) | 7/8 grounded (cross_page_ref) | 7/7 PASS | **77.8%** |
+| 11 | Books to Scrape | https://books.toscrape.com | 2026-08-25 | `books_toscrape_2026-08-25.md` | `run_20260825_131135` | OK 8 steps/8 states | OK 1/1 PASS | 5/5 grounded | 4/5 PASS | **71.4%** |
+| 12 | Quotes to Scrape | https://quotes.toscrape.com | 2026-08-25 | `quotes_toscrape_2026-08-25.md` | `run_20260825_131756` | OK 8 steps/5 states | PARTIAL no test cases | 5/5 accepted | 4/5 PASS | **83.3%** |
+| 13 | LambdaTest Playground | https://www.lambdatest.com/selenium-playground/ | 2026-08-25 | `lambdatest_playground_2026-08-25.md` | `run_20260825_133122` | TIMEOUT (internal 900s) | PARTIAL no test cases | 4/5 grounded | 1/4 PASS | **100%*** |
+| 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_134803` | TIMEOUT (internal 900s) | OK 1/1 PASS (weak verif) | 8/9 grounded | 2/8 PASS | **88.9%** |
 | 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_060707` | OK 24 steps / 15 states | OK 1/1 PASS | 6/8 grounded | 6/6 PASS | **54.5%** |
 | 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_062152` | OK 8 steps / 9 states | FAIL-HONEST ? 0/1 honest fail (canvas) | 3/3 grounded | 1/3 PASS | **60%** |
 | 17 | SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_063248` | OK 8 steps / 8 states | FAIL-HONEST ? 0/1 honest fail (frames) | 2/2 grounded | 0/2 FAIL | **40%** |

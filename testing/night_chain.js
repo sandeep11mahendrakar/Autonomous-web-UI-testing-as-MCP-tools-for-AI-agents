@@ -64,6 +64,13 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
 
   log(`${rows.length} tier-2 sites queued`);
 
+  // campaign lockfile (same pattern as rerun_starved.js) — prevents two
+  // pipelines/chains interleaving, which historically cross-contaminated runs.
+  const lock = path.join(__dirname, '.campaign.lock');
+  if (fs.existsSync(lock)) { log('lock exists — another campaign is running; aborting'); process.exit(2); }
+  fs.writeFileSync(lock, String(process.pid));
+  process.on('exit', () => { try { fs.unlinkSync(lock); } catch (_) {} });
+
   for (const site of rows) {
     log(`=== TIER-2 ${site.key} (${site.url}) ===`);
     let done = false;
@@ -71,9 +78,16 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
       const startedAt = Date.now();
       const out = runStep(`tier2 ${site.key} pipeline (attempt ${attempt})`, 'runBoth.js', site.url, 50 * 60 * 1000);
 
+      // VERIFIED attribution: only claim a run dir created after launch whose
+      // manifest URL matches the launched URL. Prevents the P1b cross-run
+      // mis-attribution that contaminated openlibrary/phptravels overnight.
+      const { findRunDir } = require('./run_attribution');
       const runsRoot = path.join(ROOT, 'runs');
-      const dirs = fs.readdirSync(runsRoot).filter((d) => d.startsWith('run_')).sort();
-      const latest = dirs[dirs.length - 1];
+      const latest = findRunDir({ url: site.url, sinceMs: startedAt });
+      if (!latest) {
+        log(`STOPPING tier-2: ${site.key} — could not attribute a run dir to this site (manifest URL mismatch). CONTAMINATION GUARD.`);
+        process.exit(1);
+      }
       let status = null;
       try {
         status = JSON.parse(fs.readFileSync(path.join(runsRoot, latest, 'run_manifest.json'), 'utf8')).overall_status;
@@ -106,6 +120,15 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
       runStep(`s4 ${site.key}`, 'fusion/s4_fusion_synthesis.js', latest, 15 * 60 * 1000);
       runStep(`ft ${site.key}`, 'fusion/execute_fusion_tests.js', latest, 20 * 60 * 1000);
       runStep(`s6 ${site.key}`, 'fusion/s6_dashboard.js', latest, 10 * 60 * 1000);
+
+      // Post-run contamination guard: every catalog page_key host must be the
+      // target host or a host this run actually visited (legit redirects).
+      const { assertCatalogDomains } = require('./run_attribution');
+      const guard = assertCatalogDomains(latest, site.url);
+      if (!guard.ok) {
+        log(`CONTAMINATION: ${site.key} (${latest}) catalog has foreign hosts [${guard.foreignHosts.join(', ')}]; allowed: [${guard.allowedHosts.join(', ')}]. FAILING LOUDLY.`);
+        process.exit(1);
+      }
 
       log(`tier2 ${site.key} COMPLETE: ${latest} status=${status} took=${Math.round((Date.now() - startedAt) / 60000)}min`);
       done = true;

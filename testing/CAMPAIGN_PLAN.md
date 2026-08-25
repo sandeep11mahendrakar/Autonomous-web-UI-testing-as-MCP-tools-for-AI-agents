@@ -51,6 +51,36 @@ no purchases, no account creation, rate-limit friendly (single run/site),
 skip on CAPTCHA/bot-wall and record honestly as "blocked". Expect A/B
 perception degradation here — that's DATA, not failure.
 
+#### TIER 3 PRE-REGISTRATION (recorded before launch, 2026-08-25)
+
+Final site list — availability-checked at runtime, first 10 reachable of:
+wikipedia.org · stackoverflow.com/questions · github.com/trending ·
+imdb.com/chart/top · goodreads.com/list · news.ycombinator.com · bbc.com/news ·
+archive.org · npmjs.com/packages · reddit.com (public read-only).
+Spares: lite.duckduckgo.com, old.reddit.com, text.npr.org.
+
+Approved policies (user sign-off, frozen before any run):
+- **Consent walls**: deterministic auto-dismiss pre-step; the dismissal action is
+  recorded in the run manifest.
+- **Bot stance**: realistic Chrome UA string ONLY. No stealth plugins, no
+  fingerprint spoofing, no CAPTCHA solving.
+- **ToS**: strictly read-only public pages. No logins, no posts, no purchases,
+  no infinite-scroll abuse. CAPTCHA/bot-wall => skip and record `BLOCKED`.
+- **Attribution/contamination**: every run attributed via
+  `testing/run_attribution.js` (`findRunDir` manifest-URL match) + catalog
+  domain guard; `.campaign.lock` held for the whole tier.
+- **Budget**: heavy sites may burn 60–100+ LLM calls each. Pace across ≥2 daily
+  ox-alpha reset windows (05:30 IST); trim MAX_STEPS for mega-DOM sites
+  (Wikipedia-class) rather than starving A mid-tier.
+
+Pre-registered success criteria (decided BEFORE seeing results):
+1. ≥6/10 pipelines complete end-to-end (A+B both producing artifacts).
+2. Blocking rate logged per site with reason (consent / bot-wall / ToS skip).
+3. Zero ToS violations (auditable from manifests + logs).
+4. A/B degradation vs Tier-2 baselines is REPORTED AS FINDINGS, not counted as
+   failures of this tier.
+5. Fusion-attributable % reported with denominator caveat wherever A timed out.
+
 ### TIER 4 — Stress & diversity set (sites 31–40)
 
 Heavy SPAs (React/Vue dashboards), an RTL-language site, one non-English

@@ -15,5 +15,5 @@ skip-and-record on CAPTCHA/bot-wall.
 | 16 | weathersparks | https://weatherspark.com | weather/utility | charts, dropdowns |
 | 17 | sahitest | http://www.sahitest.com/demo/ | testing utility | classic element demos |
 | 18 | theinternet_spare_pages | https://the-internet.herokuapp.com/status_codes | edge-case zoo | status-code pages (spare) |
-| 19 | phptravels | https://phptravels.com/demo/ | travel booking | wizard-ish booking demo (spare) |
+| 19 | phptravels | https://phptravels.com/demo/ | travel booking | MIRROR-EVIDENCE: live site redirects to a demoblaze mirror (found autonomously, see phptravels_2026-08-25.md) — do not count as independent site in final dataset; swap spare before Tier-4 |
 | 20 | openlibrary | https://openlibrary.org | library/media | search/facets (spare) |
