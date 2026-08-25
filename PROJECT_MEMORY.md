@@ -300,6 +300,21 @@ Branch `after-tier-2`, all work pushed to `backup` remote.
 5. **Key rotation (D5)**: overnight pipelines use OpenRouter key ...81c2ad;
    Groq fallback fqEvp...99G; Zen key ReUj... RESERVED for tomorrow.
 
-REMAINING for full campaign: finish Tier 3 (21-30), Master consolidation regen
-at window end, Tier 4 (31-40), sites 41-50 (repeatability+wildcards), clean C4
-repeatability re-run, capstone report finalization (T402 freeze).
+4b. **TIER-3 PROGRESS + D9 REPLACEMENT ROUND (2026-08-26)**: original rows
+   21-30 -> CLEARED 4 (wikipedia FT3/7 fus87.5%; github_trending FT3/5 fus83.3%
+   S4 5/5 perfect round; hackernews FT1/8 honest single-root-cause 100%
+   fusion-created; archive_org THIN-RUN pure) + BLOCKED-honest 5 (stackoverflow
+   403, imdb 202 bot-check, goodreads blank-render, npmjs 403, reddit
+   login-wall). Replacement rows 31-35 (D9): #33 todomvc_react CLEARED by W4
+   (run_20260826_002227 purity PURE, FT 3/3 PASS, fus 30%); #31/#32/#34
+   CONTAMINATION-skips caught by folder_purity (defect #24: collector copied
+   neighbor-pipeline test_cases_*/visual DOMs during unlocked overlap); guard
+   fix landed @ 97a29cb (collector now covers test_cases_* +
+   execution_results.json). #27 bbc_news and #35 practica re-run were in
+   flight at last update. LESSON now thrice-proven: runBoth.js does not
+   self-enforce .campaign.lock - driver-level locking is load-bearing.
+
+REMAINING for full campaign: finish Tier 3 in-flight runs (#27, #35), Master
+consolidation regen at window end, Tier 4 (31-40), sites 41-50
+(repeatability+wildcards), clean C4 repeatability re-run, capstone report
+finalization (T402 freeze).
