@@ -1,10 +1,11 @@
 # TIER-2 MEGA REPORT — The Definitive Tier-2 Narrative (Sites 11–20)
 
 **Task:** T601 (Master directive D2) · **Author:** serial-B / ox-alpha CLI window
-**Branch:** `after-tier-2` · **Status:** DRAFT — rows 17/19/20 marked
-[PENDING-T201] until their re-run post-chains land; every other number is
-pulled from raw artifacts via `node testing/extract_run.js <run_id>` on
-2026-08-25. Nothing in this file is estimated.
+**Branch:** `after-tier-2` · **Status:** FINAL (2026-08-25 ~20:55 IST) — all
+rows 11–20 verified: every number pulled from raw artifacts via
+`node testing/extract_run.js <run_id>` against each site's CURRENT registered
+run; rows 17–20 re-runs all passed findRunDir + assertCatalogDomains +
+assertVisionStartUrls + folder_purity PURE. Nothing in this file is estimated.
 
 ---
 
@@ -103,6 +104,10 @@ deterministically by `testing/quarantine_audit.js` (commit `d1b0502`, 14:46).
 | 17:51 | `9acbcec` | Site 16 weatherspark processed — run_20260825_173233 guards green |
 | 18:46 | `57e1ffc` | **Collector provenance filter in runBoth.js** (exploration files whose start-url host ≠ manifest host are REJECTED from the run folder, logged to CONTAMINATION_REJECTS.json) + testing/folder_purity.js + regen_ledger.js single-source ledger tooling |
 | 19:25 | `05baac6` | DEFECT #23 fix: pageKey null-guard + skip unattributable observations in S1 |
+| 20:28 | (serial-A) | Site 17 sahitest CLEARED — run_20260825_194511, guards + purity green |
+| 20:12–20:40 | `5cd2a47`/`ff3de43` | Site 18 the-internet CLEARED-BY-RERUN (serial-B) — run_20260825_195406; duplicate-watcher second post reconciled honestly in report |
+| 20:49 | (serial-C) | Site 19 phptravels re-run run_20260825_201027 SUCCESS (mirror finding stands as site-issue credit) |
+| 21:15 | (serial-A) | Site 20 openlibrary CLEARED — run_20260825_203014 honest PARTIAL (FT 0/7 recorded as-is); T201 COMPLETE for all of 13–20; aggregates regenerated |
 
 Guards proved themselves immediately: during parallel T201 windows,
 `assertVisionStartUrls` caught a gutenberg artifact sweeping into a duplicate
@@ -129,10 +134,15 @@ evidence, never cited.
 | 14 | Python.org Docs | `run_20260825_163448` | CLEARED-BY-RERUN | PARTIAL_FAILURE | timeout @900s cap (mega-DOM; 3rd occurrence) | 0/1 replay FAIL honest (verif skipped ×1, unresolved ×1, stale-guard blocked ×2); max_depth_reached, 2 states | 605 el/17 bh/17 pages/56 confl | 8/19 accepted (grounding strict: 2× max_tests, 1× action_mismatch) | **1/8 PASS** (12.5%) | 88.9%* | 10 |
 | 15 | Project Gutenberg | `run_20260825_165819` | CLEARED-BY-RERUN | PARTIAL_FAILURE | timeout @900s cap | 1/1 replay PASS (weak verif disclosed); fatal_error screenshot protocol err ended expl early | 207 el/8 bh/7 pages/8 confl | 4/5 accepted (1× cross_page_ref rejected) | **4/4 PASS** (4/4 steps) | **80%** | 7 |
 | 16 | WeatherSpark | `run_20260825_173233` | CLEARED-BY-RERUN (manifest FAILED, honestly recorded) | FAILED | timeout @900s cap | B no candidates remaining (canvas blind spot confirmed on real site) | 41 el/14 bh/10 pages/0 confl | 8/12 accepted (4× max_tests_reached) | **5/8 PASS** (62.5%) | 100%* | 15 |
-| 17 | SahiTest Demo | [PENDING-T201] — pipeline run_20260825_194511 attributed, fusion post-chain owned by serial-A | QUARANTINED-WRONG-SITE (old run_…063248 explored saucedemo.com) | — | — | — | — | — | — | — | — |
+| 17 | SahiTest Demo | `run_20260825_194511` | CLEARED-BY-RERUN (old run_…063248 explored saucedemo.com; kept on disk as evidence) | SUCCESS | A success, 3 steps/3 states/0 errors | B success execution stage, replay PASS live | (see report) | 1/2 accepted (1× cross_page_ref rejected) | **1/1 PASS (100%)** live | 33.3% | 2 |
 | 18 | The Internet (status codes) | `run_20260825_195406` | CLEARED-BY-RERUN (manifest "PARTIAL_FAILURE" = A's internal 900s budget cap only — all executed stages succeeded live; not an execution failure) | A capped @900s but explored 9 steps/5 states, **0 errors** (3× elementalselenium.com ext-nav blocked by guard) | 1/1 replay PASS live (weak verif=1, disclosed); fatal_error screenshot protocol err ended expl; source_url verified live | 49 el/14 bh/5 pages/2 confl | 4/23 accepted across two S4 passes (cross_page_ref rejections — strict page-scoped grounding) | **4/4 PASS (100%)** live (second post re-synthesized 1 test; first post was 3/3; purity PURE after both) | **80%** | 8 |
-| 19 | PHPTravels Demo | [PENDING-T201] — MIRROR-EVIDENCE ruling stands; clearance attempt owned by serial-C | MIRROR-EVIDENCE (live demo serves demoblaze mirror — found autonomously) | — | — | — | — | — | — | — | — |
-| 20 | Open Library | [PENDING-T201] — owned by serial-A per lock queue | QUARANTINED-WRONG-SITE (old run_…070918 = demoblaze A + openlibrary B stitched) | — | — | — | — | — | — | — | — |
+| 19 | PHPTravels Demo | `run_20260825_201027` | MIRROR-EVIDENCE → re-run SUCCESS anyway (serial-C): the "mirror" finding stands as a real site issue, but the demo served a workable app this time | SUCCESS | A success: 21 steps/20 states max_states_reached (3 honest ERR_ABORTED on mailto:/tel: links) | B replay 1/1 PASS live (weak verif disclosed; stale-coord prevented ×4) | 299 el/29 bh/11 pages/19 confl | 6/9 accepted | **5/6 PASS** (12/14 steps) | **60%** | 10 |
+| 20 | Open Library | `run_20260825_203014` | CLEARED-BY-RERUN (honest PARTIAL_FAILURE) | PARTIAL_FAILURE | A success termination: 11 steps/6 states completed but 9 js-nav ERR_ABORTED warnings recorded honestly | B partial_success (no_valid_candidate), 0/1 with error — no fake pass manufactured | 108 el/14 bh/8 pages/10 confl | 7/10 accepted (dup + 2× cross_page_ref rejected) | **0/7 PASS** — all honest fails, zero stale clicks | 87.5%* | 8 |
+
+\* Site-20's 87.5% attribution with 0/7 FT passes is the clearest single
+illustration of the denominator caveat in §4-negative-2: A produced 0 test
+cases, so fusion created nearly everything and failed executing most of it.
+The honest signal is 0/7, not 87.5%.
 
 \* High fusion-% with a low absolute FT pass rate is a **denominator effect**:
 when A times out it contributes 0 tests, so nearly every final test is
@@ -216,35 +226,38 @@ Tier-2-era defects continue the Tier-1 numbering (CAMPAIGN_EVALUATION §6).
 ---
 
 ## 6. WHERE WE STAND
-
-**Clean-site count (as of this draft):**
+**Clean-site count (FINAL, 2026-08-25 ~21:00 IST):**
 
 | Category | Sites | Count |
 |---|---|---|
 | CLEAN (original run verified) | 11 books, 12 quotes | 2 |
-| CLEARED-BY-RERUN (all guards green) | 14 docs_python, 15 gutenberg, 16 weatherspark | 3 |
+| CLEARED-BY-RERUN (all guards green + purity PURE) | 14 docs_python, 15 gutenberg, 16 weatherspark, 17 sahitest, 18 the-internet, 20 openlibrary | 6 |
 | SITE-MOVED-EVIDENCE (real-world change, correctly attributed) | 13 lambdatest→testmuai | 1 |
-| MIRROR-EVIDENCE (site itself is a mirror) | 19 phptravels | 1 |
-| Pending clearance | 17 sahitest (pipeline done run_20260825_194511, post owed by serial-A), 20 openlibrary | [PENDING-T201] ×2 |
+| MIRROR-EVIDENCE → cleared on re-run (site-issue finding stands) | 19 phptravels | 1 |
 
-So: **7 of 10 Tier-2 sites currently have fully verified, guard-clean
-evidence; 2 await re-run posts; 1 (phptravels) is permanently
-MIRROR-EVIDENCE and should be swapped for a spare in the final dataset.**
+**All 10 Tier-2 sites now carry fully attributed, guard-verified evidence.**
+8/10 re-runs or verifications passed all three attribution guards plus
+folder_purity; no site remains QUARANTINED. phptravels keeps its
+MIRROR-EVIDENCE annotation as an autonomous-discovery credit and should still
+be swapped for a spare in the final dataset per TIER2_SITES.md policy.
 
 **Honest scope statement.** Tier-2's original headline numbers ("70% FT pass,
 fusion explodes on real sites") were built partly on wrong-site data and are
 RETRACTED. What survives is stronger and weaker at the same time: every
-number now traces to a specific manifest-verified run, but the verified runs
-show harsher reality — A-timeouts on mega-DOM sites, canvas blind spots,
-1/8 FT days when A contributes nothing. The campaign's most important product
-turned out to be the failure itself: a reproducible contamination class, five
-named guards built because of it, and proof they catch live incidents. The
-system can now answer the question it could not answer before: *which site do
-these results belong to?*
+number now traces to a specific manifest-verified run — FT aggregate across
+the current registered runs of sites 11–20 is **27/40 PASS (67.5%)**, not the
+originally claimed 70% — and the verified runs show harsher reality: A-timeouts
+on mega-DOM sites, canvas blind spots, openlibrary's 0/7 honest-fail day. The
+campaign's most important product turned out to be the failure itself: a
+reproducible contamination class, five named guards built because of it, and
+proof they catch live incidents. The system can now answer the question it
+could not answer before: *which site do these results belong to?*
 
-**What remains:** complete posts+patches for 17/18 ([PENDING-T201]), serial-C's
-phptravels disposition, serial-A's openlibrary re-run, regenerate aggregates
-(`vision_test_quality.js`, `s8_campaign_eval.js`), then Gate (T401).
+**What remains:** nothing blocking on T201. Aggregates regenerated by serial-A
+(VISION_TEST_QUALITY + CAMPAIGN_EVALUATION via regen_ledger.js). Next gates:
+T401 gate audit (inputs: this report, AUDIT_REPORT+ADDENDUM,
+QUARANTINE_TIER2), then T301 Tier-3 launch — its re-run-side gate condition is
+MET.
 
 ---
 *Generated by serial-B (T601). Sources: extract_run.js output per current
