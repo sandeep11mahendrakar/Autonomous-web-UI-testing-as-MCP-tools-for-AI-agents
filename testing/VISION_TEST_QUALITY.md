@@ -1,18 +1,18 @@
 # Vision Test-Case Quality Report
 
-<!-- Regenerated 2026-08-25T13:15:45.996Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+<!-- Regenerated 2026-08-25T15:16:21.611Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
 
 Boundary definition (single source of truth): **a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification**.
 
 ## Rubric summary
 
 ```text
-Total B test cases executed:   58
-Passed:                        46 (79%)
+Total B test cases executed:   62
+Passed:                        48 (77%)
 Verification strength:
   STRONG (value-level asserts): 33
-  MEDIUM (state-change):        22
-  WEAK   (body-text fallback):  3
+  MEDIUM (state-change):        25
+  WEAK   (body-text fallback):  4
 ```
 
 ## Per-test ledger
@@ -77,3 +77,7 @@ Verification strength:
 | 154120 | TC01 | MEDIUM | FAIL | 5 | Replays an autonomously discovered visual workflow: fill -> fill(Search) -> fill -> fill(Search) ->  |
 | 163448 | TC01 | MEDIUM | FAIL | 4 | Replays an autonomously discovered visual workflow: click(alt "What's new" documents since Python )  |
 | 165819 | TC01 | MEDIUM | PASS | 3 | Replays an autonomously discovered visual workflow: click(Frequently Downloaded) -> click(Pride and  |
+| 194511 | TC01 | MEDIUM | FAIL | 2 | Replays an autonomously discovered visual workflow: click(Clicks Page) -> click |
+| 195406 | TC01 | MEDIUM | PASS | 2 | Replays an autonomously discovered visual workflow: click(200) -> click(E ementa) |
+| 201027 | TC01 | MEDIUM | PASS | 8 | Replays an autonomously discovered visual workflow: click(Pricing) -> click(Open the quote form in a |
+| 203014 | TC01 | WEAK | ERROR | 0 | Replays an autonomously discovered visual workflow: fill(Search Q) -> click(Classic Books) -> click( |
