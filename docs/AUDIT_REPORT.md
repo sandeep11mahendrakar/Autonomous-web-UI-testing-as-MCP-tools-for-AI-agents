@@ -528,6 +528,23 @@ Cumulative Tier-3 audit totals: 0 CRITICAL · 0 HIGH · 6 MED · 4 LOW across
 three passes; every MED/LOW either fixed+verified or formally dispositioned
 except F5-01.
 
+### MINOR-FIX CLOSEOUT (same session)
+
+Both LOW code findings fixed by the auditor (minor-fix lane precedent),
+suites re-run green:
+
+- **F3-03 FIXED** (`testing/folder_purity.js`): Check-1 no longer passes
+  vacuously when `dom/exploration_summary.json` is missing/malformed while
+  dom artifacts exist — emits a loud `flags[]` entry + `vacuous:true` check
+  detail instead of a silent "0 urls OK". Deliberately does NOT flip `pure`
+  by itself, so registered verdicts are unaffected. Verified live on
+  `run_20260825_230647` (flag fires; pure stays true; no marker written).
+- **F4-05 FIXED** (`lib/provenanceGuard.js` + `runBoth.js`): url-less guarded
+  artifacts still pass but now return an explicit `warn` field, and the
+  collector logs `PROVENANCE WARN <file>` loudly instead of passing silently.
+- Regression tests added to both suites; **157/157 PASS** independently
+  re-executed (was 155).
+
 ## Commands appendix (final)
 
 ```

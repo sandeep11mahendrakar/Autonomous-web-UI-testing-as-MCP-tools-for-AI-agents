@@ -127,6 +127,19 @@ test('clean fixture passes with zero contamination and zero flags', () => {
   assert.ok(v.checks.every((c) => c.ok));
 });
 
+test('(F3-03) missing exploration_summary.json with dom artifacts present is FLAGGED vacuous, not silently passed', () => {
+  const root = makeTmpRoot();
+  const runId = 'run_20260826_000008';
+  makeRun(root, runId);
+  fs.unlinkSync(path.join(root, 'runs', runId, 'dom', 'exploration_summary.json'));
+  // dom artifact left behind so the vacuous case is the real one
+  fs.writeFileSync(path.join(root, 'runs', runId, 'dom', 'states.json'), JSON.stringify({ states: [] }));
+  const v = assertPurity(runId, { root });
+  assert.strictEqual(v.pure, true); // flag does not flip purity by itself
+  assert.ok(v.flags.some((f) => /Check-1 vacuous/.test(f.reason)));
+  assert.ok(v.checks.some((c) => c.check === 'visited_urls_hosts_match_manifest' && c.vacuous));
+});
+
 test('CLI exits 1 and writes CONTAMINATION_MARKER when impure; 0 when pure', () => {
   const root = makeTmpRoot();
   makeRun(root, 'run_20260826_000006');

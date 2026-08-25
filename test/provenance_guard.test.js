@@ -146,3 +146,14 @@ test('PROVENANCE_FILE_RE covers exploration_result, test_cases_* and execution_r
   assert.ok(!re.test('state_001_visual_dom.json'));
   assert.ok(!re.test('screenshots_index.json'));
 });
+
+test('(F4-05) url-less guarded artifact passes but carries an explicit provenance warning', () => {
+  const { artifactBelongsToRun } = require('../lib/provenanceGuard');
+  const v = artifactBelongsToRun(
+    { payload: 'no url fields anywhere in here' },
+    'https://todomvc.com/examples/typescript-react/#/'
+  );
+  assert.strictEqual(v.ok, true);
+  assert.strictEqual(v.via, 'no_url_fields');
+  assert.match(String(v.warn), /no URL/i);
+});
