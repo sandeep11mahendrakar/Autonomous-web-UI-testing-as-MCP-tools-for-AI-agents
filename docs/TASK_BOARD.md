@@ -13,7 +13,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 |---|---|---|---|---|---|
 | T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
 | T102 cross-platform assessment | OPEN | - | - | - | - |
-| T103 parallel-safety spec | OPEN | - | - | - | - |
+| T103 parallel-safety spec | RUNNING | ox-alpha serial-1 (2nd task) | 16:42 | - | - |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
 | T201 quarantine re-runs 13-20 | BLOCKED(window-end 17:11; resume point logged) | ox-alpha (CLI serial-1) | 16:11 | - | f4f942f+board commit |
@@ -25,6 +25,11 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:42 IST] [serial1/ox-alpha] CLAIMED T103 (Master approved "pick
+other task" - T201 continues in background: site 14 docs_python pipeline
+running, lock held). Deliverable: docs/PARALLEL_SPEC.md design-only spec:
+dynamic vision ports + per-worker lockfiles + shared study mutex + fail-loudly
+parse_failed + min verification-strength for PASS, citing exact functions.
 [2026-08-25 16:55 IST] [serial1/ox-alpha] T201 window-end report. DONE this
 window: (1) testing/rerun_quarantine.js driver committed (d299e8d/3b8317f/
 f4f942f): 8 sites 13-20, trimmed env MAX_STEPS=25 MAX_STATES=20 (+EXPLORE_*),
