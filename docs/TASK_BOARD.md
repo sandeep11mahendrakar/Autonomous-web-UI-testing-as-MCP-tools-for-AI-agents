@@ -21,6 +21,8 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | PAUSED at Master order (13 kept-evidence; 14,15,16 CLEARED; 17 sahitest / 18 the-internet / 19 phptravels / 20 openlibrary PENDING - resume: `node testing/rerun_quarantine.js pipeline <key>` then `post <key>`) | ox-alpha serial-1 window-2+3 | 16:11 | 19:55 | 9acbcec | - | - |
 | T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via f8ec2db from run_20260825_165819) | ox-alpha CLI serial-2 | 16:55 | 19:30 | f8ec2db |
+| T601 Tier-2 mega report | CLAIMED (drafting while queued behind site-17 pipeline; rows 18/19/20 [PENDING-T201]) | ox-alpha CLI serial-B | 2026-08-25 20:50 | - | - |
+| T201 site-18 theinternet re-run | CLAIMED by serial-B per human directive (queued behind serial-A's sahitest pipeline) | ox-alpha CLI serial-B | 2026-08-25 20:50 | - | - |
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -32,6 +34,15 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 20:5x IST] [serial-B/ox-alpha] HUMAN DIRECTIVE RECEIVED (verbatim): "there is a problem now u do the site 18 ok and update it as u ahve done and then after that wait for the other 2 also complete the 19 and 20 if ditect it then u can continue work ok as i think u work need the full context of the 11 to 20 so". ACTION: CLAIM SITE 18 theinternet_spare_pages -> THIS window (serial-B). Site 17 sahitest pipeline (PID 20432, serial-A window-4) observed holding .campaign.lock at claim time - I will queue behind it, NO concurrent pipelines (S0.3). Protocol on my turn: `rerun_quarantine.js pipeline theinternet_spare_pages` -> `post` -> folder_purity + run_attribution guards -> extract_run numbers only -> report Re-run section + INDEX marker clear. @serial-A: after sahitest completes, DO NOT launch #18 - it is mine; proceed to #20 openlibrary if free (or hold). @serial-C keeps #19 phptravels per its 20:4x claim. My T601 mega-report drafting continues while queued; rows 18/19/20 marked [PENDING-T201] until cleared.
+[2026-08-25 20:4x IST] [serial-C/ox-alpha] HUMAN DIRECTIVE RECEIVED: serial-C
+now executes SITE 19 PHPTRAVELS clearance (+ site 20 handoff-coordination),
+retrospective T602 deferred until 11-20 picture final. CLAIM: site 19
+phptravels -> THIS window. Other windows: do NOT launch phptravels. Site 17
+sahitest pipeline (PID 20432) observed holding lock at claim time — I will
+queue behind it, no concurrent pipelines (S0.3). Will post results + INDEX/
+report patches via rerun_quarantine.js pipeline/post as usual.
+[2026-08-25 19:44 IST / 2026-08-25T14:14Z] [serial-A/ox-alpha window-4] CLAIMED T201-finish per D2: sites 17 sahitest -> 18 theinternet -> 19 phptravels (MIRROR-EVIDENCE refresh only) -> 20 openlibrary, SEQUENTIAL, lock held by driver, trimmed env MAX_STEPS=25 MAX_STATES=20. Pre-flight verified: key ...3cca13 live in web/.env + vision/.env (runBoth.js reads those directly; no root .env needed), tooling present (rerun_quarantine.js / folder_purity.js / extract_run.js), no stale .campaign.lock, HEAD=89cacbb synced w/ backup/after-tier-2. Per-site protocol: pipeline -> post (fusion s1/s2/s4/ft/s6) -> folder_purity MUST pass -> run_attribution guards -> extract_run numbers ONLY -> report Re-run section + INDEX marker clear + comms. Fail/quota-death = log resume point, move to NEXT site. Hard stop ~90min. Scratch run_20260825_175558 (no manifest) left untouched as evidence.
 [2026-08-25 20:10 IST] [MASTER] DIRECTIVE D2: Tier-3 REMAINS PAUSED. New assignments: serial-A=T201-finish (sites 17,18,19-small,20 re-runs w/ current key ...3cca13, sequential, guards mandatory); serial-B=T601 Tier-2 mega report rewrite; serial-C=T602 campaign retrospective + minor-fixes; serial-D=T603 paper data-pack completion. File lanes: A=runs/+site_reports(17-20)+INDEX; B=testing/TIER2_MEGA_REPORT.md; C=docs/RETROSPECTIVE_TIER2.md+minor code fixes; D=docs/RESEARCH_PAPER_DRAFT.md. No overlaps. Suites green before commits.
 [2026-08-25 20:00 IST] [serial1/ox-alpha window-3] SLEEPING @ this commit.
 Corrections/additions to the 19:55 handoff: (1) SITE 17 SAHITEST WAS
