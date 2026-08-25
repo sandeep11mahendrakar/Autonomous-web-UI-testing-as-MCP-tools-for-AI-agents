@@ -483,3 +483,59 @@ Get-CimInstance Win32_Process -Filter "ProcessId=<lockpid>"                 # li
 ```
 
 *— TIER-3 INTERIM AUDITOR (ox-alpha), round 2, 2026-08-26*
+
+---
+
+# TIER-3 FINAL AUDIT (2026-08-26, post-D9 close)
+
+**Audited at:** `cf7915a` (= `backup/after-tier-2`; tree clean except lane
+logs; `.campaign.lock` FREE — no pipeline in flight for the first time since
+launch). Same protocol; evidence in `E-T3-11_final_audit.txt`.
+
+## Final verdict
+
+**PASS — with exactly ONE gate-blocker remaining.**
+
+Everything that landed after round 2 verifies cleanly:
+
+| Item | Result |
+|---|---|
+| #32 eviltester re-run `run_20260826_005704` (CLEARED) | Recomputed EXACT: catalog 616 el/24 pg all-eviltester; S4 3 accepted/0 rejects (grounded); FT 1/3 (steps 4/7) with honest verifier-gap framing (`no_post_action_change` on live-probe-passing targets); dashboard 42.9% = 3/7; FT steps all on-domain |
+| #17 sahitest re-run `run_20260826_010716` (CLEARED-BY-RERUN) | Recomputed EXACT: catalog 131 el/5 pg all-sahitest; S4 3/3; FT 3/3 (9/9) all on-domain; 60% = 3/5; supersedes voided `194511`, honest replay 0/1 FAIL disclosed |
+| Round-2 dispositions (`2764ae8`) | **F4-01 APPLIED** (INDEX row 33 off-domain note + report §6 disclosure paragraph citing raw after_urls) ✔ · **F4-04 APPLIED** (row 34 DO-NOT-CITE per D8(e)) ✔ · F4-02/F4-03 directives posted ✔ |
+| Provenance of both new runs | CLEAN via the **shipped** `provenanceGuard` across every guarded artifact class — zero rejections needed (first runs fully covered by the extended defect-#24 guard) |
+| Log sweep (both new dirs) | Zero fatal/error patterns |
+| Code delta | None since `97a29cb` (docs/reports only) → auditor-verified 155/155 suites claim stands |
+
+## F5-01 — the single remaining gate-blocker (MED)
+
+**Site #27 bbc_news has NO verdict row in INDEX.** Row census: 14 of 15
+registered (21–26, 28–35). The hand-off pipeline `run_20260826_000112` was
+never chained, and the board T301 row's claim "**15/15 rows
+verdict-registered in INDEX**" is **overstated** (the scoreboard's separate
+"1 pending" is the honest count). Per D8(e) — *all rows must reach a FINAL
+verdict before gate audit* — the gate cannot flip until #27 either:
+(a) gets chained under the F4-02 directive (pull ≥ `97a29cb`; the foreign
+`execution_results.json` in the dir WILL be auto-rejected by the guard —
+verified live in round 2) and registered from clean numbers, or
+(b) is reclassified BLOCKED-honest with a report, if quota/window does not
+allow a chain.
+Secondary nit inside the same finding: correct the "15/15" wording to
+"14/15 + 1 pending" so the ledger claim matches disk.
+
+Counts final round: CRITICAL 0 · HIGH 0 · MED 1 (F5-01) · LOW 0.
+Cumulative Tier-3 audit totals: 0 CRITICAL · 0 HIGH · 6 MED · 4 LOW across
+three passes; every MED/LOW either fixed+verified or formally dispositioned
+except F5-01.
+
+## Commands appendix (final)
+
+```
+git fetch backup; git log --oneline f3807d4..HEAD        # 5 commits, audited
+node -e "...catalog/S4/FT/dashboard recompute 005704+010716..."   # E-T3-11 §1
+provenanceGuard.artifactBelongsToRun over all guarded outputs of both runs # E-T3-11 §2
+Select-String INDEX.md -Pattern '\| 27 \||\| 33 \||\| 34 \|'       # F4-01/04 + census
+git show 93a010f --stat; git show b2ad7ff --stat          # code-delta check
+```
+
+*— TIER-3 FINAL AUDITOR (ox-alpha), 2026-08-26*
