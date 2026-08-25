@@ -1,0 +1,36 @@
+AUDIT round-2 evidence — defect-#24 guard fix verification + suites (2026-08-26)
+
+1. CODE REVIEW @ 97a29cb (lib/provenanceGuard.js + runBoth.js collector):
+   - artifactBelongsToRun(artifact, manifestUrl): collects EVERY url an
+     artifact references (start_url/source_url/page/url incl. cases[]/
+     results[]), compares hosts vs manifest incl. KNOWN_ALIASES (lambdatest ->
+     testmuai preserved, verified live); localhost fixtures rejected by
+     hostname (port-bearing fixtures classify correctly).
+   - Collector PROVENANCE_FILE_RE extended to *_exploration_result.json AND
+     test_cases_*exploration.json AND execution_results.json.
+
+2. LIVE TEST against the actual leaked artifact in the wild:
+   runs/run_20260826_000112/vision/outputs/execution_results.json (bbc_news
+   handed-off dir; references testpages.eviltester.com)
+     -> artifactBelongsToRun(file, 'https://www.bbc.com/news')
+     = {"ok":false,"via":"foreign_host (testpages.eviltester.com)"}  REJECTED ✔
+   Clean controls (hn execution_results/test_cases, todomvc outputs):
+     all ok:true (host_match / no_url_fields)  ✔
+   Alias check: hostMatchesTarget('www.lambdatest.com','www.testmuai.com')
+     = true  ✔
+
+3. RESIDUAL FAIL-OPEN (LOW finding F4-05): artifacts referencing NO url pass
+   as {'ok':true,'via':'no_url_fields'} — a foreign test_cases file that
+   embeds no URL field would still sweep through. All observed leak classes
+   DO embed urls, so the real vectors are covered; noted for hardening.
+
+4. OFFLINE SUITES independently re-executed by auditor:
+   node --test "fusion/test/*.test.js" "web/test/*.test.js" "test/*.test.js"
+   => tests 155 / pass 155 / fail 0  (matches claimed 155/155; includes the
+   12 provenance_guard regression tests covering both real leak classes).
+
+5. POST-FIX FIELD EVIDENCE: run_20260826_004650 (magento re-run) is the first
+   full protocol on the extended guard — catalog hosts magento-only,
+   dom visited magento-only, purity PURE 4/4 (auditor-mirrored). The guard
+   also self-quarantined W1's practica attempts (001836/003258/003816 all
+   correctly flagged contaminated, registered DO-NOT-CITE).
