@@ -1,6 +1,6 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-25T11:45:24.181Z by `fusion/s8_campaign_eval.js`.
+Generated: 2026-08-25T12:21:03.448Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -10,17 +10,17 @@ denominators by design.
 
 ```text
 Sites attempted:              19
-Sites scored:                 13
-Sites blocked:                6
-A completed:                  15
+Sites scored:                 14
+Sites blocked:                5
+A completed:                  14
 B completed:                  6
 Full A+B pipeline completed:  10
-Fusion generated (offered):   48
-Fusion accepted:              34
-Fusion live tests executed:   34
-Fusion live PASS:             22
-Fusion live FAIL:             12
-Mean fusion-attributable %:   35.8%
+Fusion generated (offered):   60
+Fusion accepted:              42
+Fusion live tests executed:   42
+Fusion live PASS:             27
+Fusion live FAIL:             15
+Mean fusion-attributable %:   40.4%
 ```
 
 ## 2. Site matrix
@@ -41,7 +41,7 @@ Mean fusion-attributable %:   35.8%
 | 12 | Quotes to Scrape | PARTIAL | MEDIUM | only A explored fully; FT live PASS though |
 | 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
 | 15 | Project Gutenberg | PARTIAL | LOW | neither architecture completed exploration |
-| 16 | 🚫 QUARANTINED-WRONG-SITE · WeatherSpark | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 16 | WeatherSpark | PIPELINE FAILURE | LOW | neither architecture completed exploration |
 | 17 | 🚫 QUARANTINED-WRONG-SITE · SahiTest Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
 | 18 | 🚫 QUARANTINED-WRONG-SITE · The Internet (status codes) | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
 | 19 | 🚫 QUARANTINED-WRONG-SITE · PHPTravels Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
@@ -52,26 +52,26 @@ PASS, fusion >=20%) — not a human judgment.
 
 ## 3. A vs B comparison (means over runs with dashboard data)
 
-(n=13 runs with comparison data; values are means)
+(n=14 runs with comparison data; values are means)
 
 | Measure | Arch A | Arch B |
 |---|---|---|
-| Tests generated | 3.5 | 0.9 |
-| States explored | 7.5 | 6.6 |
-| Elements seen | 7.8 | 192.6 |
-| Behaviors seen | 8.2 | 6.5 |
-| Targets covered | 6.1 | 4.9 |
+| Tests generated | 3.2 | 0.9 |
+| States explored | 7.6 | 6.3 |
+| Elements seen | 8.2 | 180.9 |
+| Behaviors seen | 8.5 | 6.1 |
+| Targets covered | 5.6 | 4.6 |
 
 ## 4. Fusion contribution quality
 
 | Metric | Value |
 |---|---|
-| Runs with dashboard data | 13 |
-| Fusion tests offered/generated | 48 |
-| Fusion tests accepted (grounded) | 34 |
-| Fusion tests executed live | 34 |
-| Executed successfully | 22 |
-| Novel targets exercised by fusion | 52 |
+| Runs with dashboard data | 14 |
+| Fusion tests offered/generated | 60 |
+| Fusion tests accepted (grounded) | 42 |
+| Fusion tests executed live | 42 |
+| Executed successfully | 27 |
+| Novel targets exercised by fusion | 67 |
 
 > Quality note: fusion % alone does not equal value. Cross-origin composed
 > workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative
@@ -151,8 +151,9 @@ absence of a listed finding is NOT evidence of absence.
 | Quotes to Scrape | 18.4 |
 | Python.org Docs | 19.3 |
 | Project Gutenberg | 18.2 |
+| WeatherSpark | 15.5 |
 
-Total A+B wall time across 13 sites: 115.2 min.
+Total A+B wall time across 14 sites: 130.6 min.
 
 LLM call counts per run: see `runs/<id>/fusion/dashboard_data.json` (`llm_calls`).
 Token counts were not recorded for Tier-1 runs and are reported as not recorded
@@ -190,8 +191,8 @@ Token counts were not recorded for Tier-1 runs and are reported as not recorded
 
 ## 10. Conclusions
 
-1. Full-pipeline success: 10/13 runnable sites (+6 honestly BLOCKED).
-2. Mean fusion-attributable coverage: 35.8%.
+1. Full-pipeline success: 10/14 runnable sites (+5 honestly BLOCKED).
+2. Mean fusion-attributable coverage: 40.4%.
 3. Blocked environments are tracked separately and never counted as failures.
 4. Historical evidence (19 pipeline defects, seeded-bug mutation scorecard in
    `mutation/results/SCORECARD.md`) demonstrates hardening through heterogeneous

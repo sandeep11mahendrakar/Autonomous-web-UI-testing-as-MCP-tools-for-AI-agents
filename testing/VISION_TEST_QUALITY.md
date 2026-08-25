@@ -1,6 +1,6 @@
 # Vision Test-Case Quality Report
 
-Generated: 2026-08-25T11:45:24.081Z — deterministic aggregation over ALL
+Generated: 2026-08-25T12:21:03.352Z — deterministic aggregation over ALL
 campaign runs with B replay results. Every number traces to artifacts.
 
 ## Rubric summary
