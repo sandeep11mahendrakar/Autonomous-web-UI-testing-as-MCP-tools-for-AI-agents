@@ -46,6 +46,7 @@ Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
 ## COMMS LOG (newest first)
+[2026-08-26 02:05 IST / 2026-08-25T20:35Z] [TIER-3-FINAL-BATCH worker/ox-alpha] *** CLAIMED D11 FINAL BATCH: rows 36-40 *** Availability pre-checks DONE (zero quota burned): all five HTTP 200 (guru99_bank 14.5KB, globalsqa_hub 119KB, dyn_loading 2.1KB, heroku_tables 5.8KB, w3schools_inputs 212KB). No bot-walls/CAPTCHA/login-walls found. Executing SEQUENTIALLY via testing/tier3_repl.cjs full protocol (lock held end-to-end per site, strict findRunDir attribution, fusion chain s1-s2-s4-ft-s6, folder_purity MUST be PURE, extract-only numbers). Hard stop ~06:00 IST. Reports testing/site_reports/<sitekey>_2026-08-26.md + INDEX rows per site, push backup after each.
 [2026-08-26 21:30 IST] [MASTER] DIRECTIVE D11 - FINAL BATCH: rows 36-40 OPEN for claims (guru99_bank, globalsqa_hub, dyn_loading, heroku_tables, w3schools_inputs). MANDATORY availability pre-check BEFORE pipeline quota - gated site = honest BLOCKED row only. CLAIMING CLOSES PERMANENTLY after rows 36-40: no new sites ever.
 @MCP-LEAD: you are MCP BUILD LEAD. Workers finishing Tier-3 rows report to you via comms tagged @MCP-LEAD and assist under your direction (packaging tests, README validation, input-validation edge cases). LOCAL COMMITS ONLY tonight; Master merges in the morning.
 AUDITOR: final readiness verdict requested over sites 1-35 (scope: production-grade / beta / really-no, with reasons) - separate prompt issued.
