@@ -5,15 +5,16 @@
  * architecture. Zero dependencies, Node >= 18.
  *
  * Exposes five tools (see mcp/tools.js): explore_site, get_visual_dom,
- * list_tests, run_test, get_evidence. PHASE 1: explore_site is wired to
- * `runVision.js --explore` (spawn + streamed logs); the other four still
- * return the typed error -32006 not_implemented.
+ * list_tests, run_test, get_evidence — all fully wired.
+ *   - explore_site spawns `runVision.js --explore` (spawn + streamed logs)
+ *   - run_test spawns `src/executeTests.js` replay and returns the verdict
+ *   - get_visual_dom / list_tests / get_evidence read storage artifacts
  *
  * Protocol implemented:
  *   initialize / initialized notification
  *   tools/list
- *   tools/call            -> explore_site runs async; others typed stub error
- *   notifications/message -> pipeline log lines from explore_site
+ *   tools/call            -> explore_site / run_test run async; others sync
+ *   notifications/message -> pipeline log lines from heavy tools
  *   ping                  -> {}
  *   anything else         -> -32601 method_not_found
  *
@@ -23,7 +24,25 @@
 const { TOOLS, callTool, setLogSink } = require('./tools');
 const pkg = require('../package.json');
 
+// Load .env here as well (children like runVision.js load their own copy):
+// tools.js needs YOLO_MODEL_PATH visible in-process so it can normalize a
+// repo-relative model path to absolute before spawning heavy children.
+require('dotenv').config();
+
 const PROTOCOL_VERSION = '2024-11-05';
+
+/**
+ * Message-only error details: no stacks, and redact anything shaped like an
+ * env assignment (KEY=...) or containing the user home path before it can
+ * reach a caller.
+ */
+function redactMessage(text) {
+  let s = String(text);
+  s = s.replace(/\b([A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD)[A-Z0-9_]*)\s*=\s*\S+/gi, '$1=<redacted>');
+  const home = process.env.USERPROFILE || process.env.HOME;
+  if (home) s = s.split(home).join('~');
+  return s;
+}
 
 function write(msg) {
   process.stdout.write(JSON.stringify(msg) + '\n');
@@ -57,7 +76,7 @@ function handleMessage(msg) {
       return ok(id, {
         protocolVersion: PROTOCOL_VERSION,
         capabilities: { tools: {} },
-        serverInfo: { name: 'vision-mcp', version: `0.2.0-phase1 (${pkg.name})` },
+        serverInfo: { name: 'vision-mcp', version: `1.0.0 (${pkg.name})` },
       });
 
     case 'notifications/initialized':
@@ -94,11 +113,14 @@ function handleMessage(msg) {
           content: [{ type: 'text', text: JSON.stringify((r && r.result) || {}) }],
         });
       };
-      // explore_site returns a Promise<{result|error}> — respond when settled.
+      // explore_site / run_test return Promise<{result|error}> — respond when
+      // settled. Internal errors are message-only (no stacks, no env values).
       if (res && typeof res.then === 'function') {
         return isNotification
           ? null
-          : res.then(wrap).catch((e) => err(id, -32603, 'internal error', String(e && e.message)));
+          : res.then(wrap).catch((e) =>
+              err(id, -32603, 'internal error', redactMessage((e && e.message) || String(e)))
+            );
       }
       return isNotification ? null : wrap(res);
     }
@@ -138,7 +160,7 @@ process.stdin.on('data', (chunk) => {
       })
       .catch((e) => {
         if (typeof msg.id !== 'undefined') {
-          write(err(msg.id, -32603, 'internal error', String(e && e.message)));
+          write(err(msg.id, -32603, 'internal error', redactMessage((e && e.message) || String(e))));
         }
       });
   }
