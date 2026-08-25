@@ -1,20 +1,20 @@
 # Vision Test-Case Quality Report
 
-Generated: 2026-08-25T11:25:12.579Z — deterministic aggregation over ALL
+Generated: 2026-08-25T11:45:24.081Z — deterministic aggregation over ALL
 campaign runs with B replay results. Every number traces to artifacts.
 
 ## Rubric summary
 
 ```text
-Total B test cases executed:   84
-Passed:                        62 (74%)
+Total B test cases executed:   86
+Passed:                        64 (74%)
 Verification strength:
   STRONG (value-level asserts): 39
-  MEDIUM (state-change):        38
+  MEDIUM (state-change):        40
   WEAK   (body-text fallback):  7
-Total steps executed:          387
+Total steps executed:          393
   fill actions (value writes): 123
-Targets re-detected on state:  348
+Targets re-detected on state:  354
 Stale coordinates prevented:   20
 Unresolved targets (honest):   19
 ```
@@ -111,6 +111,8 @@ WEAK = pass rested on page-body heuristics; counted honestly against us.
 | 154120 | TC01 | MEDIUM | FAIL | 5 | 5 | 4 | Replays an autonomously discovered visual workflow: fill -> fill(Search) -> fill -> fill(Search) ->  |
 | 154936 | TC01 | MEDIUM | FAIL | 5 | 5 | 4 | Replays an autonomously discovered visual workflow: fill -> fill(Search) -> fill -> fill(Search) ->  |
 | 163448 | TC01 | MEDIUM | FAIL | 4 | 0 | 3 | Replays an autonomously discovered visual workflow: click(alt "What's new" documents since Python )  |
+| 165105 | TC01 | MEDIUM | PASS | 3 | 0 | 3 | Replays an autonomously discovered visual workflow: click(Frequently Downloaded) -> click(Pride and  |
+| 165819 | TC01 | MEDIUM | PASS | 3 | 0 | 3 | Replays an autonomously discovered visual workflow: click(Frequently Downloaded) -> click(Pride and  |
 
 ## Exemplar STRONG test cases (verbatim from artifacts)
 

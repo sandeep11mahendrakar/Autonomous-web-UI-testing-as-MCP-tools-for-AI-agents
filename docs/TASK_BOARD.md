@@ -32,6 +32,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+<<<<<<< HEAD
 [2026-08-25 19:05 IST] [serial2/ox-alpha] T502 DONE: EVIDENCE_GUIDE.md section
 f) forensics walkthrough (f-1 what broke: mtime-window folder stitching +
 fixture replays; f-2 two-explorations-in-one-folder shown verbatim from
@@ -54,6 +55,46 @@ attempt (7aebbde) was lost to a reset; recovered from git objects and landed
 via isolated worktree. Also repaired a committed merge-conflict debris block
 in TASK_BOARD rows. #15 gutenberg: executing same checklist when serial-1
 artifacts land (rerun_quarantine_s15.log already active).
+=======
+[2026-08-25 17:47 IST] [serial1/ox-alpha] SITE 15 CLEARED (gutenberg).
+run_20260825_165819: guards ALL GREEN. A: 4 states/0 tests; B: success
+4 states/202 elems; S4 4/5 fusion-created; FT live 4/4 PASS (100%);
+fusion-attributable 80%. Best FT result of the decontamination batch.
+INDEX #15 marker cleared + stat cells rebuilt; report Re-run section added;
+vision_test_quality regen (86 tests, 39 STRONG, pass 64/86); s8 regen.
+Also fixed this window: holdLock() success-path release bug (83e23e9) -
+lock is now released on every driver exit path. NEXT: site 16 weatherspark.
+[2026-08-25 18:05 IST] [MASTER] Added PHASE-INDEPENDENT tasks T501-T504 (safe anytime). SELF-SERVE LOOP ENABLED: workers poll this board, claim OPEN tasks in-lane, update on every state change. No per-task prompting needed.
+[2026-08-25 17:35 IST] [serial2/ox-alpha] T202 SITE 14 REWRITE DONE (Master
+GO). docs_python_2026-08-25.md: (1) scope note added - original S2 table
+marked quarantined-evidence, not citable; (2) B (vision) narrative REPLACED
+with run_20260825_163448 truth: max_depth_reached/2 states, replay 0/1 FAIL
+(verification skipped x1, unresolved target x1, stale-coordinate guard blocked
+x2, zero weak verifications); (3) post-quarantine section expanded with full
+stage table + honest narrative: fusion 88.9% is STRUCTURAL (A timeout -> all
+tests novel), absolute FT 1/8 vs contaminated 7/7 confirms the A-timeout
+degradation pattern from run_134803. Old numbers kept verbatim below.
+NOT touched by me (already correct via serial1 6af23a4): INDEX #14 marker,
+VISION_TEST_QUALITY regen, s8 eval. #15 gutenberg: still waiting on serial-1
+artifacts - will execute same checklist when they land.
+[2026-08-25 17:13 IST] [serial1/ox-alpha window-2] INCIDENT + COORDINATION:
+a SECOND concurrent T201 window is live (PID 18500, "pipeline gutenberg"
+since 16:58). Consequences observed: (1) my duplicate docs_python run
+run_20260825_165105 got CONTAMINATED - a gutenberg exploration artifact
+(run_1787657304373) swept into its tree via SHARED vision/storage/outputs
+while both pipelines ran. Audit-addendum guard assertVisionStartUrls caught
+it (checked=2, violation host=www.gutenberg.org) -> 165105 REJECTED as site-14
+evidence, kept on disk as evidence of the failure mode. (2) Site 14 is
+LEGITIMATELY CLEARED via prev-window run_20260825_163448 - I independently
+re-verified guards just now: catalog ok, visionStartUrls checked=1 ok,
+status PARTIAL_FAILURE. No re-run needed for #14 this window. PROPOSAL to
+the other window: do NOT launch further pipelines blindly - hold lock check +
+board claim PER SITE before each launch. I will not launch while 18500 or
+its post-chain holds testing/.campaign.lock. Root cause note for
+PARALLEL_SPEC/Master: shared vision/storage/outputs makes concurrent
+pipelines cross-contaminate even with distinct run dirs - sequential-only
+rule (S0.3) is load-bearing, enforced today by the guard.
+>>>>>>> 95232eb (feat(t201): SITE 15 gutenberg quarantine CLEARED - run_20260825_165819 all guards green)
 [2026-08-25 17:00 IST] [serial1/ox-alpha] SITE 14 CLEARED (docs_python).
 run_20260825_163448: guards ALL GREEN (strict attribution + catalog domains
 + vision start_urls). Fusion chain s1/s2/s4/ft/s6 complete. New evidence:
