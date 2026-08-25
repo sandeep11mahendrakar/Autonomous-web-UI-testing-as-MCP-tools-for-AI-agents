@@ -1,7 +1,7 @@
 # TIER-2 MEGA REPORT — The Definitive Tier-2 Narrative (Sites 11–20)
 
 **Task:** T601 (Master directive D2) · **Author:** serial-B / ox-alpha CLI window
-**Branch:** `after-tier-2` · **Status:** DRAFT — rows 17/18/19/20 marked
+**Branch:** `after-tier-2` · **Status:** DRAFT — rows 17/19/20 marked
 [PENDING-T201] until their re-run post-chains land; every other number is
 pulled from raw artifacts via `node testing/extract_run.js <run_id>` on
 2026-08-25. Nothing in this file is estimated.
@@ -130,7 +130,7 @@ evidence, never cited.
 | 15 | Project Gutenberg | `run_20260825_165819` | CLEARED-BY-RERUN | PARTIAL_FAILURE | timeout @900s cap | 1/1 replay PASS (weak verif disclosed); fatal_error screenshot protocol err ended expl early | 207 el/8 bh/7 pages/8 confl | 4/5 accepted (1× cross_page_ref rejected) | **4/4 PASS** (4/4 steps) | **80%** | 7 |
 | 16 | WeatherSpark | `run_20260825_173233` | CLEARED-BY-RERUN (manifest FAILED, honestly recorded) | FAILED | timeout @900s cap | B no candidates remaining (canvas blind spot confirmed on real site) | 41 el/14 bh/10 pages/0 confl | 8/12 accepted (4× max_tests_reached) | **5/8 PASS** (62.5%) | 100%* | 15 |
 | 17 | SahiTest Demo | [PENDING-T201] — pipeline run_20260825_194511 attributed, fusion post-chain owned by serial-A | QUARANTINED-WRONG-SITE (old run_…063248 explored saucedemo.com) | — | — | — | — | — | — | — | — |
-| 18 | The Internet (status codes) | [PENDING-T201] — re-run pipeline LIVE (serial-B, this window) | QUARANTINED-WRONG-SITE (old run_…064713 = demoblaze.com) | — | — | — | — | — | — | — | — |
+| 18 | The Internet (status codes) | `run_20260825_195406` | CLEARED-BY-RERUN | PARTIAL_FAILURE | A timeout @900s cap but 9 steps/5 states explored (3× elementalselenium.com ext-nav blocked by guard) | 1/1 replay PASS (weak verif=1, disclosed); fatal_error screenshot protocol err ended expl; source_url verified live | 49 el/14 bh/5 pages/2 confl | 3/23 accepted (2× cross_page_ref rejected — strict page-scoped grounding) | **3/3 PASS** (5/5 steps) | **75%** | 6 |
 | 19 | PHPTravels Demo | [PENDING-T201] — MIRROR-EVIDENCE ruling stands; clearance attempt owned by serial-C | MIRROR-EVIDENCE (live demo serves demoblaze mirror — found autonomously) | — | — | — | — | — | — | — | — |
 | 20 | Open Library | [PENDING-T201] — owned by serial-A per lock queue | QUARANTINED-WRONG-SITE (old run_…070918 = demoblaze A + openlibrary B stitched) | — | — | — | — | — | — | — | — |
 
@@ -225,10 +225,10 @@ Tier-2-era defects continue the Tier-1 numbering (CAMPAIGN_EVALUATION §6).
 | CLEARED-BY-RERUN (all guards green) | 14 docs_python, 15 gutenberg, 16 weatherspark | 3 |
 | SITE-MOVED-EVIDENCE (real-world change, correctly attributed) | 13 lambdatest→testmuai | 1 |
 | MIRROR-EVIDENCE (site itself is a mirror) | 19 phptravels | 1 |
-| Pending clearance | 17 sahitest, 18 the-internet, 20 openlibrary | [PENDING-T201] ×3 |
+| Pending clearance | 17 sahitest (pipeline done run_20260825_194511, post owed by serial-A), 20 openlibrary | [PENDING-T201] ×2 |
 
-So: **6 of 10 Tier-2 sites currently have fully verified, guard-clean
-evidence; 3 await tonight's re-run posts; 1 (phptravels) is permanently
+So: **7 of 10 Tier-2 sites currently have fully verified, guard-clean
+evidence; 2 await re-run posts; 1 (phptravels) is permanently
 MIRROR-EVIDENCE and should be swapped for a spare in the final dataset.**
 
 **Honest scope statement.** Tier-2's original headline numbers ("70% FT pass,
