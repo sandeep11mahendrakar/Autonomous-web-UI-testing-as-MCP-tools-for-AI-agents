@@ -69,8 +69,16 @@ not evidence of absence elsewhere.
 
 - SPA shell gives OCR very little initially (5 elements); B needs the
   render-wait heuristics to see a hydrated DOM.
-- External links (github/react.dev/quora) are the page's main affordances;
-  read-only policy blocks them, so coverage concentrates on internal flows.
+- External links (github/react.dev/quora) are the page's main affordances.
+  **Off-domain disclosure (audit F4-01):** the A-side EXPLORER was correctly
+  blocked from external hops, but the FT EXECUTOR's clicks on on-page external
+  links DID navigate off-domain and those steps count in the 3/3 PASS: FT001
+  step 2 → `github.com/remojansen`, FT002/FT003 step 2 →
+  `petehuntsposts.quora.com` (raw `after_urls` in
+  `fusion/ft_execution_results.json`). All navigation was read-only
+  (link-follows only, no submits/forms). Coverage therefore does NOT
+  concentrate purely on internal flows; internal-flow coverage is the S4/S1
+  story, not the FT one.
 
 ## 7. Assets and reproduction
 
