@@ -20,3 +20,14 @@ skip CAPTCHA/bot-walls honestly; success = >=6/10 complete pipelines.
 | 28 | archive_org | https://archive.org | library | search, media cards, collections |
 | 29 | npmjs_packages | https://www.npmjs.com/packages | dev registry | package cards, filters, search |
 | 30 | reddit_public | https://old.reddit.com | social (public read) | old.reddit chosen: lighter DOM, fewer consent walls |
+
+## REPLACEMENT SPARES (rows 31-35) - added 2026-08-26 after 4 honest BLOCKEDs
+QA-community/permissive targets chosen for low bot-wall risk. Same policies.
+
+| # | Key | URL | Industry | Focus |
+|---|---|---|---|---|
+| 31 | magento_luma | https://magento.softwaretestingboard.com/ | e-commerce demo | classic QA shop: cart, checkout, search |
+| 32 | eviltester_pages | https://testpages.eviltester.com/styled/index.html | testing utility | element zoo: alerts, redirects, forms |
+| 33 | todomvc_react | https://todomvc.com/examples/typescript-react/#/ | SPA toy | CRUD interactions, state persistence |
+| 34 | techlistic_form | https://www.techlistic.com/p/selenium-practice-form.html | practice form | long form: dropdowns, radios, datepicker |
+| 35 | practica_login | https://practicetestautomation.com/practice/ | practice suite | login tests, exception handling pages |
