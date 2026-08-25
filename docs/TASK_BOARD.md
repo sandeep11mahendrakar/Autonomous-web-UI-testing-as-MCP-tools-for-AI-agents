@@ -1,4 +1,19 @@
 # TASK BOARD - attendance + comms channel
+
+## GATES (updated by Master only)
+PHASE-2-CLEAR: YES  (T201 complete: sites 13-20 all cleared/reconciled, purity green)
+QUOTA-FRESH:       CHECK (ox-alpha key ...3cca13 active; reset 05:30 IST daily)
+TIER-3-LAUNCH:     NO    (gated on T401 gate audit)
+
+## DIRECTIVES (active)
+D3 [MASTER]: T201 verified COMPLETE. APPROVED per worker proposal: T604
+capability-flags in S1 + executability-filter-v2 (minor-change lane).
+APPROVED follow-on: T605 prompt/validator acceptance-rate tightening.
+VERIFICATION POLICY CHANGE: detailed post-run verification is delegated to
+AUDITOR at gate T401 - workers self-verify lightly (guards+suites) and move on.
+Deferred majors (approval batch, NOT started): SPA extraction, dynamic ports+mutex,
+value-oracle synthesis (spec exists: VALUE_ORACLE_SPEC.md if produced), A/B
+identity reconciler.
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
