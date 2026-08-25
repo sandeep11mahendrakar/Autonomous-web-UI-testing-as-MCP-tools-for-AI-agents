@@ -74,3 +74,9 @@ recalculated from this table as the campaign grows.
 | 19 | PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_201027` | 20 states | 9 states/278 elems | 6/6 grounded | 5/6 PASS | **60%** |
 | 20 | Open Library | https://openlibrary.org | 2026-08-25 | `openlibrary_2026-08-25.md` | `run_20260825_203014` | 6 states (0 tests) | 4 states/98 elems | 7/10 grounded | 0/7 PASS | **87.5%** |
 
+
+## TIER 3 (sites 21-30) - campaign 2026-08-26
+
+| 22 | StackOverflow Questions | https://stackoverflow.com/questions | 2026-08-26 | stackoverflow_2026-08-26.md | none - BLOCKED pre-gate | 🚫 BLOCKED - hard HTTP 403 bot-wall (preflight + claim-time re-check) | 🚫 blocked | - | - | - |
+| 24 | IMDb Chart Top | https://www.imdb.com/chart/top | 2026-08-26 | `imdb_blocked_2026-08-26.md` | none - BLOCKED pre-gate | BLOCKED - HTTP 202 bot-check (preflight + launch re-check) | blocked | - | - | - |
+| 29 | npmjs Packages | https://www.npmjs.com/packages | 2026-08-26 | `npmjs_blocked_2026-08-26.md` | none - BLOCKED pre-gate | BLOCKED - hard HTTP 403 bot-wall (preflight + launch re-check) | blocked | - | - | - |
