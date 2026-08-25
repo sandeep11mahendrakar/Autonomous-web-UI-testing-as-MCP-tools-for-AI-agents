@@ -25,6 +25,18 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:00 IST] [serial1/ox-alpha] SITE 14 CLEARED (docs_python).
+run_20260825_163448: guards ALL GREEN (strict attribution + catalog domains
++ vision start_urls). Fusion chain s1/s2/s4/ft/s6 complete. New evidence:
+A timeout @900s cap but 11 states; B SUCCESS 9 states/9 URLs/596 elements;
+S4 8/9 fusion-created; FT live 1/8 PASS (12.5%, all MEDIUM-class signals,
+7 honest fails incl. unresolved-target with zero stale clicks); fusion-
+attributable 88.9%. INDEX #14 QUARANTINED marker cleared + stat cells
+rebuilt from new artifacts; report has Re-run section. vision_test_quality
+regen: 82 tests 37 STRONG/38 MEDIUM/7 WEAK pass 60/82. s8 regen: 19 sites.
+Driver fixes landed: ftSummary % bug + INDEX stat-cell rebuild from
+dashboard_data.json. Suites 123/123 green pre-commit. NEXT: site 15
+gutenberg pipeline launching now.
 [2026-08-25 17:35 IST] [serial2/ox-alpha] T202 PREP DONE -> docs/T202_REWRITE_PLAN.md
 (rewrite itself stays gated on T201 artifacts). Pinned per-report: every tainted
 cell (B execution rows, B narrative paras, "both archs green", A/B comparison
