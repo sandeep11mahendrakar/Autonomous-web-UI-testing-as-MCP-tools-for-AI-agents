@@ -7,8 +7,10 @@
  *   1. initialize            -> expects protocolVersion + serverInfo
  *   2. notifications/initialized
  *   3. tools/list            -> expects 5 tools
- *   4. tools/call get_visual_dom (stub) -> expects isError with code -32006
+ *   4. tools/call get_visual_dom with a bogus run_id
+ *        -> expects isError with the typed code -32001 (run_not_found)
  *   5. tools/call explore_site {url}    -> expects result containing run_id
+ *   6. tools/call list_tests {run_id}   -> expects count >= 0 + test list
  *
  * Step 5 runs a REAL pipeline pass. Set STUB_LLM=true for a no-API smoke
  * run (recommended); without it the caller's LLM env/key and quota are used.
@@ -112,13 +114,13 @@ let finished = false;
   const list = await request('tools/list', {});
   assert(list.result && list.result.tools.length === 5, 'tools/list returns 5 tools');
 
-  // 4. stub tool still returns typed -32006
+  // 4. read-only tool with a bogus run_id -> typed -32001 run_not_found
   const stub = await request('tools/call', {
     name: 'get_visual_dom',
     arguments: { run_id: 'nonexistent' },
   });
-  assert(stub.result && stub.result.isError === true, 'stub tool call is isError=true');
-  assert(/-32006/.test(stub.result.content[0].text), 'stub tool error carries code -32006');
+  assert(stub.result && stub.result.isError === true, 'bogus-run_id call is isError=true');
+  assert(/-32001/.test(stub.result.content[0].text), 'typed error carries code -32001 (run_not_found)');
 
   // 5. real explore_site roundtrip
   console.log(`\nexplore_site -> ${URL_TO_EXPLORE} (this runs the pipeline; be patient)\n`);
@@ -141,6 +143,26 @@ let finished = false;
   assert(typeof payload.termination_reason === 'string', `termination_reason=${payload.termination_reason}`);
   assert(payload.totals && typeof payload.totals.total_states === 'number', 'totals.total_states present');
   console.log(`\nexplore completed in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+
+  // 6. list_tests on the fresh run
+  const lt = await request('tools/call', {
+    name: 'list_tests',
+    arguments: { run_id: payload.run_id },
+  });
+  assert(!lt.error && !lt.result.isError, 'list_tests produced a success response');
+  let tests;
+  try {
+    tests = JSON.parse(lt.result.content[0].text);
+  } catch (e) {
+    return fail(`list_tests content not JSON: ${e.message}`);
+  }
+  assert(typeof tests.count === 'number', `list_tests count=${tests.count}`);
+  assert(Array.isArray(tests.tests), 'list_tests returns a tests array');
+  if (tests.tests.length) {
+    const first = tests.tests[0];
+    assert(first.test_id && Array.isArray(first.actions), 'first test carries test_id + actions');
+    console.log(`  first test: ${first.test_id} (${first.steps} steps)`);
+  }
 
   clearTimeout(guard);
   finished = true;
