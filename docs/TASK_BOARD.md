@@ -11,10 +11,10 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 ## STATUS SHEET
 | Task ID | Status | Agent | Started (IST) | Finished (IST) | Commit |
 |---|---|---|---|---|---|
-| T101 paper prose | RUNNING | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | - | - |
+| T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
 | T102 cross-platform assessment | OPEN | - | - | - | - |
 | T103 parallel-safety spec | OPEN | - | - | - | - |
-| T104 presentation outline | OPEN | - | - | - | - |
+| T104 presentation outline | RUNNING | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | - | - |
 | T105 MCP wiring phase 1 (fork) | RUNNING | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | - | - |
 | T201 quarantine re-runs 13-20 | RUNNING | ox-alpha (CLI serial-1) | 16:11 | - | - |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
