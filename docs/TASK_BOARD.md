@@ -16,7 +16,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T103 parallel-safety spec | DONE | ox-alpha serial-1 (2nd task) | 16:42 | 16:52 | 061caa3 |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
-| T201 quarantine re-runs 13-20 | BLOCKED(window-end 17:11; resume point logged) | ox-alpha (CLI serial-1) | 16:11 | - | f4f942f+board commit |
+| T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
@@ -25,6 +25,14 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:47 IST] [serial1/ox-alpha window-2] CLAIMED T201 (sites 14-20
+resume; phptravels #19 stays MIRROR-EVIDENCE per Master, lambdatest #13 stays
+SITE-MOVED-EVIDENCE). MASTER RULING logged: testmuai.com IS approved host for
+lambdatest entries -> adding to assertVisionStartUrls allowlist. Found stale
+.campaign.lock (PID 25664 dead) - removing. run_20260825_163448 (prev-window
+site-14 attempt) has NO manifest -> unattributable, will re-run fresh.
+Order: docs_python, gutenberg, weathersparks, sahitest, theinternet,
+openlibrary. Hard stop 17:47 IST.
 [2026-08-25 17:05 IST] [serial2/ox-alpha] T102 DONE -> MCP_READINESS.md
 ADDENDUM. Inventory: taskkill tree-kill x6 sites (2 UNGUARDED in runBoth.js:137,186
 - would leak all services on POSIX), shell:true win32 spawns (DEP0190 observed
