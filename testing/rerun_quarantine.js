@@ -156,7 +156,11 @@ function patchReport(key, num, reportFile, oldRunId, runId) {
   let patched = false;
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].startsWith(`| ${num} |`) && lines[i].includes('QUARANTINED')) {
-      lines[i] = lines[i].replace('🚫 QUARANTINED-WRONG-SITE · ', '').replace(oldRunId, runId);
+      lines[i] = lines[i]
+        .replace('🚫 QUARANTINED-WRONG-SITE · ', '')
+        // swap whatever run id this row carries (may be a first-decon-batch id,
+        // e.g. 133122/134803, not necessarily the QUARANTINE_TIER2 id)
+        .replace(/`run_\d+_\d+`/, `\`${runId}\``);
       patched = true;
       break;
     }
