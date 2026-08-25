@@ -40,6 +40,7 @@ wrap href-goto in the same policy guard. Report practica_contaminated_2026-08-26
 evidence kept. Duplicate-launch aftermath: my claim was first-landed; W1's concurrent run dir is theirs to
 disposition - whichever run passes purity owns the #35 INDEX patch. W3 lane: 23 cleared / 28 thin-honest / 32+35
 contamination-caught-by-guard. Suites baseline 143/143 (no code changed this entry).
+[2026-08-26 06:5x IST] [W3/ox-alpha serial-C] T603-B DELIVERED: docs/RETROSPECTIVE_TIER3.md FINAL - complete Tier-3 retrospective in RETROSPECTIVE_TIER2.md standard: Part A scoreboard 21-30 (3 clears + thin-honest archive + 5 BLOCKED + #27 pending F5-01) and Part B replacements 31-35 (todomvc cleared FT 3/3; magento/eviltester/techlistic/practica contamination-skips w/ defect #24+#25 root causes), problems-by-class, purity-gate-as-MVP findings, fixes ledger (incl. provenanceGuard 97a29cb cross-lane), deferred majors + 5 new suggestions + ranked post-T30 recommendations. All numbers artifact-sourced.
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
