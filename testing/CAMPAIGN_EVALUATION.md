@@ -1,6 +1,8 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-25T12:21:03.448Z by `fusion/s8_campaign_eval.js`.
+<!-- Regenerated 2026-08-25T13:15:45.996Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+
+Generated: 2026-08-25T13:15:46.415Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -9,18 +11,18 @@ denominators by design.
 ## 1. Campaign summary
 
 ```text
-Sites attempted:              19
-Sites scored:                 14
+Sites attempted:              20
+Sites scored:                 15
 Sites blocked:                5
-A completed:                  14
-B completed:                  6
-Full A+B pipeline completed:  10
+A completed:                  15
+B completed:                  7
+Full A+B pipeline completed:  11
 Fusion generated (offered):   60
 Fusion accepted:              42
 Fusion live tests executed:   42
 Fusion live PASS:             27
 Fusion live FAIL:             15
-Mean fusion-attributable %:   40.4%
+Mean fusion-attributable %:   44.4%
 ```
 
 ## 2. Site matrix
@@ -39,6 +41,7 @@ Mean fusion-attributable %:   40.4%
 | 10 | OWASP Juice Shop | SUCCESS | MEDIUM | only A explored fully |
 | 11 | Books to Scrape | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
 | 12 | Quotes to Scrape | PARTIAL | MEDIUM | only A explored fully; FT live PASS though |
+| 13 | LambdaTest Playground | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
 | 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
 | 15 | Project Gutenberg | PARTIAL | LOW | neither architecture completed exploration |
 | 16 | WeatherSpark | PIPELINE FAILURE | LOW | neither architecture completed exploration |
@@ -191,8 +194,8 @@ Token counts were not recorded for Tier-1 runs and are reported as not recorded
 
 ## 10. Conclusions
 
-1. Full-pipeline success: 10/14 runnable sites (+5 honestly BLOCKED).
-2. Mean fusion-attributable coverage: 40.4%.
+1. Full-pipeline success: 11/15 runnable sites (+5 honestly BLOCKED).
+2. Mean fusion-attributable coverage: 44.4%.
 3. Blocked environments are tracked separately and never counted as failures.
 4. Historical evidence (19 pipeline defects, seeded-bug mutation scorecard in
    `mutation/results/SCORECARD.md`) demonstrates hardening through heterogeneous

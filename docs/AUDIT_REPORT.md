@@ -237,3 +237,9 @@ run's manifest URL. Otherwise the mtime collector can re-stitch folders identica
 This addendum + QUARANTINE_TIER2.md are inputs to the Gate step: no quarantined row
 may leave QUARANTINED status without (a) guard-passing re-run, (b) domain assertion
 log, (c) rewritten narrative sourced only from the new run.
+
+## DEFECT #23 (found by folder_purity tooling, 2026-08-25)
+Weatherspark re-run run_20260825_173233 catalog.json contains a literal null
+page_key (catalog builder recorded a null URL as a page). Data corruption
+class: catalog-builder. Flagged by testing/folder_purity.js; needs a null-
+guard in the S1 catalog builder before overnight batches.
