@@ -17,13 +17,19 @@ function normText(t) {
   return String(t || '').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-/** Comparable page key: origin + path, no trailing slash, no query/hash. */
+/** Comparable page key: origin + path, no trailing slash, no query/hash.
+ * Defect #23 fix: null/undefined/"null" URLs previously fell through to
+ * normText() producing the literal string "null" as a page_key, which then
+ * became a phantom catalog page. Returns '' for unattributable input;
+ * callers must skip observations with empty page keys. */
 function pageKey(url) {
+  const raw = String(url == null ? '' : url).trim();
+  if (!raw || raw === 'null' || raw === 'undefined') return '';
   try {
-    const u = new URL(url);
+    const u = new URL(raw);
     return `${u.origin}${u.pathname.replace(/\/$/, '')}`;
   } catch (_) {
-    return normText(url);
+    return normText(raw);
   }
 }
 
