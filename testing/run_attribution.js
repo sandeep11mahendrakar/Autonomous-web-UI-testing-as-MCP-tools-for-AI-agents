@@ -120,9 +120,17 @@ module.exports = { findRunDir, assertCatalogDomains, normalizeUrl, readManifest,
  */
 function assertVisionStartUrls(runId, url) {
   const out = { ok: true, checked: 0, violations: [] };
+  // MASTER RULING (2026-08-25): testmuai.com is a verified legitimate
+  // LambdaTest property (independent auditor) — approved host for lambdatest
+  // site entries (lambdatest.com now redirects its playground there).
+  const APPROVED_HOST_ALIASES = {
+    'www.lambdatest.com': ['testmuai.com', 'www.testmuai.com'],
+    'lambdatest.com': ['testmuai.com', 'www.testmuai.com'],
+  };
   const manifest = readManifest(runId);
   const mHost = (() => { try { return new URL(manifest.url).host.toLowerCase(); } catch (_) { return ''; } })();
   if (!mHost) { out.ok = false; out.violations.push({ file: 'run_manifest.json', host: '', url: 'manifest missing or unparseable' }); return out; }
+  const approved = new Set([mHost, ...((APPROVED_HOST_ALIASES[mHost] || []))]);
   const vdir = path.join(RUNS_ROOT, runId, 'vision', 'outputs');
   let files = [];
   try {
@@ -135,7 +143,7 @@ function assertVisionStartUrls(runId, url) {
     if (!src) continue;
     out.checked += 1;
     const h = (() => { try { return new URL(src).host.toLowerCase(); } catch (_) { return ''; } })();
-    if (!h || h !== mHost) {
+    if (!h || !approved.has(h)) {
       out.violations.push({ file: f, host: h || '(unparseable)', url: String(src).slice(0, 120) });
     }
   }
