@@ -58,6 +58,17 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 00:20 IST] [MASTER] DIRECTIVE D6 - TIER-3 PAIR ASSIGNMENTS (2 sites per worker, sequential via .campaign.lock round-robin):
+W1 = #21 wikipedia + #26 hackernews
+W2 = #22 stackoverflow + #27 bbc_news
+W3 = #23 github_trending + #28 archive_org
+W4 = #24 imdb_top + #29 npmjs_packages
+W5 = #25 goodreads_list + #30 reddit_public
+Site keys in testing/TIER3_SITES.md. GO signal = user says go.
+
+MICRO-TASKS (any idle worker, zero quota):
+T606 = RESEARCH_PAPER_DRAFT.md denominator wording fix (n=19 vs n=18 boundary note)
+T607 = DONE: neonish remote removed from git config (was re-added by an agent session - do not re-add)
 [2026-08-25 23:05 IST] [MASTER] DIRECTIVE D5 - OVERNIGHT ASSIGNMENTS:
 1) W1-W4: execute your pre-assigned Tier-3 sites (#21 hn / #22 text.npr / #23 lite.ddg / #24 archive.org), then self-serve remaining #25-30 via expiring claims. PIPELINE SERIALIZATION: hold .campaign.lock during each pipeline; release between sites so other workers proceed (round-robin). ox-alpha upstream is CONGESTED tonight - retries will grind; be patient, do not abandon.
 2) W5 (new): self-serve worker for any unclaimed Tier-3 sites + quota-death recovery.
