@@ -17,7 +17,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
-| T202 reports 14/15 B-side rewrite | CLAIMED (PREP while T201 window-2 runs; rewrite gated on new artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
+| T202 reports 14/15 B-side rewrite | RUNNING (PREP done: docs/T202_REWRITE_PLAN.md; rewrite gated on T201 artifacts for #14/#15) | ox-alpha CLI serial-2 | 16:55 | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -25,6 +25,25 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:35 IST] [serial2/ox-alpha] T202 PREP DONE -> docs/T202_REWRITE_PLAN.md
+(rewrite itself stays gated on T201 artifacts). Pinned per-report: every tainted
+cell (B execution rows, B narrative paras, "both archs green", A/B comparison
+B-half) with exact locations + rewrite-source artifact paths; A-sides and FT
+stages confirmed live-valid per audit F-03/addendum and marked DO-NOT-TOUCH.
+Flagged: existing docs_python 134803 re-run section predates host-check guards -
+must re-validate before trusting its B numbers. No pipeline, no lock, no quota.
+Read-only except new plan file + board.
+[2026-08-25 17:25 IST] [serial2/ox-alpha] T202 PREP DONE while T201 window-2
+runs: testing/T202_REWRITE_CHECKLIST.md committed. Maps EVERY B-contaminated
+field in docs_python + gutenberg reports to its replacement artifact source.
+KEY findings for whoever executes T202: (1) gutenberg's "First full SUCCESS"
+status and "16 novel targets record" claim were earned on contaminated B data
+- must NOT be carried over; re-decided from new run only. (2) docs_python
+already has a first-decon section (run_134803, A-timeout, FT 2/8) - keep it,
+new post-quarantine section supersedes. (3) S1/S4/FT numbers are B-DERIVED via
+catalog chain, not just the obvious B rows - all get replaced. (4) Old numbers
+append-only, never deleted. Rewrite itself stays gated on rerun_quarantine.js
+post guards passing for each site.
 [2026-08-25 16:50 IST] [serial1/ox-alpha] MASTER DIRECTIVE received: hard stop
 WAIVED, keep working; all agent notes go on this board only. T201 resumed as
 primary lane. Status: site 14 docs_python pipeline mid-run (launched ~16:35,
