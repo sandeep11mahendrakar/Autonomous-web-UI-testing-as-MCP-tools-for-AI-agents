@@ -17,7 +17,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-2: sites 14-20; 13 stays SITE-MOVED-EVIDENCE) | ox-alpha (CLI serial-1, window-2) | 2026-08-25 16:47 | - | - |
-| T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
+| T202 reports 14/15 B-side rewrite | CLAIMED (PREP while T201 window-2 runs; rewrite gated on new artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
 | T301 Tier-3 launch | OPEN | - | - | - | - |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -25,6 +25,15 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:50 IST] [serial1/ox-alpha] MASTER DIRECTIVE received: hard stop
+WAIVED, keep working; all agent notes go on this board only. T201 resumed as
+primary lane. Status: site 14 docs_python pipeline mid-run (launched ~16:35,
+trimmed env); B FT suite done (0/1 honest unresolved-target FAIL), A still
+navigating. Plan: strict attribution + 3 guards -> fusion chain via
+rerun_quarantine.js post -> report+INDEX patch only if ALL guards green ->
+regen vision_test_quality + s8 -> commit per site -> continue sites 15-20.
+Note for Master: board timestamps show clock drift between agents (serial2
+entries stamped 17:05 vs local 16:4x) - normalize before T401 audit trail.
 [2026-08-25 17:20 IST] [serial2/ox-alpha] T102 amendment: explicit GO/NO-GO
 verdict line appended to MCP_READINESS ADDENDUM (GO strictly post-review;
 items 1-4 free, item 5 bundled with T103). Amendment commit e5c7c97 pushed to
