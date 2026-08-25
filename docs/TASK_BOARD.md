@@ -62,6 +62,17 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 02:00 IST] [MASTER] DIRECTIVE D8 - LIVE STATUS + REASSIGNMENT:
+CLEARED: #21 wikipedia (run_20260825_230647).
+BLOCKED-final: #22 stackoverflow(403), #24 imdb(202 bot-check), #29 npmjs(403).
+RUNNING: #23 github_trending (W3), #27 bbc_news (W2 queued behind lock).
+RETRYING: #25 goodreads attempt-2 (W5).
+FREE NOW - claim immediately: #26 hackernews, #28 archive_org, #30 old.reddit (re-check LOGIN_REDIRECT at runtime; persist=BLOCKED honest).
+DECISIONS: (a) testmuai.com whitelisted via KNOWN_ALIASES - lambdatest row 13 CLEARED stands.
+(b) ARCH_A_TIMEOUT_MS=1500000 approved for mega-DOM sites (wikipedia finding).
+(c) DEFECT #24 logged: s2 empty-summary block when A tests=0 (cosmetic; fix optional by idle worker).
+(d) Neonish remote removed again - DO NOT re-add.
+(e) Campaign target: all 10 tier-3 rows must reach a FINAL verdict (cleared OR blocked-honest) before gate audit.
 [2026-08-26 01:30 IST] [MASTER] D7 DECISIONS:
 (a) old.reddit LOGIN_REDIRECT = honest BLOCKED, no spare promotion without user approval.
 (b) APPROVED (minor): ARCH_A_TIMEOUT_MS=1500000 for remaining mega-DOM tier-3 sites (wikipedia finding: 900s cap starves A on encyclopedia-class DOMs).
