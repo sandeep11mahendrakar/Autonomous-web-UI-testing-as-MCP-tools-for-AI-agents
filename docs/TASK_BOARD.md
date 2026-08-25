@@ -30,6 +30,16 @@ authoritative (mine); your run dir kept as evidence per precedent. If your purit
 with board disclosure. Purity gate arbitrates BOTH runs; no report/INDEX patch until PURE. Contamination risk is real
 (same-site concurrent pipelines share storage) - exactly why claims must land before launch AND watchers must re-check
 claims, not just lock files.
+[2026-08-26 05:3x IST] [W3/ox-alpha serial-C] SITE 35 PRACTICA = CONTAMINATION-SKIP (honest): run_20260826_003258
+purity FAIL 3/4 - A genuinely navigated to external https://luma.com/d3b2s20o ("AI for Test Automation" workshop link
+on the practice page). ROOT CAUSE = NEW DEFECT #25 CANDIDATE: web/src/llmClient.js executeAction() click branch follows
+absolute hrefs with direct page.goto(), BYPASSING the external-domain guard (which only wraps candidate-based
+navigates). This is NOT the stitching class (#24/#31/#32) - the explorer truly left-site; catalog page_keys 12/12 OK,
+B start_url OK, only A visited_urls dirty. PARKED during campaign per no-pipeline-changes decision; fix direction =
+wrap href-goto in the same policy guard. Report practica_contaminated_2026-08-26.md + INDEX row 35 with marker;
+evidence kept. Duplicate-launch aftermath: my claim was first-landed; W1's concurrent run dir is theirs to
+disposition - whichever run passes purity owns the #35 INDEX patch. W3 lane: 23 cleared / 28 thin-honest / 32+35
+contamination-caught-by-guard. Suites baseline 143/143 (no code changed this entry).
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
@@ -75,6 +85,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | D9 site-34 techlistic_form | BLOCKED(contamination) - purity FAIL foreign practica sweep (defect candidate #24, 3rd instance); run kept as evidence, no report patch. NOTE: defect #24 guard fix landed @ 97a29cb (collector now covers test_cases_* + execution_results.json) | ox-alpha CLI serial-B | 2026-08-26 04:12 | 2026-08-26 04:50 | this commit |
 | D9 site-35 practica_login (W1 first-claim) | SUPERSEDED/YIELDED to W3 - attempt-1 caught real contamination (purity FAIL -> defect-#24 evidence), attempt-2 died pre-pipeline zero-quota | ox-alpha serial-1 (W1) | 2026-08-26 00:03 | 2026-08-26 06:0x | - |
 | D9 site-35 practica_login | CLAIMED by W3 (human directive: take free sites) - no prior landed claim exists (W5's "35 W1" note was second-hand intent; W1 signed off without claiming). Availability HTTP 200 verified. Pipeline launching on free lock | ox-alpha CLI serial-C (W3) | 2026-08-26 04:4x | - | - |
+| D9 site-35 practica_login (W3 attempt) | DONE - CONTAMINATION-SKIP honest: run_20260826_003258 purity FAIL - A navigated to external luma.com via href-goto bypass of external-domain guard (NEW DEFECT #25 candidate, distinct from stitching #24 class); catalog+B clean 3/4 checks; report+INDEX 🚫 marker; evidence kept. NOTE: W1's duplicate launch ran same site same window - their run dir is theirs to disposition; both must pass purity before any #35 INDEX patch | ox-alpha CLI serial-C (W3) | 2026-08-26 04:4x | 2026-08-26 05:2x | this commit |
 | D9 replacement lane: defect-#24 guard + sites 31/32(/17) re-runs | IN PROGRESS - guard DONE @ 97a29cb (test_cases_*+execution_results.json provenance, 12 regression tests, suites 155/155); pipelines queued behind lock: #31 magento first (re-check 526 SSL), then #32 eviltester, then #17 sahitest if window allows | ox-alpha CLI (replacement worker) | 2026-08-26 05:1x | - | 97a29cb |
 | Tier-3 W2 site-27 bbc_news | HANDED-OFF - pipeline run_20260826_000112 attributed strictly (3 foreign exploration_results auto-rejected); A timeout@15min honest after 16 steps/17 states; B success 8 steps/9 states + replay 1/1 PASS live (weak disclosed); fusion chain NOT run by serial-B - window shifted to D9 replacement lane; run on disk for any lane to chain+verify | ox-alpha CLI serial-B | 2026-08-26 00:01 | 2026-08-26 00:20 | f64e578 |
 | T201 site-18 theinternet re-run | DONE - CLEARED-BY-RERUN run_20260825_195406, all guards green + folder_purity pure, FT live 4/4 after reconciliation (early 3/3 pre-reconcile), fusion 80% | ox-alpha CLI serial-B | 2026-08-25 19:54 | 2026-08-25 20:15 | (report+INDEX patched; mega-report row filled) |
