@@ -56,8 +56,9 @@ function siteByKey(key) {
 }
 
 function holdLock(fn) {
+  const { lockIsFreeOrStale } = require('./campaign_lock');
   const lock = path.join(__dirname, '.campaign.lock');
-  if (fs.existsSync(lock)) { log('lock held by someone else — aborting'); process.exit(2); }
+  if (!lockIsFreeOrStale(lock, log)) process.exit(2);
   fs.writeFileSync(lock, String(process.pid));
   const release = () => { try { fs.unlinkSync(lock); } catch (_) {} };
   try { fn(); release(); } catch (e) { log(`FATAL: ${String(e.message).slice(0, 300)}`); release(); process.exit(1); }
