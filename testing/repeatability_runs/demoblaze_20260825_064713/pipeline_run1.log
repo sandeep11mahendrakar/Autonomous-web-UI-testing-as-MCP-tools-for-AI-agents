@@ -1,0 +1,355 @@
+
+===== node runBoth.js https://www.demoblaze.com @ 2026-08-25T01:17:13.650Z =====
+[RUN] Run ID: run_20260825_064713
+[RUN] URL: https://www.demoblaze.com
+[RUN] Auth seed: not provided
+[RUN] Output tree: runs\run_20260825_064713
+[RUN] GROQ_API_KEY available: true
+[RUN] ARCH-A LLM: provider=groq model=(provider default) key=set
+[RUN] ARCH-B LLM: provider=groq model=(provider default) key=set
+[ARCH-A] Starting... (DOM + memory-log exploration)
+[ARCH-B] Starting... (Vision pipeline: capture -> YOLO/OCR -> visual DOM -> LLM tests -> execution)
+[ARCH-B] [run] Target: https://www.demoblaze.com
+[ARCH-B] [run] Starting services...
+[ARCH-B] (node:14168) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
+[ARCH-B] [merge] [merge] Merge service running on :5003
+[ARCH-B] [ocr]  * Serving Flask app 'ocr'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [browser] [browser] Browser service running on :5004
+[ARCH-B] [ocr] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5002
+[ARCH-B]  * Running on http://192.168.0.113:5002
+[ARCH-B] [ocr] Press CTRL+C to quit
+[ARCH-A] [explore] Loading homepage: https://www.demoblaze.com
+[ARCH-B] [yolo] [yolo] Loading model: screenparser_best.pt (conf=0.15, imgsz=640)
+[ARCH-B] [yolo] Model loaded. Classes: 55
+[ARCH-B]  * Serving Flask app 'detect'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [yolo] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5001
+[ARCH-B]  * Running on http://192.168.0.113:5001
+[ARCH-B] [yolo] Press CTRL+C to quit
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:16] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] YOLO service ready
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:47:16] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] OCR service ready
+[ARCH-B] [run] Merge service ready
+[ARCH-B] [gateway] [gateway] Vision gateway running on :5000
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:47:17] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:17] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] Vision gateway ready
+[ARCH-B] [run] All services healthy. Starting autonomous exploration...
+[ARCH-A] [explore] Extracting homepage elements...
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:47:21] "POST /extract HTTP/1.1" 200 -
+[ARCH-A] [explore] Homepage elements found: 19
+[ARCH-A] [explore] Deterministic flow discovery found 2 flows: PRODUCT STORE,Cart
+[ARCH-A] [explore] ▶ Flow 1/2: PRODUCT STORE → https://www.demoblaze.com/index.html
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:23] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:23] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 @ https://www.demoblaze.com/ (40 elements)
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [explore] ══ Step 1 (Flow: PRODUCT STORE, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-11","value":"","reason":"Clicking the 'Phones' category is a high-value navigation step to explore a new product listing page on the site."}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:44] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:47:44] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:47:44] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 --click(list_item:Phones)--> state_002 @ https://www.demoblaze.com/#
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "navigate",
+[ARCH-A]   "elementId": 10,
+[ARCH-A]   "selector": "a```html
+[ARCH-A] [href=\"prod.html?idp_=1"]",
+[ARCH-A]   "value": "",
+[ARCH-A]   "url": "prod.html?idp_=1",
+[ARCH-A]   "reaso
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/prod.html?idp_=1"
+[ARCH-A] [explore] Step 1: navigate "a[href="prod.html?idp_=1"]" → state_002 @ https://www.demoblaze.com/prod.html?idp_=1
+[ARCH-A] [memoryLog] Saved 1 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 1 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 2 (Flow: PRODUCT STORE, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmClient] Raw response: {"action": "navigate", "elementId": 3, "selector": "#cartur", "value": "", "url": "https://www.demoblaze.com/cart.html", "reason": "Navigating to the 
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/cart.html"
+[ARCH-A] [explore] Step 2: navigate "Cart" → state_003 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 2 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 3 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 2 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 3 (Flow: PRODUCT STORE, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-14","value":"","reason":"Clicking the Samsung Galaxy S6 product link navigates to a new product detail page, maximizing exploration of unvisited states."}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:48:32] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:48:32] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:48:32] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --click(link:Samsung galaxy sé)--> state_003 @ https://www.demoblaze.com/prod.html?idp_=1
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmClient] Raw response: {"action": "click", "elementId": 0, "selector": "button.btn.btn-success", "value": "", "url": "", "reason": "The cart page's primary flow action is pl
+[ARCH-A] [llmClient] Executing: click "button.btn.btn-success"
+[ARCH-A] [explore] Step 3: click "Place Order" → state_004 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 3 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 4 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 3 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 4 (Flow: PRODUCT STORE, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: The current screen appears to be a product detail page on demoblaze (prod.html?idp_=1 - Samsung Galaxy S6). The candidates include navigation links: Home, Contact, Login, Cart, Slenup (probably "Sign 
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "fill",
+[ARCH-A]   "elementId": 9,
+[ARCH-A]   "selector": "#name",
+[ARCH-A]   "value": "John Doe",
+[ARCH-A]   "url": "",
+[ARCH-A]   "reason": "The place order modal contains unfille
+[ARCH-A] [llmClient] Executing: fill "#name" with "John Doe"
+[ARCH-A] [explore] Step 4: fill "#name" → state_005 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 4 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 5 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 4 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 5 (Flow: PRODUCT STORE, flow-step: 5) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"This untried high-confidence button at the centre of the product detail area is most likely the 'Add to cart' action, a primary unexplored i
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:49:14] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 06:49:14] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 06:49:14] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_003 --click(button:)--> state_004 @ https://www.demoblaze.com/prod.html?idp_=1#
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmClient] Raw response: {"action": "fill", "elementId": 10, "selector": "#country", "value": "USA", "url": "", "reason": "Filling the Country field of the place order form be
+[ARCH-A] [llmClient] Executing: fill "#country" with "USA"
+[ARCH-A] [explore] Step 5: fill "#country" → state_006 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 5 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 6 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 5 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 6 (Flow: PRODUCT STORE, flow-step: 6) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action": "fill", "elementId": 11, "selector": "#city", "value": "New York", "url": "", "reason": "Continuing to complete the place order form by fil
+[ARCH-A] [llmClient] Executing: fill "#city" with "New York"
+[ARCH-A] [explore] Step 6: fill "#city" → state_007 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 6 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 7 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 6 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 7 (Flow: PRODUCT STORE, flow-step: 7) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-9","value":"","reason":"The 'Slenup' link (likely 'Sign up') is an unexplored navigation element that should open a new registration
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {"action": "fill", "elementId": 12, "selector": "#card", "value": "4111111111111111", "url": "", "reason": "Filling the remaining required credit card
+[ARCH-A] [llmClient] Executing: fill "#card" with "4111111111111111"
+[ARCH-A] [explore] Step 7: fill "#card" → state_008 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 7 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 8 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 7 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 8 (Flow: PRODUCT STORE, flow-step: 8) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-9","value":"","reason":"The 'Slenup' link (likely 'Sign up') is an untried high-confidence navigation element that should open a new page/modal state not yet visite
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "fill",
+[ARCH-A]   "elementId": 13,
+[ARCH-A]   "selector": "#month",
+[ARCH-A]   "value": "12",
+[ARCH-A]   "url": "",
+[ARCH-A]   "reason": "The Month field is the only remaining requ
+[ARCH-A] [llmClient] Executing: fill "#month" with "12"
+[ARCH-A] [explore] Step 8: fill "#month" → state_009 @ https://www.demoblaze.com/cart.html
+[ARCH-A] [memoryLog] Saved 8 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 8 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ✓ Flow "PRODUCT STORE" finished.
+[ARCH-A] [explore] ▶ Flow 2/2: Cart → https://www.demoblaze.com/cart.html
+[ARCH-B] [explore] state_004 --click(link:Slenup)--> state_005 @ https://www.demoblaze.com/prod.html?idp_=1#
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [explore] ══ Step 9 (Flow: Cart, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393) - no text
+[ARCH-B] - elem-1: button at (740, 393)
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393) - no text
+[ARCH-B] - elem-1: button at (740, 393)
+[ARCH-B] [explore] Anti-laziness floor: 4/6 steps with untried candidates — refusing "done".
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393), no text
+[ARCH-B] - elem-1: button at (740, 393),
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393) - no text
+[ARCH-B] - elem-1: button at (740, 393)
+[ARCH-B] [explore] Anti-laziness fallback: click on element elem-0.
+[ARCH-B] [explore] state_005 --click(button:)--> state_006 @ https://www.demoblaze.com/prod.html?idp_=1#
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "done",
+[ARCH-A]   "elementId": null,
+[ARCH-A]   "selector": "",
+[ARCH-A]   "value": "",
+[ARCH-A]   "url": "",
+[ARCH-A]   "reason": "The Cart flow is complete: all order form fields
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393), no text
+[ARCH-B] - elem-1: button at (740, 393) 
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393) - no text
+[ARCH-B] - elem-1: button "c se C" at (
+[ARCH-B] [explore] Anti-laziness floor: 5/6 steps with untried candidates — refusing "done".
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "navigate",
+[ARCH-A]   "elementId": 4,
+[ARCH-A]   "selector": "#login2",
+[ARCH-A]   "value": "",
+[ARCH-A]   "url": "https://www.demoblaze.com/cart.html#",
+[ARCH-A]   "reason": "The 
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/cart.html#"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 9 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 9 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 10 (Flow: Cart, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393), no text
+[ARCH-B] - elem-1: button at (740, 393),
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates include:
+[ARCH-B] - elem-0: button at (830, 393) - no text
+[ARCH-B] - elem-1: button "c se C" at (
+[ARCH-B] [explore] Anti-laziness fallback: click on element elem-0.
+[ARCH-B] [explore] state_006 --click--> repeated state, going back
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-A] [llmClient] Raw response: {
+[ARCH-A]   "action": "navigate",
+[ARCH-A]   "elementId": 5,
+[ARCH-A]   "selector": "#signin2",
+[ARCH-A]   "value": "",
+[ARCH-A]   "url": "https://www.demoblaze.com/cart.html#",
+[ARCH-A]   "reason": "The
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/cart.html#"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 10 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 10 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] ══ Step 11 (Flow: Cart, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates are:
+[ARCH-B] - elem-1: button "c se C" at (740, 393) — this looks like OCR garbled text,
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling openrouter -> stealth/ox-alpha ...
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[ARCH-B] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 24000ms (attempt 3/6)
+[ARCH-B] [llm] Raw response: Let me analyze the current screen. We're on demoblaze.com, likely on a product page (prod.html?idp_=1). The candidates are:
+[ARCH-B] - elem-1: button "c se C" at (740, 393) - this looks like OCR garbled text,
+[ARCH-B] [run] Exploration summary:
+[ARCH-B] {
+[ARCH-B]   "total_steps": 6,
+[ARCH-B]   "total_states": 6,
+[ARCH-B]   "unique_states": 6,
+[ARCH-B]   "unique_urls": 4,
+[ARCH-B]   "repeated_states_skipped": 1,
+[ARCH-B]   "action_errors": 0,
+[ARCH-B]   "click_actions": 6,
+[ARCH-B]   "fill_actions": 0,
+[ARCH-B]   "scroll_actions": 0,
+[ARCH-B]   "submit_actions": 0,
+[ARCH-B]   "generated_tests": 1,
+[ARCH-B]   "avg_steps_per_test": 5
+[ARCH-B] }
+[ARCH-B] [run] Termination: llm_done
+[ARCH-B] [run] Visited URLs:
+[ARCH-B]   https://www.demoblaze.com/
+[ARCH-B]   https://www.demoblaze.com/#
+[ARCH-B]   https://www.demoblaze.com/prod.html?idp_=1
+[ARCH-B]   https://www.demoblaze.com/prod.html?idp_=1#
+[ARCH-B] [run] Test cases from history: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787620638239_exploration.json
+[ARCH-B] [run] Evidence: storage/screenshots/run_1787620638239
+[ARCH-B] [run] Shutting down services...
+[ARCH-B] [execute] Test cases: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787620638239_exploration.json (1 tests)
+[ARCH-B] [execute] Base URL:   https://www.demoblaze.com
+[ARCH-B] [execute] Run ID:     run_1787620638239 (evidence: storage/screenshots/run_1787620638239/)
+[ARCH-B] [execute] Vision services already running — re-detection enabled.
+[ARCH-B] [execute] Test 1/1: TC01
+[ARCH-B] [execute]   Objective: Replays an autonomously discovered visual workflow: click(Phones) -> click(Samsung galaxy sé) -> click -> click(Slenup) -> click
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 4/6)
+[ARCH-B] [execute]   Unresolved target at step 3 (click): target not found in current state (wanted type="button" text=""). No stale coordinates were clicked.
+[ARCH-B] [execute]   Result: FAIL — Unresolved target at step 3 (click): target not found in current state (wanted type="button" text=""). No stale coordinates were clicked.
+[ARCH-B] =========================================
+[ARCH-B] [execute] Suite finished: 0 passed, 1 failed, 0 errors (of 1)
+[ARCH-B] [execute] Report saved to C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\execution_results.json
+[ARCH-B] =========================================
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Raw response: {"action":"navigate","elementId":3```html
+[ARCH-A] ,"selector":"a[href=\"#"]","value":"","url":"https://www.demoblaze.com/cart.html#","reason":"The only remain
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/cart.html#"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 11 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 11 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [explore] Max actions per state reached — next flow.
+[ARCH-A] [explore] ✓ Flow "Cart" finished.
+[ARCH-A] [explore] ✅ Exploration finished.
+[ARCH-A] [explore] Total steps logged: 11; states: 9; termination: completed
+[ARCH-A] [memoryLog] Saved 11 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 9 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\states.json
+[ARCH-A] [memoryLog] Saved 11 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\transitions.json
+[ARCH-A] [memoryLog] Saved exploration summary → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\exploration_summary.json
+[ARCH-A] [testGenerator] Building test case prompt from 11 steps / 11 transitions...
+[ARCH-A] [llmClient] Calling openrouter → stealth/ox-alpha ...
+[ARCH-A] [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmClient] Raw response: [
+[ARCH-A]   {
+[ARCH-A]     "id": "TC001",
+[ARCH-A]     "objective": "Verify complete end-to-end purchase flow: select product, go to cart, place order and fill checkout form",
+[ARCH-A] [llmClient] Response needs cleaning — parseAction() will handle it
+[ARCH-A] [testGenerator] JSON parse failed after stripping fences: Unterminated string in JSON at position 4084 (line 126 column 47)
+[ARCH-A] [testGenerator] Raw LLM response saved to C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\test_cases_raw_response.txt
+[ARCH-A] [testGenerator] No valid LLM test cases — using deterministic grounded fallback.
+[ARCH-A] [testGenerator] Saved → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_064713\dom\test_cases.json
+[ARCH-A] [testGenerator] ✓ Generated 1 test case(s):
+[ARCH-A]   [TC001] Replay the recorded workflow (navigate → navigate → click → fill → fill → fill → fill → fill), ending at https://www.demoblaze.com/cart.html (8 steps)
+[RUN] Collecting artifacts into unified run tree...
+
+=========================================
+[RUN] Architecture A: success
+[RUN] Architecture B: success
+[RUN] Overall run: SUCCESS
+[RUN] Results:
+  DOM:    runs\run_20260825_064713\dom
+       -> (no artifacts produced)
+  VISION: runs\run_20260825_064713\vision
+       -> 19 artifact(s)
+Manifest:
+  runs\run_20260825_064713\run_manifest.json
+=========================================

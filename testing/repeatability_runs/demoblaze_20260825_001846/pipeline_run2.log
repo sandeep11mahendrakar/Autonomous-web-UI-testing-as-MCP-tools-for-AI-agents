@@ -1,0 +1,249 @@
+
+===== node runBoth.js https://www.demoblaze.com @ 2026-08-24T19:03:58.132Z =====
+[RUN] Run ID: run_20260825_003358
+[RUN] URL: https://www.demoblaze.com
+[RUN] Auth seed: not provided
+[RUN] Output tree: runs\run_20260825_003358
+[RUN] GROQ_API_KEY available: true
+[RUN] ARCH-A LLM: provider=groq model=(provider default) key=set
+[RUN] ARCH-B LLM: provider=groq model=(provider default) key=set
+[ARCH-A] Starting... (DOM + memory-log exploration)
+[ARCH-B] Starting... (Vision pipeline: capture -> YOLO/OCR -> visual DOM -> LLM tests -> execution)
+[ARCH-A] [explore] Loading homepage: https://www.demoblaze.com
+[ARCH-B] [run] Target: https://www.demoblaze.com
+[ARCH-B] [run] Starting services...
+[ARCH-B] (node:27520) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
+[ARCH-B] [ocr]  * Serving Flask app 'ocr'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [merge] [merge] Merge service running on :5003
+[ARCH-B] [ocr] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[ocr] 
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5002
+[ARCH-B]  * Running on http://192.168.0.113:5002
+[ARCH-B] Press CTRL+C to quit
+[ARCH-B] [browser] [browser] Browser service running on :5004
+[ARCH-B] [yolo] [yolo] Loading model: screenparser_best.pt (conf=0.15, imgsz=640)
+[ARCH-B] [yolo] Model loaded. Classes: 55
+[ARCH-B]  * Serving Flask app 'detect'
+[ARCH-B]  * Debug mode: off
+[ARCH-B] [yolo] WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+[ARCH-B]  * Running on all addresses (0.0.0.0)
+[ARCH-B]  * Running on http://127.0.0.1:5001
+[ARCH-B]  * Running on http://192.168.0.113:5001
+[ARCH-B] [yolo] Press CTRL+C to quit
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:04] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] YOLO service ready
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:04] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] OCR service ready
+[ARCH-B] [run] Merge service ready
+[ARCH-B] [gateway] [gateway] Vision gateway running on :5000
+[ARCH-A] [explore] Extracting homepage elements...
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:05] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:05] "GET /health HTTP/1.1" 200 -
+[ARCH-B] [run] Vision gateway ready
+[ARCH-B] [run] All services healthy. Starting autonomous exploration...
+[ARCH-A] [explore] Homepage elements found: 19
+[ARCH-A] [explore] Deterministic flow discovery found 2 flows: PRODUCT STORE,Cart
+[ARCH-A] [explore] ▶ Flow 1/2: PRODUCT STORE → https://www.demoblaze.com/index.html
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:10] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:12] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:12] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 @ https://www.demoblaze.com/ (40 elements)
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-11","value":"","reason":"Explore the Phones category to view available products."}
+[ARCH-A] [explore] ══ Step 1 (Flow: PRODUCT STORE, flow-step: 1) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:18] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:18] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:18] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_001 --click(list_item:Phones)--> state_002 @ https://www.demoblaze.com/#
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-11","value":"","reason":"Explore Phones category"}
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:25] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:25] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:25] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_002 --click(list_item:Phones)--> state_003 @ https://www.demoblaze.com/#
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-11","value":"","reason":"Explore the Phones category to view product listings."}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:32] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:32] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:32] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_003 --click(list_item:Phones)--> state_004 @ https://www.demoblaze.com/#
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-11","value":"","reason":"Explore the Phones category to discover new products."}
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:39] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:39] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:39] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_004 --click--> repeated state, going back
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-13","value":"","reason":"Explore the Laptops category to navigate to a new page."}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:47] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:34:47] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:34:47] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_004 --click(list_item:Laptops)--> state_006 @ https://www.demoblaze.com/#
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 8000ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-12","value":"","reason":"Explore Laptops category"}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:02] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:35:02] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:02] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_006 --click--> repeated state, going back
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-17","value":"","reason":"Explore product details for MacBook
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 14300ms (attempt 1/6)
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-16","value":"","reason":"Explore the Cart page to see its contents."}
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:41] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:35:41] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:41] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_006 --click(link:Cart)--> state_008 @ https://www.demoblaze.com/cart.html
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-16","value":"","
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 7123ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: {"action":"click","elementId":"elem-0","value":"","reason":"Proceed to checkout from cart page"}
+[ARCH-B] [ocr] 127.0.0.1 - - [25/Aug/2026 00:35:56] "POST /extract HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:56] "POST /detect HTTP/1.1" 200 -
+[ARCH-B] [yolo] 127.0.0.1 - - [25/Aug/2026 00:35:56] "POST /render_boxes HTTP/1.1" 200 -
+[ARCH-B] [explore] state_008 --click(button:)--> state_009 @ https://www.demoblaze.com/cart.html
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 4430ms (attempt 1/6)
+[ARCH-B] [llm] Raw response: We need to choose next action. We have a screen with many text inputs and a close button. We are at cart.html page. The context: visited cart.html. The screen shows many empty text inputs: likely a fo
+[ARCH-B] [explore] LLM said done but untried candidates remain — reprompting.
+[ARCH-B] [llm] Calling groq -> openai/gpt-oss-20b ...
+[ARCH-B] [llmProvider] 429 from groq (openai/gpt-oss-20b) — waiting 11270ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-B] [llm] Raw response: We need to choose one next action. We have a list of elements. We need to pick one with alreadyTried=false. All are false. We need to decide which action. The context: visited URLs: demoblaze.com, #, 
+[ARCH-B] [run] Exploration summary:
+[ARCH-B] {
+[ARCH-B]   "total_steps": 8,
+[ARCH-B]   "total_states": 7,
+[ARCH-B]   "unique_states": 7,
+[ARCH-B]   "unique_urls": 3,
+[ARCH-B]   "repeated_states_skipped": 2,
+[ARCH-B]   "action_errors": 0,
+[ARCH-B]   "click_actions": 8,
+[ARCH-B]   "fill_actions": 0,
+[ARCH-B]   "scroll_actions": 0,
+[ARCH-B]   "submit_actions": 0,
+[ARCH-B]   "generated_tests": 1,
+[ARCH-B]   "avg_steps_per_test": 6
+[ARCH-B] }
+[ARCH-B] [run] Termination: llm_done
+[ARCH-B] [run] Visited URLs:
+[ARCH-B]   https://www.demoblaze.com/
+[ARCH-B]   https://www.demoblaze.com/#
+[ARCH-B]   https://www.demoblaze.com/cart.html
+[ARCH-B] [run] Test cases from history: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787598245740_exploration.json
+[ARCH-B] [run] Evidence: storage/screenshots/run_1787598245740
+[ARCH-B] [run] Shutting down services...
+[ARCH-B] [execute] Test cases: C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\test_cases_run_1787598245740_exploration.json (1 tests)
+[ARCH-B] [execute] Base URL:   https://www.demoblaze.com
+[ARCH-B] [execute] Run ID:     run_1787598245740 (evidence: storage/screenshots/run_1787598245740/)
+[ARCH-B] [execute] Vision services not running — starting them for closed-loop execution...
+[ARCH-B] (node:3044) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+[ARCH-B] (Use `node --trace-deprecation ...` to show where the warning was created)
+[ARCH-B] [execute] Vision services started (5 spawned, 0 already healthy) — re-detection enabled.
+[ARCH-B] [execute] Test 1/1: TC01
+[ARCH-B] [execute]   Objective: Replays an autonomously discovered visual workflow: click(Phones) -> click(Phones) -> click(Phones) -> click(Laptops) -> click(Cart) -> click
+[ARCH-B] [execute]   Result: PASS
+[ARCH-B] [execute]   Warning: Unexpected navigation to https://www.demoblaze.com/cart.html
+[ARCH-B] [execute]   Warning: Verification used weak body-text fallback (no semantic signal)
+[ARCH-B] [execute] Vision services started by this run were shut down.
+[ARCH-B] =========================================
+[ARCH-B] [execute] Suite finished: 1 passed, 0 failed, 0 errors (of 1)
+[ARCH-B] [execute] Report saved to C:\Users\sandeep\pes\vs code\Capstone-Project\vision\storage\outputs\execution_results.json
+[ARCH-B] =========================================
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199627, Requested 3735. Please try again in 24m12.383999999s. Need more tokens? Upgrade to Dev Tier today at h
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199307, Requested 3753. Please try again in 22m1.919999999s. Need more tokens? Upgrade to Dev Tier today at ht
+[ARCH-A] [explore] Deterministic fallback candidate: BUTTON "Next"
+[ARCH-A] [llmClient] Executing: click "#next2"
+[ARCH-A] [explore] Step 1: click "Next" → state_002 @ https://www.demoblaze.com/index.html
+[ARCH-A] [memoryLog] Saved 1 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\states.json
+[ARCH-A] [memoryLog] Saved 1 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\transitions.json
+[ARCH-A] [explore] ══ Step 2 (Flow: PRODUCT STORE, flow-step: 2) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198979, Requested 3629. Please try again in 18m46.656s. Need more tokens? Upgrade to Dev Tier today at https:/
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198658, Requested 3647. Please try again in 16m35.76s. Need more tokens? Upgrade to Dev Tier today at https://
+[ARCH-A] [explore] Deterministic fallback candidate: A "PRODUCT STORE"
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/index.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 2 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\states.json
+[ARCH-A] [memoryLog] Saved 2 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\transitions.json
+[ARCH-A] [explore] ══ Step 3 (Flow: PRODUCT STORE, flow-step: 3) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198326, Requested 3668. Please try again in 14m21.408s. Need more tokens? Upgrade to Dev Tier today at https:/
+[ARCH-A] [explore] LLM failed (LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `opena) — using deterministic fallback.
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[ARCH-A] [llmClient] Attempt 1 failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198006, Requested 3686. Please try again in 12m10.944s. Need more tokens? Upgrade to Dev Tier today at https:/
+[ARCH-A] [explore] Deterministic fallback candidate: A "Home (current)"
+[ARCH-A] [llmClient] Executing: navigate "https://www.demoblaze.com/index.html"
+[ARCH-A] [explore] Repeated state — going back.
+[ARCH-A] [memoryLog] Saved 3 step(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\memory_log.json
+[ARCH-A] [memoryLog] Saved 2 state(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\states.json
+[ARCH-A] [memoryLog] Saved 3 transition(s) → C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_003358\dom\transitions.json
+[ARCH-A] [explore] ══ Step 4 (Flow: PRODUCT STORE, flow-step: 4) ══
+[ARCH-A] [llmClient] Calling groq → openai/gpt-oss-120b ...
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[ARCH-A] [llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[ARCH-A] Timeout (15 min) — terminating process tree...
+[RUN] Collecting artifacts into unified run tree...
+
+=========================================
+[RUN] Architecture A: timeout
+[RUN] Architecture B: success
+[RUN] Overall run: PARTIAL_FAILURE
+[RUN] Results:
+  DOM:    runs\run_20260825_003358\dom
+       -> test_cases.json
+  VISION: runs\run_20260825_003358\vision
+       -> 15 artifact(s)
+Manifest:
+  runs\run_20260825_003358\run_manifest.json
+=========================================

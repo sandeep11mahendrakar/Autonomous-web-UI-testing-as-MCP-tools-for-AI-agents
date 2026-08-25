@@ -1,0 +1,24 @@
+[rerun_q 2026-08-25T11:20:11.988Z] lock held by someone else — aborting
+[rerun_q 2026-08-25T11:20:40.843Z] post docs_python: using run_20260825_163448
+[rerun_q 2026-08-25T11:20:40.846Z] START s1 docs_python (run_20260825_163448)
+[rerun_q 2026-08-25T11:20:40.970Z] DONE s1 docs_python
+[rerun_q 2026-08-25T11:20:40.971Z] START s2 docs_python (run_20260825_163448)
+[rerun_q 2026-08-25T11:20:41.061Z] DONE s2 docs_python
+[rerun_q 2026-08-25T11:20:41.062Z] START s4 docs_python (run_20260825_163448)
+[rerun_q 2026-08-25T11:21:05.662Z] START pipeline docs_python (https://docs.python.org/3/) env={"MAX_STEPS":"25","MAX_STATES":"20","EXPLORE_MAX_STEPS":"25","EXPLORE_MAX_STATES":"20"}
+[rerun_q 2026-08-25T11:21:16.287Z] DONE s4 docs_python
+[rerun_q 2026-08-25T11:21:16.288Z] START ft docs_python (run_20260825_163448)
+[rerun_q 2026-08-25T11:21:48.797Z] DONE ft docs_python
+[rerun_q 2026-08-25T11:21:48.798Z] START s6 docs_python (run_20260825_163448)
+[rerun_q 2026-08-25T11:21:48.905Z] DONE s6 docs_python
+[rerun_q 2026-08-25T11:21:48.912Z] guards run_20260825_163448: catalog ok=true; visionStartUrls checked=1 ok=true
+[rerun_q 2026-08-25T11:21:48.915Z] patched report docs_python_2026-08-25.md
+[rerun_q 2026-08-25T11:21:48.917Z] cleared INDEX QUARANTINED marker for #14
+[rerun_q 2026-08-25T11:21:48.917Z] docs_python POST OK (PARTIAL_FAILURE)
+[rerun_q 2026-08-25T11:21:48.918Z] batch finished
+[rerun_q 2026-08-25T11:27:31.157Z] lock held by someone else — aborting
+[rerun_q 2026-08-25T11:28:19.763Z] START pipeline gutenberg (https://www.gutenberg.org) env={"MAX_STEPS":"25","MAX_STATES":"20","EXPLORE_MAX_STEPS":"25","EXPLORE_MAX_STATES":"20"}
+[rerun_q 2026-08-25T11:36:06.130Z] DONE pipeline docs_python took=15min
+[rerun_q 2026-08-25T11:36:06.239Z] attributed docs_python -> run_20260825_165105
+[rerun_q 2026-08-25T11:36:06.240Z] docs_python PIPELINE OK -> run_20260825_165105. Run "post docs_python" after fusion chain or include in next batch.
+[rerun_q 2026-08-25T11:36:06.241Z] batch finished

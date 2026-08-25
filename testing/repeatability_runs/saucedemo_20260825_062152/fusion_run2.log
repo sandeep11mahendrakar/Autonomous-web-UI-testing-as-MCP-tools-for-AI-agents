@@ -1,0 +1,34 @@
+
+===== node fusion/s1_build_catalog.js run_20260825_063248 @ 2026-08-25T01:08:33.286Z =====
+[s1] Observations: 320
+[s1] Canonical pages: 2 (multi-arch: 1)
+[s1] Canonical elements: 95
+[s1] Canonical behaviors: 11
+[s1] Conflicts: 9
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\catalog.json
+
+===== node fusion/s2_gap_report.js run_20260825_063248 @ 2026-08-25T01:08:33.377Z =====
+[gap] elements: {"common":0,"a_only":5,"b_only":90,"actionable_uncovered":74,"covered":5,"coverage_pct":5}
+[gap] behaviors: {"common":0,"a_only":8,"b_only":3,"uncovered":4,"covered":7,"coverage_pct":64}
+[gap] conflicts: 9
+[gap] anomalies: {"rare":64,"low_confidence":0,"multi_position":30}
+[gap] opportunities: quietPages=0
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\gap_report.json
+
+===== node fusion/s4_fusion_synthesis.js run_20260825_063248 @ 2026-08-25T01:08:33.445Z =====
+[s4] gap candidates offered: 2 {"uncovered_behavior":1,"classification_conflict":1}
+[s4] prompt chars: 3006 (~752 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[s4] raw response chars: 5962 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 0
+[s4] accepted: 0  rejected: 1
+[s4]   REJECT #0: invalid_response_shape — no tests array
+[s4] gap ids used: (none)
+[s4] all accepted grounded: true
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_report.json
+
+===== node fusion/execute_fusion_tests.js run_20260825_063248 @ 2026-08-25T01:09:31.882Z =====
+No fusion_tests.json — run S4 first.

@@ -1,0 +1,32 @@
+
+===== node fusion/s1_build_catalog.js run_20260825_075515 @ 2026-08-25T02:40:15.483Z =====
+[s1] Observations: 79
+[s1] Canonical pages: 2 (multi-arch: 0)
+[s1] Canonical elements: 58
+[s1] Canonical behaviors: 1
+[s1] Conflicts: 10
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_075515\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_075515\fusion\catalog.json
+
+===== node fusion/s2_gap_report.js run_20260825_075515 @ 2026-08-25T02:40:15.557Z =====
+[gap] elements: {"common":0,"a_only":2,"b_only":56,"actionable_uncovered":44,"covered":0,"coverage_pct":0}
+[gap] behaviors: {"common":0,"a_only":1,"b_only":0,"uncovered":1,"covered":0,"coverage_pct":0}
+[gap] conflicts: 10
+[gap] anomalies: {"rare":50,"low_confidence":0,"multi_position":7}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_075515\fusion\gap_report.json
+
+===== node fusion/s4_fusion_synthesis.js run_20260825_075515 @ 2026-08-25T02:40:15.637Z =====
+[s4] gap candidates offered: 3 {"uncovered_behavior":1,"uncovered_actionable_element":2}
+[s4] prompt chars: 2374 (~594 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 24000ms (attempt 3/6)
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 4/6)
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 5/6)
+[llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 30000ms (attempt 6/6)
+[s4] Fusion LLM call failed: LLM HTTP 429 from openrouter: {"error":{"message":"Rate limit exceeded: free-models-per-day-stealth. ","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"1000","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1787702400000"},"limit_source":"openrouter_free_tier_daily","remedy_hint":"Wait for the daily reset (see X-RateLimit-
+
+===== node fusion/execute_fusion_tests.js run_20260825_075515 @ 2026-08-25T02:42:36.723Z =====
+No fusion_tests.json — run S4 first.

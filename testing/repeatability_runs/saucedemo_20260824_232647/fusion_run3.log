@@ -1,0 +1,32 @@
+
+===== node fusion/s1_build_catalog.js run_20260825_000126 @ 2026-08-24T18:46:27.104Z =====
+[s1] Observations: 177
+[s1] Canonical pages: 1 (multi-arch: 1)
+[s1] Canonical elements: 28
+[s1] Canonical behaviors: 7
+[s1] Conflicts: 6
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\fusion\catalog.json
+
+===== node fusion/s2_gap_report.js run_20260825_000126 @ 2026-08-24T18:46:27.206Z =====
+[gap] elements: {"common":0,"a_only":2,"b_only":26,"actionable_uncovered":16,"covered":0,"coverage_pct":0}
+[gap] behaviors: {"common":0,"a_only":2,"b_only":5,"uncovered":7,"covered":0,"coverage_pct":0}
+[gap] conflicts: 6
+[gap] anomalies: {"rare":4,"low_confidence":0,"multi_position":24}
+[gap] opportunities: quietPages=0
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_000126\fusion\gap_report.json
+
+===== node fusion/s4_fusion_synthesis.js run_20260825_000126 @ 2026-08-24T18:46:27.275Z =====
+[s4] gap candidates offered: 4 {"uncovered_behavior":2,"uncovered_actionable_element":2}
+[s4] prompt chars: 2840 (~710 tokens estimated)
+[s4] ONE Fusion call -> groq:openai/gpt-oss-120b (max_tokens=1500) ...
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 8000ms (attempt 1/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 16000ms (attempt 2/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 24000ms (attempt 3/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 4/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 5/6)
+[llmProvider] 429 from groq (openai/gpt-oss-120b) — waiting 30000ms (attempt 6/6)
+[s4] Fusion LLM call failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199161, Requested 2495. Please try again in 11m55.392s. Need more tokens? Upgrade to Dev Tier today at https:/
+
+===== node fusion/execute_fusion_tests.js run_20260825_000126 @ 2026-08-24T18:48:45.856Z =====
+No fusion_tests.json — run S4 first.
