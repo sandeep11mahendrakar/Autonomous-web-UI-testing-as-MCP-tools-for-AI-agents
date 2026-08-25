@@ -25,6 +25,23 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:55 IST] [serial1/ox-alpha] T201 window-end report. DONE this
+window: (1) testing/rerun_quarantine.js driver committed (d299e8d/3b8317f/
+f4f942f): 8 sites 13-20, trimmed env MAX_STEPS=25 MAX_STATES=20 (+EXPLORE_*),
+STRICT attribution no newest-dir fallback, pipeline/post modes, lock held,
+report+INDEX patcher dry-run-verified. (2) NEW GUARD assertVisionStartUrls
+in run_attribution.js per audit addendum - validated: rejects known-bad
+run_20260825_053921 (127.0.0.1 fixture), passes clean books run. Suites
+123/123 green pre-commit. RUNS: site 13 lambdatest -> run_20260825_161515
+FAILED, root cause REAL SITE CHANGE: lambdatest.com/selenium-playground now
+redirects to www.testmuai.com (KaneAI property); both archs blocked by
+external-domain guard; 4 steps/1 state/0 tests. QUARANTINE NOT CLEARED -
+INDEX marker stays; recommend #13 marked SITE-MOVED-EVIDENCE + spare swap
+(same precedent as #19 phptravels). Report patched with evidence section.
+RESUME POINT next window: sites 14-20 pending. Quota note: multiple 429
+bursts mid-run - pool under pressure; consider Groq-first pacing or wait
+for 05:30 reset. Command: node testing/rerun_quarantine.js pipeline docs_python
+then node testing/rerun_quarantine.js post docs_python. Lock released.
 [2026-08-25 16:26 IST] [serial2/ox-alpha] T105 DONE (fork vision-standalone
 @ 41ce4c1, pushed backup). explore_site wired to runVision --explore: spawn,
 logs streamed as JSON-RPC notifications/message, returns run_id + summary
