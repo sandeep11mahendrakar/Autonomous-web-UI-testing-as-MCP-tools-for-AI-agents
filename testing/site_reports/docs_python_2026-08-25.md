@@ -62,3 +62,11 @@ node fusion/s4_fusion_synthesis.js run_20260825_055129
 node fusion/execute_fusion_tests.js run_20260825_055129
 node fusion/s6_dashboard.js run_20260825_055129
 ```
+
+
+## Re-run (decontaminated) — run_20260825_134803
+
+- New run ID: `run_20260825_134803` (replaces contaminated `run_20260825_055129` above; old numbers kept as evidence).
+- Status: PARTIAL_FAILURE | A: TIMEOUT (internal A 900s cap) | B: OK 1/1 PASS (weak verif)
+- S4: 8/9 accepted | FT live: 2/8 PASS | Fusion-attributable: 88.9%
+- Same revision as lambdatest: A hit its internal 900s cap again despite fresh quota (mega-DOM docs tree), so this run is also NOT fully decontaminated for A. FT live fell to 2/8 vs the original 7/7 — high variance under A-timeout conditions; recorded honestly as a finding.
