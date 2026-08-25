@@ -18,3 +18,15 @@
 [tier3w3 2026-08-25T18:10:51.659Z] lock released after github_trending (runId=run_20260825_232415)
 [tier3w3 2026-08-25T18:11:00.438Z] lock held by LIVE pid 7948 — aborting
 [tier3w3 2026-08-25T18:11:00.440Z] aborting archive_org
+[tier3w3 2026-08-25T18:28:19.477Z] === START archive_org (https://archive.org) ===
+[tier3w3 2026-08-25T18:30:50.377Z] DONE pipeline archive_org took=3min
+[tier3w3 2026-08-25T18:30:50.470Z] attributed archive_org -> run_20260825_235819
+[tier3w3 2026-08-25T18:30:50.470Z] START s1 archive_org (run_20260825_235819)
+[tier3w3 2026-08-25T18:30:50.551Z] DONE s1 archive_org
+[tier3w3 2026-08-25T18:30:50.551Z] START s2 archive_org (run_20260825_235819)
+[tier3w3 2026-08-25T18:30:50.622Z] DONE s2 archive_org
+[tier3w3 2026-08-25T18:30:50.622Z] START s4 archive_org (run_20260825_235819)
+[tier3w3 2026-08-25T18:30:56.610Z] DONE s4 archive_org
+[tier3w3 2026-08-25T18:30:56.610Z] START ft archive_org (run_20260825_235819)
+[tier3w3 2026-08-25T18:30:57.159Z] lock released after archive_org (runId=run_20260825_235819)
+[tier3w3 2026-08-25T18:32:47.472Z] === START eviltester_pages (https://testpages.eviltester.com/styled/index.html) ===

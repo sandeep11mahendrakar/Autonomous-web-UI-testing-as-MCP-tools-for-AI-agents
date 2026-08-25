@@ -20,6 +20,7 @@ if (!key || !url) { console.error('usage: node tier3_w3.cjs <key> <url>'); proce
 const TRIMMED_ENV = {
   MAX_STEPS: '25', MAX_STATES: '20',
   EXPLORE_MAX_STEPS: '25', EXPLORE_MAX_STATES: '20',
+  ARCH_A_TIMEOUT_MS: '1500000', // D8(b)/D7: mega-DOM budget approved
 };
 const LOCK = path.join(__dirname, '.campaign.lock');
 
@@ -53,17 +54,33 @@ try {
   log(`attributed ${key} -> ${runId}`);
 
   // 3) fusion chain
+  // NOTE: execute_fusion_tests.js exits NONZERO when fusion_tests.json is
+  // absent (legitimate case: S4 accepted 0 candidates on thin catalogs).
+  // Treat that specific outcome as SOFT-FAIL: skip FT, continue s6+purity+
+  // extract so the run still lands honestly in the ledger.
+  let ftSoftFail = false;
   for (const [label, script] of [
     ['s1', 'fusion/s1_build_catalog.js'], ['s2', 'fusion/s2_gap_report.js'],
     ['s4', 'fusion/s4_fusion_synthesis.js'], ['ft', 'fusion/execute_fusion_tests.js'],
     ['s6', 'fusion/s6_dashboard.js'],
   ]) {
     log(`START ${label} ${key} (${runId})`);
-    execSync(`node ${script} ${runId}`, {
-      cwd: ROOT, encoding: 'utf8', timeout: 20 * 60 * 1000, maxBuffer: 64 * 1024 * 1024,
-      stdio: ['ignore', 'pipe', 'inherit'],
-    });
-    log(`DONE ${label} ${key}`);
+    try {
+      execSync(`node ${script} ${runId}`, {
+        cwd: ROOT, encoding: 'utf8', timeout: 20 * 60 * 1000, maxBuffer: 64 * 1024 * 1024,
+        stdio: ['ignore', 'pipe', 'inherit'],
+      });
+      log(`DONE ${label} ${key}`);
+    } catch (e) {
+      const out = String(e.stdout || '');
+      if (label === 'ft' && /No fusion_tests\.json/.test(out)) {
+        log(`SOFT-FAIL ft ${key}: no fusion_tests.json (S4 accepted 0) - continuing honestly`);
+        ftSoftFail = true;
+        continue;
+      }
+      log(`FAIL ${label} ${key}: ${String(e.message).slice(0, 200)} - aborting site cycle`);
+      process.exit(5);
+    }
   }
 
   // 4) folder_purity MUST be PURE
