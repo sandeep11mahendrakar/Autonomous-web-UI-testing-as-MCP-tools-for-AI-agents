@@ -1,6 +1,7 @@
 # Site Testing Index
 
-<!-- Regenerated 2026-08-25T13:15:45.996Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+<!-- Regenerated 2026-08-25T15:16:21.611Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+
 
 Ledger of all site tests. One row per report; keep in sync with the files in
 this folder. Aggregate metrics (pass rates, mean coverage) should be
@@ -68,8 +69,8 @@ recalculated from this table as the campaign grows.
 | 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_163448` | 11 states (A timeout @900s cap) | 9 states/596 elems | 8/11 grounded | 1/8 PASS | **88.9%** |
 | 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_165819` | 4 states (0 tests) | 4 states/202 elems | 4/5 grounded | 4/4 PASS | **80%** |
 | 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_173233` | 9 states (0 tests) | 2 states/28 elems | 8/12 grounded | 5/8 PASS | **100%** |
-| 17 | SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_194511` | 3 states | 3 states/123 elems | 1/3 fusion-created | 1/1 PASS (100%) | **33.3%** |
-| 18 | The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_195406` | 5 states (0 tests, A capped @900s — budget limit not error) | 3 states/40 elems, replay 1/1 PASS live | 4/5 fusion-created | **4/4 PASS (100%)** live, purity PURE | **80%** |
-| 19 | PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_201027` | 20 states | 9 states/278 elems | 6/10 fusion-created | 5/6 PASS (83.3%) | **60%** |
-| 20 | 🚫 QUARANTINED-WRONG-SITE · Open Library | https://openlibrary.org | 2026-08-25 | `openlibrary_2026-08-25.md` | `run_20260825_070918` | OK 11 steps / 9 states | PARTIAL ? partial ECONNRESET | 3/6 grounded | 3/3 PASS | **60%** |
+| 17 | SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_194511` | 3 states | 3 states/123 elems | 1/2 grounded | 1/1 PASS | **33.3%** |
+| 18 | The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_195406` | 5 states (0 tests, A capped @900s — budget limit not error) | 3 states/40 elems, replay 1/1 PASS live | 4/8 grounded | 4/4 PASS | **80%** |
+| 19 | PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_201027` | 20 states | 9 states/278 elems | 6/6 grounded | 5/6 PASS | **60%** |
+| 20 | Open Library | https://openlibrary.org | 2026-08-25 | `openlibrary_2026-08-25.md` | `run_20260825_203014` | 6 states (0 tests) | 4 states/98 elems | 7/10 grounded | 0/7 PASS | **87.5%** |
 

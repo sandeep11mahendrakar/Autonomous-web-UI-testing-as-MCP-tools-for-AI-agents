@@ -1,8 +1,8 @@
 # Campaign Evaluation (auto-generated)
 
-<!-- Regenerated 2026-08-25T13:15:45.996Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+<!-- Regenerated 2026-08-25T15:16:21.611Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
 
-Generated: 2026-08-25T13:15:46.415Z by `fusion/s8_campaign_eval.js`.
+Generated: 2026-08-25T15:16:22.056Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -12,17 +12,17 @@ denominators by design.
 
 ```text
 Sites attempted:              20
-Sites scored:                 15
-Sites blocked:                5
-A completed:                  15
+Sites scored:                 19
+Sites blocked:                1
+A completed:                  11
 B completed:                  7
-Full A+B pipeline completed:  11
-Fusion generated (offered):   60
-Fusion accepted:              42
-Fusion live tests executed:   42
-Fusion live PASS:             27
-Fusion live FAIL:             15
-Mean fusion-attributable %:   44.4%
+Full A+B pipeline completed:  13
+Fusion generated (offered):   86
+Fusion accepted:              60
+Fusion live tests executed:   60
+Fusion live PASS:             37
+Fusion live FAIL:             23
+Mean fusion-attributable %:   48.7%
 ```
 
 ## 2. Site matrix
@@ -45,36 +45,36 @@ Mean fusion-attributable %:   44.4%
 | 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
 | 15 | Project Gutenberg | PARTIAL | LOW | neither architecture completed exploration |
 | 16 | WeatherSpark | PIPELINE FAILURE | LOW | neither architecture completed exploration |
-| 17 | 🚫 QUARANTINED-WRONG-SITE · SahiTest Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
-| 18 | 🚫 QUARANTINED-WRONG-SITE · The Internet (status codes) | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
-| 19 | 🚫 QUARANTINED-WRONG-SITE · PHPTravels Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
-| 20 | 🚫 QUARANTINED-WRONG-SITE · Open Library | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 17 | SahiTest Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 18 | The Internet (status codes) | PARTIAL | LOW | neither architecture completed exploration |
+| 19 | PHPTravels Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 20 | Open Library | PARTIAL | LOW | neither architecture completed exploration |
 
 Confidence is a DETERMINISTIC HEURISTIC from ledger signals (both-arch ✅, FT
 PASS, fusion >=20%) — not a human judgment.
 
 ## 3. A vs B comparison (means over runs with dashboard data)
 
-(n=14 runs with comparison data; values are means)
+(n=18 runs with comparison data; values are means)
 
 | Measure | Arch A | Arch B |
 |---|---|---|
-| Tests generated | 3.2 | 0.9 |
-| States explored | 7.6 | 6.3 |
-| Elements seen | 8.2 | 180.9 |
-| Behaviors seen | 8.5 | 6.1 |
-| Targets covered | 5.6 | 4.6 |
+| Tests generated | 2.7 | 0.9 |
+| States explored | 7.8 | 5.9 |
+| Elements seen | 8.8 | 170.6 |
+| Behaviors seen | 9 | 6 |
+| Targets covered | 5.4 | 4.3 |
 
 ## 4. Fusion contribution quality
 
 | Metric | Value |
 |---|---|
-| Runs with dashboard data | 14 |
-| Fusion tests offered/generated | 60 |
-| Fusion tests accepted (grounded) | 42 |
-| Fusion tests executed live | 42 |
-| Executed successfully | 27 |
-| Novel targets exercised by fusion | 67 |
+| Runs with dashboard data | 18 |
+| Fusion tests offered/generated | 86 |
+| Fusion tests accepted (grounded) | 60 |
+| Fusion tests executed live | 60 |
+| Executed successfully | 37 |
+| Novel targets exercised by fusion | 95 |
 
 > Quality note: fusion % alone does not equal value. Cross-origin composed
 > workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative
@@ -155,8 +155,12 @@ absence of a listed finding is NOT evidence of absence.
 | Python.org Docs | 19.3 |
 | Project Gutenberg | 18.2 |
 | WeatherSpark | 15.5 |
+| SahiTest Demo | 14.3 |
+| The Internet (status codes) | 23.6 |
+| PHPTravels Demo | 18.8 |
+| Open Library | 18.0 |
 
-Total A+B wall time across 14 sites: 130.6 min.
+Total A+B wall time across 18 sites: 205.4 min.
 
 LLM call counts per run: see `runs/<id>/fusion/dashboard_data.json` (`llm_calls`).
 Token counts were not recorded for Tier-1 runs and are reported as not recorded
@@ -194,8 +198,8 @@ Token counts were not recorded for Tier-1 runs and are reported as not recorded
 
 ## 10. Conclusions
 
-1. Full-pipeline success: 11/15 runnable sites (+5 honestly BLOCKED).
-2. Mean fusion-attributable coverage: 44.4%.
+1. Full-pipeline success: 13/19 runnable sites (+1 honestly BLOCKED).
+2. Mean fusion-attributable coverage: 48.7%.
 3. Blocked environments are tracked separately and never counted as failures.
 4. Historical evidence (19 pipeline defects, seeded-bug mutation scorecard in
    `mutation/results/SCORECARD.md`) demonstrates hardening through heterogeneous
