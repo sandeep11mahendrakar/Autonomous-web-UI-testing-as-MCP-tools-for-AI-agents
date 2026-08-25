@@ -267,3 +267,39 @@ Campaign is now at **20/50 sites**. Everything below committed+pushed to
 REMAINING for full campaign: Tier 3 (21-30), Tier 4 (31-40), sites 41-50
 (repeatability+wildcards), clean C4 repeatability re-run, capstone report.
 
+
+
+
+## 0c. SESSION RESULT (2026-08-25 evening -> 2026-08-26 - DECONTAMINATION COMPLETE + TIER-3 LAUNCHED)
+
+Branch `after-tier-2`, all work pushed to `backup` remote.
+
+1. **PHASE-2 DECONTAMINATION COMPLETE**: all eight quarantined Tier-2 rows
+   (sites 13-20) re-run behind the full guard set (run_attribution.js
+   birthtime+manifest, assertCatalogDomains, assertVisionStartUrls,
+   folder_purity). Replacement runs: #14 run_20260825_163448, #15 165819,
+   #16 173233, #17 194511 (sahitest), #18 195406 (theinternet status codes),
+   #19 201027 (phptravels), #20 203014 (openlibrary); #13 lambdatest CLEARED
+   as SITE-MOVED-EVIDENCE (testmuai rebrand verified). Old contaminated runs
+   retained on disk as evidence only.
+2. **FINAL DECONTAMINATED AGGREGATES** (regen @2026-08-25T15:16Z):
+   fusion offered 86 / accepted 60 / FT live 37/60 = 61.7%; MEAN
+   FUSION-ATTRIBUTABLE 48.7% (n=19; n=18 denominator note recorded);
+   vision rubric 62 tests / 48 PASS = 77% / 33 STRONG. Gate audit T401
+   recomputed everything from raw artifacts: PASS (docs/AUDIT_T401_REPORT.md).
+3. **PAPER v3 FINAL-NUMBERS** (docs/RESEARCH_PAPER_DRAFT.md): all gap markers
+   resolved post Phase-2 - final clean-site table (20 sites), refreshed rubric/
+   perception/fusion sections, full artifact index. Zero {{GAP}} markers remain.
+4. **TIER-3 CAMPAIGN LAUNCHED** (D5/D6 on docs/TASK_BOARD.md): sites 21-30,
+   five worker pairs, sequential via .campaign.lock round-robin, trimmed env
+   MAX_STEPS=25 MAX_STATES=20 (mega-DOMs 18). Early results: #21 wikipedia
+   CLEARED run_20260825_230647 purity-PURE FT 3/7 fusion-attributable 87.5%
+   (weak-A/strong-fusion exemplar); honest BLOCKS confirmed by dual probes:
+   #22 stackoverflow 403, #24 imdb 202 bot-check, #29 npmjs 403. Success bar:
+   >=6/10 complete pipelines; blocked IS data.
+5. **Key rotation (D5)**: overnight pipelines use OpenRouter key ...81c2ad;
+   Groq fallback fqEvp...99G; Zen key ReUj... RESERVED for tomorrow.
+
+REMAINING for full campaign: finish Tier 3 (21-30), Master consolidation regen
+at window end, Tier 4 (31-40), sites 41-50 (repeatability+wildcards), clean C4
+repeatability re-run, capstone report finalization (T402 freeze).
