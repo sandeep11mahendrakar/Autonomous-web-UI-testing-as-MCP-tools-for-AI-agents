@@ -298,6 +298,10 @@ function collectArchitectureB(visionDir, startedAt, manifestUrl) {
         log('RUN', `PROVENANCE REJECT ${f} -> ${verdict.via} (quarantined out of run folder)`);
         continue;
       }
+      if (verdict.warn) {
+        // AUDIT F4-05: url-less artifacts pass but must not pass silently.
+        log('RUN', `PROVENANCE WARN ${f} -> ${verdict.via}: ${verdict.warn}`);
+      }
     }
     fs.copyFileSync(full, path.join(destOut, f));
     copied.push(`outputs/${f}`);

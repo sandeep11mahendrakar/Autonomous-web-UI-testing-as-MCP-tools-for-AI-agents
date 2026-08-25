@@ -125,18 +125,41 @@ function assertPurity(runId, opts = {}) {
   // --- Check 1: DOM exploration stayed on the target site -------------------
   const domSummary = readJson(path.join(runDir, 'dom', 'exploration_summary.json'));
   const domForeign = [];
-  for (const u of (domSummary && domSummary.visited_urls) || []) {
-    const h = extractHost(u);
-    if (!h || (!hostMatches(manifestHost, h) && !isLocalhostHost(h))) domForeign.push(u);
-  }
-  checks.push({
-    file: 'dom/exploration_summary.json',
-    check: 'visited_urls_hosts_match_manifest',
-    ok: domForeign.length === 0,
-    detail: domForeign.length ? `foreign hosts in visited_urls: ${domForeign.join(', ')}` : `${((domSummary && domSummary.visited_urls) || []).length} urls OK`,
-  });
-  if (domForeign.length) {
-    contamination.push({ file: 'dom/exploration_summary.json', check: 'visited_urls_hosts_match_manifest', urls: domForeign });
+  if (!domSummary || !Array.isArray(domSummary.visited_urls)) {
+    // AUDIT F3-03 (docs/AUDIT_REPORT.md): a missing/unreadable summary used to
+    // make this check pass VACUOUSLY ("0 urls OK") while dom artifacts existed.
+    // Surface it as a loud flag instead of a silent pass. Deliberately does NOT
+    // flip pure by itself - cross-check dom/states.json hosts when flagged.
+    const domArtifacts = ['states.json', 'memory_log.json'].filter((f) =>
+      fs.existsSync(path.join(runDir, 'dom', f))
+    );
+    checks.push({
+      file: 'dom/exploration_summary.json',
+      check: 'visited_urls_hosts_match_manifest',
+      ok: true,
+      vacuous: true,
+      detail: domArtifacts.length
+        ? `exploration_summary.json missing/malformed while dom artifacts exist (${domArtifacts.join(', ')}) - visited_urls host sweep NOT performed; cross-check states.json`
+        : 'exploration_summary.json missing - no dom artifacts to sweep',
+    });
+    flags.push({
+      file: 'dom/exploration_summary.json',
+      reason: 'Check-1 vacuous: exploration_summary.json missing/malformed - visited_urls host sweep not performed',
+    });
+  } else {
+    for (const u of domSummary.visited_urls) {
+      const h = extractHost(u);
+      if (!h || (!hostMatches(manifestHost, h) && !isLocalhostHost(h))) domForeign.push(u);
+    }
+    checks.push({
+      file: 'dom/exploration_summary.json',
+      check: 'visited_urls_hosts_match_manifest',
+      ok: domForeign.length === 0,
+      detail: domForeign.length ? `foreign hosts in visited_urls: ${domForeign.join(', ')}` : `${domSummary.visited_urls.length} urls OK`,
+    });
+    if (domForeign.length) {
+      contamination.push({ file: 'dom/exploration_summary.json', check: 'visited_urls_hosts_match_manifest', urls: domForeign });
+    }
   }
 
   // --- Check 2: each vision B-exploration session started on target site ----
