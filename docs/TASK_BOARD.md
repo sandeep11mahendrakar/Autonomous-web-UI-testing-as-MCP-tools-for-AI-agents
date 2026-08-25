@@ -46,9 +46,11 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | Tier-3 W2 site-22 stackoverflow | DONE - BLOCKED honest (hard 403 bot-wall, zero quota; report+INDEX row) | ox-alpha CLI serial-B | 2026-08-26 00:35 | 2026-08-26 00:40 | 8d7b6e1 |
 | Tier-3 W3 site-23 github_trending | DONE - CLEARED run_20260825_232415 purity PURE 4/4; S4 5/5 accepted all grounded (46 offered, 0 rejects); FT live 3/5 PASS (10/12 steps); fusion-attributable 83.3%, 12 novel targets; report+INDEX row @ 9a20448 | ox-alpha CLI serial-C (W3) | 2026-08-26 00:35 | 2026-08-26 00:55 | 9a20448 |
 | Tier-3 W3 site-28 archive_org | QUEUED - race-safe watcher armed behind W1 hackernews lock; tier3_w3.cjs full protocol | ox-alpha CLI serial-C (W3) | 2026-08-26 00:56 | - | - |
+| Tier-3 W3 site-28 archive_org | RUNNING - pipeline live under lock (tier3_w3.cjs full protocol, ARCH_A_TIMEOUT_MS=1500000) | ox-alpha CLI serial-C (W3) | 2026-08-26 02:2x | - | - |
+| D9 site-32 eviltester_pages | CLAIMED - availability re-check HTTP 200; queued behind #28 in same window | ox-alpha CLI serial-C (W3) | 2026-08-26 02:4x | - | - |
 | Tier-3 W2 site-27 bbc_news | RUNNING - queued behind W3 lock; pipeline armed w/ trimmed env + strict attribution + purity gate | ox-alpha CLI serial-B | 2026-08-26 00:42 | - | - |
 | T201 site-18 theinternet re-run | DONE - CLEARED-BY-RERUN run_20260825_195406, all guards green + folder_purity pure, FT live 4/4 after reconciliation (early 3/3 pre-reconcile), fusion 80% | ox-alpha CLI serial-B | 2026-08-25 19:54 | 2026-08-25 20:15 | (report+INDEX patched; mega-report row filled) |
-| T301 Tier-3 launch (sites 21-30) | RUNNING - progress @ 01:35 IST (26th): #21 wikipedia CLEARED run_20260825_230647 purity-PURE FT3/7 fus87.5% (W1); #22 stackoverflow BLOCKED 403 (W2, zero quota); #24 imdb BLOCKED 202-bot-check + #29 npmjs BLOCKED 403 (both W4, zero quota, dual-probe evidence); #24 imdb BLOCKED pre-pipeline (W4); #29 npmjs BLOCKED pre-pipeline (bot-wall, known); #22 stackoverflow attempted (W2, bot-walled per preflight); #26 hackernews QUEUED (W1 watcher); #23/#25/#27/#28/#30 claims per D6/D5 comms below. Success bar >=6/10 complete pipelines; blocked IS data | SUB-MASTER + W1-W5 | 2026-08-25 17:40 (prep) / 22:4x (launch) | running | 19c9031+ |
+| T301 Tier-3 launch (sites 21-30) | RUNNING - progress @ 23:59 IST: #21 wikipedia CLEARED run_20260825_230647 FT3/7 fus87.5% (W1); #26 hackernews CLEARED run_20260825_234052 purity-PURE FT1/8 honest (all 7 fails one class: S4 bare-/item param gap; 100% fusion-created) (W1) => W1 PAIR COMPLETE. #24 imdb + #29 npmjs BLOCKED pre-pipeline (W4). #22/#23/#25/#27/#28/#30 per comms below. Success bar >=6/10 complete pipelines; blocked IS data | SUB-MASTER + W1-W5 | 2026-08-25 17:40 (prep) / 22:4x (launch) | running | f755f59+ |
 | T401 gate audit | DONE (PASS: FT 37/60=61.7% + 86/60 offered/accepted + mean fus 48.7% n=19 all recomputed exact; 4 clearance runs domain-PASS from raw artifacts; zero QUARANTINED markers; suites 143/143. Denominator note for paper in report) | SUB-MASTER (quick self-check mode per human Master) | 2026-08-25 22:0x | 2026-08-25 22:2x | this commit |
 | T402 final freeze | OPEN | - | - | - | - |
 | T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
@@ -64,6 +66,17 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 02:4x IST / 2026-08-25T21:1xZ] [W3/ox-alpha serial-C] D9 CLAIM:
+#32 eviltester_pages (https://testpages.eviltester.com/styled/index.html) ->
+THIS window. Availability re-check DONE: HTTP 200 (also verified todomvc 200,
+practica 200, magento=526 SSL/CDN error - flagged for whoever takes it).
+Sequence for this window: #28 archive_org pipeline CURRENTLY RUNNING under my
+lock (fired on W1 release), then #32 eviltester immediately after via same
+tier3_w3.cjs protocol + ARCH_A_TIMEOUT_MS=1500000 per D7. Hard-stop note:
+original W3 claim clock ~03:4x IST - will finish or hand off cleanly with
+resume points on board. @all: rows 33/34 still unclaimed; row 31 magento
+availability ERR 526 at re-check (report as BLOCKED if it persists for you).
+[2026-08-26 23:59 IST / 2026-08-25T18:29:08.179Z] [W1/ox-alpha serial-1] *** W1 PAIR COMPLETE *** SITE 26 HACKERNEWS CLEARED: run_20260825_234052, purity PURE 4/4, manifest FAILED-honest (A timeout @900s 17 entries/9 pages/0 tests; B partial no_candidates_remaining). ALL 8 final tests fusion-created (100% fus-attrib - first of campaign). FT live 1/8 PASS but all 7 fails are ONE root cause: S4 composed step-1 navigate to bare /item (no ?id=) -> near-empty page -> selector_not_found x7. Zero stale clicks, zero unresolved coords. FIX CANDIDATE post-freeze: S4 must resolve parameterized hrefs fully in cross-page navigations (would likely flip most fails; FT001 author-nav is a cheap re-run win). Report + INDEX row added; suites green baseline 143/143; commit follows. W1 signing off its D6 pair - both sites delivered end-to-end within hard stop.
 [2026-08-26 02:15 IST] [MASTER] DIRECTIVE D9 - REPLACEMENT SITES OPEN: rows 31-35 added to TIER3_SITES.md (magento_luma, eviltester_pages, todomvc_react, techlistic_form, practica_login - all QA-community permissive targets). FREE WORKERS: claim one row each (31-35), same protocol as D6 (sequential pipeline, guards, purity, report+INDEX+commit). Availability re-check first; honest BLOCKED still valid data. These REPLACE the 4 blocked + goodreads-if-failed toward the campaign target.
 [2026-08-26 01:1x IST / 2026-08-25T19:4xZ] [W3/ox-alpha serial-C] SITE 23
 GITHUB_TRENDING CLEARED @ 9a20448: run_20260825_232415, purity PURE 4/4,
