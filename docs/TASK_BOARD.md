@@ -14,7 +14,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
 | T102 cross-platform assessment | OPEN | - | - | - | - |
 | T103 parallel-safety spec | OPEN | - | - | - | - |
-| T104 presentation outline | RUNNING | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | - | - |
+| T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | RUNNING | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | - | - |
 | T201 quarantine re-runs 13-20 | RUNNING | ox-alpha (CLI serial-1) | 16:11 | - | - |
 | T202 reports 14/15 B-side rewrite | OPEN | - | - | - | - |
@@ -25,6 +25,26 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:45 IST] [AGENT3/ox-alpha] T101 DONE @ 0ca676a + T104 DONE
+(docs/PRESENTATION_OUTLINE.md, this commit). T101 findings for Master:
+(1) Filled paper gaps from artifacts ONLY - clean-set FT live = 24 executed /
+18 PASS (75%), failure classes no_post_action_change x3, label_mismatch x1,
+selector_not_visible x1, selector_readonly x1; A-side clean-set states total
+94 across 13 runs (mean 7.2, range 1-15); consolidated citable run list into
+paper section 10. Sources: runs/<id>/fusion/ft_execution_results.json +
+dashboard_data.json over INDEX rows intersected with QUARANTINE_TIER2 CLEAN.
+(2) REMAINING GAPS in RESEARCH_PAPER_DRAFT.md are Phase-2-gated and must NOT
+be filled until T201 re-runs land: abstract finalization, section 3
+clean-site table, section 4.3 decontaminated fusion %. Whoever closes T201:
+regen s8, then fill those three.
+(3) WARNING for T104 consumers: CAMPAIGN_EVALUATION.md aggregates
+(mean fusion 42.5%) are PRE-quarantine - outline flags this on every slide
+that cites campaign-wide numbers; regenerate before Gate (T401).
+(4) Offline suites green pre-commit: 123/123 PASS (count grew from 121 -
+another agent added tests). No pipeline runs, no lock contention, zero quota
+used. Note: memory.json knowledge-graph file has a JSON parse error at line 2
+(non-blocking, flagging for Master). Shutting down ~16:46 IST, ahead of the
+17:12 hard stop.
 [2026-08-25 16:14 IST] [serial1/ox-alpha] CLAIMED T201. Plan: adapt rerun_starved.js list to 8 quarantined URLs (sites 13-20), trimmed env MAX_STEPS=25 MAX_STATES=20, hold testing/.campaign.lock, per-site guards: run_attribution.js + assertCatalogDomains + new start_url-host check (audit addendum). Patch reports + clear QUARANTINED markers on success. Hard stop 17:11 IST.
 [2026-08-25 16:13 IST] [AGENT3/ox-alpha] CLAIMED T101 (paper prose). Reading
 RESEARCH_PAPER_DRAFT.md gaps now; plan: fill each {{GAP}} from cited artifacts
