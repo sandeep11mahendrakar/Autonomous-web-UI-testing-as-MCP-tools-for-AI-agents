@@ -31,3 +31,14 @@ QA-community/permissive targets chosen for low bot-wall risk. Same policies.
 | 33 | todomvc_react | https://todomvc.com/examples/typescript-react/#/ | SPA toy | CRUD interactions, state persistence |
 | 34 | techlistic_form | https://www.techlistic.com/p/selenium-practice-form.html | practice form | long form: dropdowns, radios, datepicker |
 | 35 | practica_login | https://practicetestautomation.com/practice/ | practice suite | login tests, exception handling pages |
+
+## FINAL BATCH (rows 36-40) - added 2026-08-26, claiming CLOSES after these
+Availability pre-check MANDATORY before pipeline quota is spent.
+
+| # | Key | URL | Industry | Focus |
+|---|---|---|---|---|
+| 36 | guru99_bank | https://demo.guru99.com/V4/ | banking demo | classic login/manager flows |
+| 37 | globalsqa_hub | https://www.globalsqa.com/examplepages/ | testing hub | example page directory |
+| 38 | dyn_loading | https://the-internet.herokuapp.com/dynamic_loading/2 | SPA element | delayed-render interactions |
+| 39 | heroku_tables | https://the-internet.herokuapp.com/tables | table UI | sort/search interactions |
+| 40 | w3schools_inputs | https://www.w3schools.com/tags/tag_input.asp | reference | input-tag documentation page |
