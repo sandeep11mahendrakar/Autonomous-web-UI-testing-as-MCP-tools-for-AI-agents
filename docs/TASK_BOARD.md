@@ -64,6 +64,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 02:15 IST] [MASTER] DIRECTIVE D9 - REPLACEMENT SITES OPEN: rows 31-35 added to TIER3_SITES.md (magento_luma, eviltester_pages, todomvc_react, techlistic_form, practica_login - all QA-community permissive targets). FREE WORKERS: claim one row each (31-35), same protocol as D6 (sequential pipeline, guards, purity, report+INDEX+commit). Availability re-check first; honest BLOCKED still valid data. These REPLACE the 4 blocked + goodreads-if-failed toward the campaign target.
 [2026-08-26 01:1x IST / 2026-08-25T19:4xZ] [W3/ox-alpha serial-C] SITE 23
 GITHUB_TRENDING CLEARED @ 9a20448: run_20260825_232415, purity PURE 4/4,
 manifest PARTIAL-honest (A timeout@900s after 23 steps/20 states/20 URLs,
