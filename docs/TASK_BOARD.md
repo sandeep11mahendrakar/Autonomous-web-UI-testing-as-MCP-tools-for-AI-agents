@@ -44,6 +44,8 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via f8ec2db from run_20260825_165819) | ox-alpha CLI serial-2 | 16:55 | 19:30 | f8ec2db |
 | T601 Tier-2 mega report | DONE - FINAL version pushed (all rows 11-20 artifact-verified, FT agg 27/40=67.5% honest restatement) | ox-alpha CLI serial-B | 2026-08-25 20:50 | 2026-08-25 21:00 | this commit |
 | Tier-3 W2 site-22 stackoverflow | DONE - BLOCKED honest (hard 403 bot-wall, zero quota; report+INDEX row) | ox-alpha CLI serial-B | 2026-08-26 00:35 | 2026-08-26 00:40 | 8d7b6e1 |
+| Tier-3 W3 site-23 github_trending | DONE - CLEARED run_20260825_232415 purity PURE 4/4; S4 5/5 accepted all grounded (46 offered, 0 rejects); FT live 3/5 PASS (10/12 steps); fusion-attributable 83.3%, 12 novel targets; report+INDEX row @ 9a20448 | ox-alpha CLI serial-C (W3) | 2026-08-26 00:35 | 2026-08-26 00:55 | 9a20448 |
+| Tier-3 W3 site-28 archive_org | QUEUED - race-safe watcher armed behind W1 hackernews lock; tier3_w3.cjs full protocol | ox-alpha CLI serial-C (W3) | 2026-08-26 00:56 | - | - |
 | Tier-3 W2 site-27 bbc_news | RUNNING - queued behind W3 lock; pipeline armed w/ trimmed env + strict attribution + purity gate | ox-alpha CLI serial-B | 2026-08-26 00:42 | - | - |
 | T201 site-18 theinternet re-run | DONE - CLEARED-BY-RERUN run_20260825_195406, all guards green + folder_purity pure, FT live 4/4 after reconciliation (early 3/3 pre-reconcile), fusion 80% | ox-alpha CLI serial-B | 2026-08-25 19:54 | 2026-08-25 20:15 | (report+INDEX patched; mega-report row filled) |
 | T301 Tier-3 launch (sites 21-30) | RUNNING - progress @ 01:35 IST (26th): #21 wikipedia CLEARED run_20260825_230647 purity-PURE FT3/7 fus87.5% (W1); #22 stackoverflow BLOCKED 403 (W2, zero quota); #24 imdb BLOCKED 202-bot-check + #29 npmjs BLOCKED 403 (both W4, zero quota, dual-probe evidence); #24 imdb BLOCKED pre-pipeline (W4); #29 npmjs BLOCKED pre-pipeline (bot-wall, known); #22 stackoverflow attempted (W2, bot-walled per preflight); #26 hackernews QUEUED (W1 watcher); #23/#25/#27/#28/#30 claims per D6/D5 comms below. Success bar >=6/10 complete pipelines; blocked IS data | SUB-MASTER + W1-W5 | 2026-08-25 17:40 (prep) / 22:4x (launch) | running | 19c9031+ |
@@ -62,6 +64,19 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 01:1x IST / 2026-08-25T19:4xZ] [W3/ox-alpha serial-C] SITE 23
+GITHUB_TRENDING CLEARED @ 9a20448: run_20260825_232415, purity PURE 4/4,
+manifest PARTIAL-honest (A timeout@900s after 23 steps/20 states/20 URLs,
+0 A tests - budget expired pre-generation; B no_candidates_remaining on
+card-layout landing but replay 1/1 PASS w/ weak signal disclosed). S1: 564
+elems/28 bh/23 pages/67 conflicts. S4 PERFECT ROUND: 46 offered -> 5/5
+accepted all grounded, zero rejections. FT live 3/5 PASS (10/12 steps), 2
+honest no-post-action-change fails. Fusion-attributable 83.3%, 12 novel
+targets. Report github_trending_2026-08-26.md + INDEX row 23 + extract
+snapshot committed. STATUS SHEET rows added for site-23 DONE + site-28 QUEUED.
+NOTE re D8(b): ARCH_A_TIMEOUT_MS=1500000 approved - my #23 run confirms the
+wikipedia finding (A died in exploration, never reached generation). #28
+archive_org watcher armed behind W1's hackernews lock; will fire round-robin.
 [2026-08-26 02:00 IST] [MASTER] DIRECTIVE D8 - LIVE STATUS + REASSIGNMENT:
 CLEARED: #21 wikipedia (run_20260825_230647).
 BLOCKED-final: #22 stackoverflow(403), #24 imdb(202 bot-check), #29 npmjs(403).
