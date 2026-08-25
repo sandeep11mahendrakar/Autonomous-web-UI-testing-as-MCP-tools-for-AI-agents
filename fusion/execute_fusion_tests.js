@@ -300,8 +300,16 @@ async function runTest(browser, testCase, index) {
         // only when that target is a real DOM selector (A-side behaviors).
         if (!catalogRecord && CATALOG_INDEX.behaviors.has(step.ref)) {
           const bh = CATALOG_INDEX.behaviors.get(step.ref);
-          const owner = catalog.elements.find(el =>
-            el.page_key === bh.page_key && (el.a_selectors || []).includes(bh.target));
+          // CATALOG_INDEX.elements is a Map — iterate its values (defect #20:
+          // this path previously referenced an out-of-scope `catalog` and
+          // crashed the whole executor when a behavior ref was hit).
+          let owner = null;
+          for (const el of CATALOG_INDEX.elements.values()) {
+            if (el.page_key === bh.page_key && (el.a_selectors || []).includes(bh.target)) {
+              owner = el;
+              break;
+            }
+          }
           if (owner) catalogRecord = owner;
         }
         if (!catalogRecord) {
