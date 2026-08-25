@@ -1,0 +1,41 @@
+AUDIT T-C/E evidence — orphan run dir run_20260825_234052 inspection (2026-08-26)
+
+Directory state on disk:
+  - run_manifest.json : ABSENT
+  - fusion/           : ABSENT
+  - dom/              : memory_log.json, states.json, transitions.json,
+                        run_explore.log, screenshots (1..15 pairs)
+  - vision/           : run_generate.log ONLY
+
+Attribution of artifacts (host sweep of dom/states.json + run_explore.log):
+  ALL URLs = news.ycombinator.com (site #26 hackernews)
+    https://news.ycombinator.com/news
+    https://news.ycombinator.com/item?id=49433292
+    https://news.ycombinator.com/newcomments
+    https://news.ycombinator.com/newest
+    https://news.ycombinator.com/front?day=20 ...
+  vision/run_generate.log host mentions:
+    https://news.ycombinator.com (+ http://127.0.0.1:500x / http://10.2.0.2:500x
+    which are LOCAL YOLO/OCR SERVICE health endpoints, NOT explored fixtures)
+
+Conclusion: single-host, no cross-site stitching => NOT contaminated.
+Classification: UNATTRIBUTABLE ABANDONED ATTEMPT at site #26 hackernews,
+created ~23:40 IST Aug-25 (W1's queued watcher fired after wikipedia lock
+release), died before manifest write. No board/comms record of this attempt.
+
+Action histogram from dom/memory_log.json: { navigate: 16, fill: 1 }
+POLICY NOTE: the single fill executed a deterministic-fallback action typing
+"add comment" into input:nth-of-type(4) (HN comment box) after
+"[ERR] [llmClient] parseAction: all strategies failed". NO submit/post/click
+on any submit control occurred (vision summary: submit_actions: 0), so the
+read-only policy breach did not materialize into a write to the site.
+
+Log tails (verbatim excerpts):
+  [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 8000ms (attempt 1/6)
+  [llmProvider] 429 from openrouter (stealth/ox-alpha) — waiting 16000ms (attempt 2/6)
+  [ERR] [llmClient] parseAction: all strategies failed, raw: "Let me analyze the current state. I'm on a Hacker News item page ..."
+  [explore] Deterministic fallback candidate: INPUT "add comment"
+  [llmClient] Executing: fill "input:nth-of-type(4)" with "add comment"
+  --- vision side ---
+  [run] Termination: no_candidates_remaining
+  ===== exited code=0 timedOut=false =====

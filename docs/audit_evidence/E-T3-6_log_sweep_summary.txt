@@ -1,0 +1,29 @@
+AUDIT E evidence — fatal/error log sweep, full campaign + Tier-3 window focus
+Sweep: runs/*/dom/run_explore.log, vision/run_generate.log, vision/run_execute.log
+Patterns: fatal|FATAL|[ERR]|Error:|ECONNREFUSED|EADDRINUSE|crash|unhandled|
+Unpickl|timeout of|net::ERR|Traceback|captureScreenshot|Unhandled 'error'
+
+BUCKETED RESULTS (count | class | known-defect mapping):
+  x34 | net::ERR_ABORTED (dom js-nav)        | KNOWN — documented openlibrary re-run note (9 warnings), benign aborted navs
+   x6 | EADDRINUSE                            | KNOWN — F-05 fixed-port service race (contaminated-era runs only)
+   x4 | ECONNREFUSED                          | KNOWN — F-05/F-08 service lifecycle class
+   x3 | Unhandled 'error' event               | KNOWN — F-05 class, all inside run_20260825_070918 (quarantined-evidence dir)
+   x2 | Page.captureScreenshot fatal          | KNOWN — gutenberg B-side nuance (T502/F-03 documented)
+   x4 | bot_wall_blocked Fatal                | KNOWN — honest policy termination (opencart precedent)
+   x2+2| page.goto Timeout 60000 fatal        | KNOWN — F-06 explicitly cites juiceshop attempt run_20260824_101812
+  x1+3| [execute] Test cases file not found /  | OLD Tier-1 era (Aug 22 runs 141951/200940/202529/203141),
+        No valid test cases found              | predate current pipeline; no Tier-3 occurrence
+  x~15| Re-detection failed ... status 500    | YOLO-service 500 retry class (Aug 23-25 daytime); retries absorbed,
+                                               | one fatal termination run_20260824_012649 (pre-Tier-3, unregistered sibling era)
+   x1 | [ERR] parseAction all strategies failed| KNOWN class (F-04 lineage; now LOUD per fix 2ed3d91) — ONLY hit inside
+                                               | the Tier-3 window, in orphan run_20260825_234052 (see E-T3-4)
+
+FALSE POSITIVES excluded from counts:
+  - "Status Code 500" lines = the-internet.herokuapp.com's own status-code TEST PAGES (063920, 195406).
+
+TIER-3 WINDOW VERDICT (230647 / 232334 / 232415 / 234052):
+  ZERO new undocumented fatal patterns. The single window hit is the already-
+  registered parse_failed class, and it fired LOUDLY ([ERR] line present),
+  confirming the F-04 fix behaves as designed. New BEHAVIORAL observation
+  (not a log pattern): deterministic fallback executed a WRITE-class `fill`
+  action on the live site — filed as finding F3-02.

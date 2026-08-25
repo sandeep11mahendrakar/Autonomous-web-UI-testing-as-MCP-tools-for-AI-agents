@@ -243,3 +243,128 @@ Weatherspark re-run run_20260825_173233 catalog.json contains a literal null
 page_key (catalog builder recorded a null URL as a page). Data corruption
 class: catalog-builder. Flagged by testing/folder_purity.js; needs a null-
 guard in the S1 catalog builder before overnight batches.
+
+---
+
+# TIER-3 INTERIM AUDIT (2026-08-26)
+
+**Auditor:** ox-alpha (independent verifier, fresh session). Read-only on the
+repo except this section + `docs/audit_evidence/E-T3-*`. All numbers recomputed
+from RAW artifacts under `runs/<id>/`; provenance checks mirror
+`testing/folder_purity.js` logic but were executed OUTSIDE the repo (the real
+tool writes CONTAMINATION_MARKER files; the auditor must not).
+**Window audited:** Tier-3 campaign sites 21–30, live at audit time.
+Run dirs in window: `run_20260825_230647` (#21 wikipedia), `_232334`
+(#25 goodreads attempt-1), `_232415` (#23 github_trending), `_234052`
+(orphan — see F3-01). `testing/.campaign.lock` was HELD throughout by live
+PID 27424 (`node.exe`, started 23:58 IST) → live-replay probes skipped per
+lock discipline (same substitution rule as Audit B above).
+
+## Executive verdict
+
+**INTERIM PASS.** Every headline number for the first cleared Tier-3 site
+reproduces exactly from raw artifacts; all three attributed Tier-3 run dirs
+are provenance-PURE (zero recurrence of the Tier-2 cross-run stitching
+pattern — the guards + lock discipline held under concurrent workers); all
+three honest-BLOCKED rows carry dual-probe evidence whose preflight probe is
+independently machine-verifiable. Two MED process findings are filed (an
+undocumented abandoned hackernews attempt left as an unattributable orphan
+dir, and a deterministic-fallback WRITE-class action executed against a live
+site during a read-only campaign) — both contained, neither corrupts data.
+Tier-3 rows may continue to be trusted as they land, subject to closing the
+orphan before gate audit.
+
+## Findings table
+
+| ID | Audit | Severity | Description | Evidence |
+|---|---|---|---|---|
+| F3-01 | T-C/E | **MED** | Unattributed orphan dir `run_20260825_234052`: an undocumented attempt at #26 hackernews (watcher-fired ~23:40 IST after wikipedia's lock release) died before manifest write. No manifest, no fusion chain, no board/comms record of the attempt. Artifacts are single-host `news.ycombinator.com` (NOT contaminated) but the dir is unattributable scratch of exactly the class that seeded the Tier-2 stitching incident. Must be registered as evidence-only or removed before gate audit. | `E-T3-4_orphan_234052_inspect.txt` |
+| F3-02 | T-C/E | **MED** | Read-only policy breach risk: during the orphan attempt, `[ERR] parseAction: all strategies failed` → deterministic fallback executed `fill input:nth-of-type(4)` typing "add comment" into a LIVE Hacker News comment box. No submit/post followed (action histogram 16 navigate + 1 fill; vision `submit_actions: 0`) so impact is nil, but fallback can perform WRITE-class actions on third-party sites under frozen read-only pre-registration. Recommend: fallback restricted to navigation/click-class actions only. | `E-T3-4_orphan_234052_inspect.txt` |
+| F3-03 | T-C | **LOW** | Guard blind spot: `folder_purity.js` Check-1 passes vacuously when `dom/exploration_summary.json` is missing — and it IS missing in the wikipedia run (Check-1 logged "0 urls OK"). Mitigated: independent sweep of `dom/states.json` shows all hosts = `en.wikipedia.org`, and Checks 2–4 (vision start_url, catalog page_keys, FT step hosts) are substantive and passed. Suggest Check-1 fail-loud when the summary file is absent from a dir that has dom artifacts. | `E-T3-1`, `E-T3-3` |
+| F3-04 | T-B | **LOW** | Launch-time re-check probes (probe #2 of the dual-probe requirement) exist only as narrative with approximate timestamps ("~00:5x IST"); no raw command output committed. Probe #1 (preflight) IS independently confirmed in `TIER3_PREFLIGHT.md`: stackoverflow 403 / npmjs 403 / imdb 202 @ 2026-08-25 ~17:45 IST. Evidence requirement MET; strength of probe #2 is thinner than probe #1. | `E-T3-2_blocked_reports_check.txt` |
+
+Counts: CRITICAL 0 · HIGH 0 · MED 2 · LOW 2.
+
+## AUDIT T-A — Cleared-site recomputation (deterministic): PASS
+
+Site #21 wikipedia, `run_20260825_230647`. All four claims recomputed from raw
+JSON, not derived markdown:
+
+| Claim | Raw recomputation | Verdict |
+|---|---|---|
+| catalog elements=790 / pages=13 | `fusion/catalog.json`: elements[] len **790**, pages[] len **13**; every page_key host = en.wikipedia.org | EXACT MATCH |
+| S4 7-of-39 accepted | `fusion_report.json`: accepted_count=**7**, gap_candidates_offered=**39**, 3 honest cross_page_ref rejections, all_accepted_grounded=true | EXACT MATCH |
+| FT 3/7 PASS steps 6/14 | `ft_execution_results.json` summary {total:7, passed:3}; auditor independently counted steps: **6 PASS / 14 total**; all FT step URLs live en.wikipedia.org | EXACT MATCH |
+| fusion-attributable 87.5% | `dashboard_data.json.headline.pct_final_tests_attributable_to_fusion`=**87.5** (= 7/8: A=0, B=1, fusion=7) | EXACT MATCH |
+
+INDEX row #21 matches all four values verbatim (7/39 accepted, 3/7 PASS steps
+6/14, **87.5%**, run ID). Site report `wikipedia_2026-08-26.md` also consistent
+with raw artifacts line-by-line. No HIGH finding.
+
+## AUDIT T-B — Blocked-evidence verification: PASS (with LOW note)
+
+All three required reports exist in `testing/site_reports/` and contain dual-
+probe records with status codes + timestamps:
+stackoverflow_2026-08-26.md (403), imdb_blocked_2026-08-26.md (202 bot-check),
+npmjs_blocked_2026-08-26.md (hard 403). Probe #1 cross-checked verbatim against
+committed `testing/TIER3_PREFLIGHT.md` (independent artifact). Residual thinness
+of probe #2 filed as F3-04 (LOW). No MED finding triggered.
+
+## AUDIT T-C — Contamination cross-check, all Tier-3-window run dirs: CLEAN
+
+Method mirrors `folder_purity.js` (manifest host vs visited_urls vs vision
+start_url/source_url vs catalog page_keys belong-or-visited; testmuai alias
+allowed only via lambdatest entries; localhost flagged). Executed read-only
+from outside the repo:
+
+| Run dir | Manifest host | Vision start_urls | Catalog hosts | FT steps host | Verdict |
+|---|---|---|---|---|---|
+| run_20260825_230647 | en.wikipedia.org | en.wikipedia.org (n=1) | 13/13 en.wikipedia.org | en.wikipedia.org | **PURE** |
+| run_20260825_232334 | www.goodreads.com/list/tag/best | goodreads.com (n=1) | 1/1 goodreads | n/a (no FT) | **PURE** |
+| run_20260825_232415 | github.com/trending | github.com (n=1) | 23/23 github.com | github.com | **PURE** |
+| run_20260825_234052 | NO MANIFEST | n/a (all-dom news.ycombinator.com) | n/a | n/a | ORPHAN → F3-01 |
+
+Zero foreign hosts. Zero localhost fixtures explored (the 127.0.0.1:500x /
+10.2.0.2:500x strings in one vision log are local YOLO/OCR *service* health
+endpoints, not replayed pages). The Tier-2 failure mode did NOT recur.
+
+## AUDIT T-D — DEFECT #24 confirmation: CONFIRMED, cosmetic-only
+
+Precondition reproduced on wikipedia run (catalog 13 pages/790 elements > 0;
+A tests = 0): `gap_report.summary` emits a zero-signal block — coverage_pct
+0/0 despite a 790-element catalog (identical shape on github_trending, also
+weak-A). Cosmetic-only verified: s6_dashboard does not consume gap summary;
+headline recomputed exact (87.5%); S4/FT/INDEX all independent and correct.
+Full chain in `E-T3-5_defect24_reproduction.txt`.
+
+## AUDIT E — Undocumented failure scan: no new fatal patterns in window
+
+Full-campaign sweep bucketed into known classes (F-05 service races,
+F-06 juiceshop goto-timeout, captureScreenshot gutenberg nuance, honest
+bot_wall_blocked terminations, openlibrary ERR_ABORTED warnings); false
+positives excluded (the-internet's own "Status Code 500" test pages). Inside
+the Tier-3 window the ONLY hit is the registered parse_failed class firing
+LOUDLY (`[ERR]` line present — F-04 fix working as designed), in the orphan
+dir already covered by F3-01/F3-02. Zero new undocumented patterns.
+
+## Commands appendix (auditor reproducibility)
+
+```
+node <temp>/ta_recompute.js run_20260825_230647     # T-A four-claim recompute -> E-T3-1
+Select-String INDEX.md -Pattern 'wikipedia|stackoverflow|imdb|npmjs'          # INDEX row check
+Get-ChildItem testing/site_reports -Filter '*2026-08-26*'                     # T-B existence
+Select-String testing/TIER3_PREFLIGHT.md -Pattern 'stackoverflow|imdb|npmjs'  # T-B probe#1 cross-check
+node <temp>/tc_contamination.js                     # T-C purity mirror, read-only -> E-T3-3
+node -e "... memory_log action histogram ..."       # T-C orphan attribution -> E-T3-4
+Select-String runs/*/dom/run_explore.log,vision/*.log -Pattern <fatal-set>    # AUDIT E -> E-T3-6
+git status --porcelain; git branch --show-current; git remote -v              # env sanity
+```
+
+Environment notes: branch `after-tier-2`, remote `backup` ONLY (neonish absent
+— D8(d) honored). Working tree carried other lanes' uncommitted files
+(logs/llm_usage.jsonl, tier3_w*.log, .campaign.lock) — untouched. Live-replay
+audits (B/C-style) skipped: `.campaign.lock` held by live PID 27424 during the
+audit window. memory.json knowledge-graph remains unreadable (known JSON parse
+error at line 2, previously flagged on-board).
+
+*— TIER-3 INTERIM AUDITOR (ox-alpha), 2026-08-26*

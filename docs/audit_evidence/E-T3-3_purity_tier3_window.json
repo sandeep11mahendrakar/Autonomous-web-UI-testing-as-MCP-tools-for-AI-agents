@@ -1,0 +1,129 @@
+[
+  {
+    "run_id": "run_20260825_230647",
+    "checks": [
+      {
+        "check": "dom_visited_hosts",
+        "ok": true,
+        "n": 0
+      },
+      {
+        "check": "vision_start_urls",
+        "ok": true,
+        "n": 1
+      },
+      {
+        "check": "catalog_page_keys",
+        "ok": true,
+        "pages": 13,
+        "stray": []
+      },
+      {
+        "check": "ft_step_hosts",
+        "ok": true,
+        "hosts": [
+          "en.wikipedia.org"
+        ]
+      }
+    ],
+    "foreign": [],
+    "localFlags": [],
+    "verdict": "PURE",
+    "manifest_url": "https://en.wikipedia.org/wiki/Web_testing",
+    "ft_step_hosts": [
+      "en.wikipedia.org"
+    ]
+  },
+  {
+    "run_id": "run_20260825_232334",
+    "checks": [
+      {
+        "check": "dom_visited_hosts",
+        "ok": true,
+        "n": 1
+      },
+      {
+        "check": "vision_start_urls",
+        "ok": true,
+        "n": 1
+      },
+      {
+        "check": "catalog_page_keys",
+        "ok": true,
+        "pages": 1,
+        "stray": []
+      }
+    ],
+    "foreign": [],
+    "localFlags": [],
+    "verdict": "PURE",
+    "manifest_url": "https://www.goodreads.com/list/tag/best"
+  },
+  {
+    "run_id": "run_20260825_232415",
+    "checks": [
+      {
+        "check": "dom_visited_hosts",
+        "ok": true,
+        "n": 20
+      },
+      {
+        "check": "vision_start_urls",
+        "ok": true,
+        "n": 1
+      },
+      {
+        "check": "catalog_page_keys",
+        "ok": true,
+        "pages": 23,
+        "stray": []
+      },
+      {
+        "check": "ft_step_hosts",
+        "ok": true,
+        "hosts": [
+          "github.com"
+        ]
+      }
+    ],
+    "foreign": [],
+    "localFlags": [],
+    "verdict": "PURE",
+    "manifest_url": "https://github.com/trending",
+    "ft_step_hosts": [
+      "github.com"
+    ]
+  }
+]
+--- ORPHAN ---
+{
+  "run_id": "run_20260825_234052",
+  "manifest": false,
+  "dom_state_urls": [
+    "https://news.ycombinator.com/news",
+    "https://news.ycombinator.com/item?id=49433292",
+    "https://news.ycombinator.com/newcomments",
+    "https://news.ycombinator.com/newest",
+    "https://news.ycombinator.com/item?id=49438177"
+  ],
+  "dom/run_explore.log": [
+    "https://news.ycombinator.com",
+    "https://news.ycombinator.com/news",
+    "https://news.ycombinator.com/item?id=49433292",
+    "https://news.ycombinator.com/newcomments",
+    "https://news.ycombinator.com/newest",
+    "https://news.ycombinator.com/item?id=49438177",
+    "https://news.ycombinator.com/front",
+    "https://news.ycombinator.com/front?day=20"
+  ],
+  "dom/run_explore.log_lines": 481,
+  "vision/run_generate.log": [
+    "https://news.ycombinator.com",
+    "http://127.0.0.1:5002",
+    "http://10.2.0.2:5002",
+    "http://127.0.0.1:5001",
+    "http://10.2.0.2:5001",
+    "https://news.ycombinator.com/"
+  ],
+  "vision/run_generate.log_lines": 62
+}
