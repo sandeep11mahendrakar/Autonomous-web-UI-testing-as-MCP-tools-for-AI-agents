@@ -69,7 +69,7 @@ recalculated from this table as the campaign grows.
 | 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_165819` | 4 states (0 tests) | 4 states/202 elems | 4/5 grounded | 4/4 PASS | **80%** |
 | 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_173233` | 9 states (0 tests) | 2 states/28 elems | 8/12 grounded | 5/8 PASS | **100%** |
 | 17 | SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_194511` | 3 states | 3 states/123 elems | 1/3 fusion-created | 1/1 PASS (100%) | **33.3%** |
-| 18 | The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_195406` | 5 states (0 tests, A capped @900s — budget limit not error) | 3 states/40 elems, replay 1/1 PASS live | 3/4 fusion-created | **3/3 PASS (100%)** live, purity PURE | **75%** |
+| 18 | The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_195406` | 5 states (0 tests, A capped @900s — budget limit not error) | 3 states/40 elems, replay 1/1 PASS live | 4/5 fusion-created | **4/4 PASS (100%)** live, purity PURE | **80%** |
 | 19 | PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_201027` | 20 states | 9 states/278 elems | 6/10 fusion-created | 5/6 PASS (83.3%) | **60%** |
 | 20 | 🚫 QUARANTINED-WRONG-SITE · Open Library | https://openlibrary.org | 2026-08-25 | `openlibrary_2026-08-25.md` | `run_20260825_070918` | OK 11 steps / 9 states | PARTIAL ? partial ECONNRESET | 3/6 grounded | 3/3 PASS | **60%** |
 
