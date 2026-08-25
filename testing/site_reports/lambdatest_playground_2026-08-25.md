@@ -70,3 +70,11 @@ node fusion/s6_dashboard.js run_20260825_053921
 - Status: FAILED | A: TIMEOUT (internal A 900s cap) | B: PARTIAL (no test cases)
 - S4: 4/5 accepted (1 cross_page_ref rejected) | FT live: 1/4 PASS | Fusion-attributable: 100%*
 - REVISION OF CONTAMINATION CLAIM: A timed out AGAIN on a fresh ox-alpha pool — this is the pipeline internal 900s A-timeout on a heavy site, NOT quota starvation. The quota-contamination hypothesis is withdrawn for this site; heavy-DOM A-timeout is a genuine finding. Fusion = 100% of a fusion-only final set (15 novel targets) but the denominator caveat applies.
+
+## Re-run attempt (post-quarantine, 2026-08-25)
+
+- **Run:** un_20260825_161515 (ode runBoth.js https://www.lambdatest.com/selenium-playground/, trimmed budget MAX_STEPS=25/MAX_STATES=20)
+- **Outcome:** overall FAILED (A: timeout at internal 15-min cap; B: partial_success, 4 actions / 1 state / 0 generated tests)
+- **Root cause — REAL SITE CHANGE:** www.lambdatest.com/selenium-playground/ now REDIRECTS to www.testmuai.com/selenium-playground/ (LambdaTest KaneAI marketing property). Both architectures hit the out-of-scope guard on every navigation target (⛔ external domain testmuai.com); the playground element zoo no longer exists at the ledgered URL.
+- **Guards:** findRunDir manifest-match OK; assertCatalogDomains OK (empty catalog); assertVisionStartUrls OK (start_url host == manifest host). Artifacts are correctly attributed but evidence-poor.
+- **Verdict:** QUARANTINE NOT CLEARED. INDEX marker stays. Same precedent class as phptravels MIRROR-EVIDENCE (#19): recommend marking #13 SITE-MOVED-EVIDENCE and swapping the spare before final dataset.
