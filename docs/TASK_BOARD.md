@@ -6,6 +6,11 @@ QUOTA-FRESH:       CHECK (ox-alpha key ...3cca13 active; reset 05:30 IST daily)
 TIER-3-LAUNCH:     NO    (gated on T401 gate audit)
 
 ## DIRECTIVES (active)
+D4 [MASTER]: SUB-MASTER APPOINTED. The agent session opened with the
+SUB-MASTER prompt holds FULL authority below Master: final calls on task
+assignment/reassignment, verification delegation, gate checks, integration,
+and worker disputes. Workers take orders from SUB-MASTER; escalate to human
+Master only for quota/key acquisition and major architecture approvals.
 D3 [MASTER]: T201 verified COMPLETE. APPROVED per worker proposal: T604
 capability-flags in S1 + executability-filter-v2 (minor-change lane).
 APPROVED follow-on: T605 prompt/validator acceptance-rate tightening.
