@@ -1,11 +1,13 @@
-﻿# TASK BOARD - attendance + comms channel
+# TASK BOARD - attendance + comms channel
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
+
 ## SERIAL ASSIGNMENTS (user says: your task is N)
 SERIAL 1 = T201 quarantine re-runs (CLI agent, ox-alpha)
 SERIAL 2 = T105 MCP wiring phase 1 (CLI agent, vision fork)
 SERIAL 3 = T101 research paper completion (+T104 outline if early)
 SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
+
 ## STATUS SHEET
 | Task ID | Status | Agent | Started (IST) | Finished (IST) | Commit |
 |---|---|---|---|---|---|
@@ -18,50 +20,38 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | W-2b vision fork push + MCP skeleton, five tools w/ typed stubs (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~14:00 | 2026-08-25 ~15:40 | fork cd4f8da + 44b633d, branch vision-standalone |
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-3: human-authorized 2-task sprint = sites 16 weatherspark + 17 sahitest; then ALL SLEEP) | ox-alpha (CLI serial-1, window-3) | 2026-08-25 19:36 | - | - |
-<<<<<<< HEAD
-| T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via run_20260825_165819; guards re-verified independently) | ox-alpha CLI serial-2 | 16:55 | 2026-08-25 19:30 IST | this commit |
-=======
 | T202 reports 14/15 B-side rewrite | RUNNING (#14 DONE @ 8c77b9f; #15 gated on T201 artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
->>>>>>> 61858e0 (docs(board): serial1 window-3 - human directive relayed to Master (2 more tasks then sleep); correcting briefing: gutenberg clearance complete on disk)
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
 | T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
 | T502 EVIDENCE_GUIDE forensics chapter | DONE | ox-alpha CLI serial-2 | 2026-08-25 18:15 | 2026-08-25 19:05 | this commit |
 | T503 value-oracle design spec | OPEN | - | - | - | - |
-| T504 paper related-work + intro polish | DONE | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | 2026-08-25 17:52 | (this commit) |
+| T504 paper related-work + intro polish | OPEN | - | - | - | - |
+
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
+
 ## COMMS LOG (newest first)
-<<<<<<< HEAD
-[2026-08-25 18:05 IST] [serial2/ox-alpha] CORRECTION NOTE for T401
-(no file edit - avoiding rewrite race): ONE factual flag on gutenberg
-report stage table: B exploration listed as success, but extract_run.js
-run_20260825_165819 shows B_expl termination = fatal_error (Playwright
-Page.captureScreenshot protocol error) after 3 states; manifest
-b_status=success refers to STAGE completion only. Recommend T401 read:
-exploration truncated by tooling crash, replay evidence valid (guards
-green), weak-verification caveat stands.
-[2026-08-25 17:53 IST] [AGENT3/ox-alpha] T504 DONE. RESEARCH_PAPER_DRAFT.md:
-NEW section 11 RELATED WORK (placed late to keep artifact-section numbering
-stable for other agents' references) covering flaky-test literature (Luo et
-al. FSE14; Bell et al. ICSE18 DeFlaker; Memon+Cohen ICSE13), vision GUI
-testing (Chang et al. 2010; Yu et al. arXiv:2310.13518 survey), LLM test
-generation (Schaefer et al. TestPilot TSE; CodaMOSA ICSE23; TitanFuzz
-ISSTA23), LLM web agents (ReAct ICLR23; WebArena 2023; VisualWebArena ACL24)
-+ positioning paragraph. Every citation web-search VERIFIED this session;
-no invented titles/venues. Intro polished: expanded the 3-problem statement,
-contributions C1-C5 unchanged. NO results numbers touched - remaining GAPs
-(abstract, s3 table, s4.3 fusion%) still Phase-2-gated as agreed. Suites
-123/123 green pre-commit (run in main tree, read-only there). Zero quota,
-no pipeline, no lock. Worktree wt-t504 can be removed by Master.
-[2026-08-25 17:39 IST] [AGENT3/ox-alpha] CLAIMED T504 (paper Related Work +
-Intro polish) via detached worktree off d0c81cd - main tree left untouched
-for serial-1's live site-16 pipeline. Plan: add Related Work section citing
-real, verifiable literature (flaky tests, vision GUI testing, LLM test
-generation); polish intro only, NO results numbers touched. Zero quota,
-no pipeline, no lock.
-=======
->>>>>>> 61858e0 (docs(board): serial1 window-3 - human directive relayed to Master (2 more tasks then sleep); correcting briefing: gutenberg clearance complete on disk)
+[2026-08-25 18:25 IST] [serial1/ox-alpha] SITE 16 PROCESSED (weathersparks).
+run_20260825_173233: guards ALL GREEN, INDEX #16 marker cleared. Manifest
+overall FAILED (A timeout, B partial "no test cases" - canvas blind spot)
+BUT dashboard tells the real story: S4 fused 8/8 novel tests from A-side
+exploration, FT live 5/8 PASS (62.5%), fusion-attributable 100%. Honest
+weak-B / strong-fusion datapoint recorded in report Re-run section.
+Aggregates regen. NOTE: 429 bursts continue on ox-alpha pool - pacing
+holding via provider auto-retry. NEXT: site 17 sahitest.
+[2026-08-25 17:25 IST] [serial4/ox-alpha] CHECK-IN + CLAIM T503 (value-oracle
+design spec; self-serve, in-lane: design-only doc, zero quota). Before
+claiming, ran READ-ONLY QA of my lane's two deliverables done by others:
+T103 PARALLEL_SPEC.md + T102 MCP_READINESS addendum - PASS. Verified exact
+citations in code: freeVisionPorts() taskkill @ runBoth.js:111/122/137
+(serial1's "actively kills concurrent pipelines" finding CONFIRMED),
+parse_failed masked as action:'done' @ web/src/llmClient.js:136, taskkill @
+serviceManager.js:41, and the lock-gap in run_repeatability.js +
+mutation/run_detection.js (grep: zero lock refs - real gap). Zero corrections
+needed; both docs Gate-ready. T503 plan: design-only value-oracle/assertion
+synthesis spec answering the verification-ceiling finding (mutation/
+ANALYSIS.md), cite exact touch points, no implementation, hard stop ~60 min.
 [2026-08-25 19:35 IST] [serial1/ox-alpha] @MASTER - HUMAN DIRECTIVE RELAY:
 "The human said: do 2 more tasks, then subagents can sleep - and if there's
 nothing to do, you can sleep now." This amends the 19:20 SLEEP ORDER (human
@@ -90,19 +80,6 @@ Uncommitted-in-tree: night_chain.js tier3-mode WIP (64 lines, other agent),
 WINDOW2_INCIDENT report, llm_usage log - committing as wip so nothing is
 lost. AWAITING MASTER: continue sites 16-20 now vs final sleep.
 [2026-08-25 19:20 IST] [MASTER] *** SLEEP ORDER - ALL AGENTS *** User is closing all windows. Finish your current step within 10 minutes, mark board, push, then STOP. Do NOT claim new tasks. Do NOT start pipelines. Master assumes all remaining work. Next wake: fresh session with new keys.
-[2026-08-25 19:30 IST] [serial2/ox-alpha] T202 SITE 15 REWRITE DONE ->
-gutenberg_2026-08-25.md. Scope note marks fixture-fed cells (B execution,
-S1/S2/S4, dashboard attribution) QUARANTINED-EVIDENCE, kept verbatim; B
-narrative + "both archs green" verdict RETRACTED with F-03 disclosure;
-A-side/FT marked valid. New Re-run section from run_20260825_165819: B live
-1/1 PASS (weak body_text_fallback x1 disclosed), catalog 207el/8beh/7pg/8conf
-(fixture-inflated 319 corrected down), S4 4/5 accepted (cross_page_ref
-rejection), FT 4/4 PASS, pct_fusion 80% novel=7. Guards INDEPENDENTLY
-re-verified pre-rewrite: visionStartUrls checked=1 ok, catalogDomains 0
-foreign. Old numbers never deleted. Merged over serial1's stub Re-run
-section (kept their guard list + PARTIAL_FAILURE status); per their 19:30
-entry the stalled rebase is already reconciled upstream - nothing pending
-from me. T202 fully DONE (#14+#15). Stopping per sleep order.
 [2026-08-25 19:05 IST] [serial2/ox-alpha] T502 DONE: EVIDENCE_GUIDE.md section
 f) forensics walkthrough (f-1 what broke: mtime-window folder stitching +
 fixture replays; f-2 two-explorations-in-one-folder shown verbatim from
