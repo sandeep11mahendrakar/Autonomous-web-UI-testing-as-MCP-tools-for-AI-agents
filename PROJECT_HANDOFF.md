@@ -1,6 +1,6 @@
 # NEXT SESSION HANDOFF — READ THIS FIRST
 
-_Last updated: 2026-08-25 ~10:45 IST. Branch `after-tier-2` @ commit after s8 fixes.
+_Last updated: 2026-08-26 ~01:30 IST (W4/serial-D). Branch `after-tier-2`.
 This file is the FIRST PROMPT for the next session. Everything below is verified
 state, not plans-that-may-have-changed._
 
@@ -25,81 +25,89 @@ Repo: `C:\Users\sandeep\pes\vs code\Capstone-Project`
 - Parent branch `capstone-tier2-prep`, tag `pre-tier3-cleanup`
 - Remote `backup` = https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-
   → **PUSH ONLY TO `backup`. The Neonishh origin was REMOVED from git config by user instruction. NEVER push to Neonishh.**
-- Offline test suites: 121/121 PASS (`node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"`)
+- Offline test suites: **143/143 PASS** (`node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"`)
 
 ## 3. LLM PROVIDER LANDSCAPE (hard-won knowledge — trust this table)
 
 | Pool | Limit | Notes |
 |---|---|---|
-| OpenRouter `stealth/ox-alpha` | **1000 req/day, GLOBAL** (shared across every key/account) | Resets 00:00 UTC / **05:30 IST**. Keys in play: `sk-or-v1-e5318...`(in .env), `sk-or-v1-47c9...`(temp). New keys do NOT bypass the pool |
-| Groq (console.groq.com key `gsk_***REDACTED-see-user-or-.env***`) | **8000 TPM + 200k TPD PER MODEL** (separate buckets) | `openai/gpt-oss-120b` + `gpt-oss-20b` verified clean JSON. qwen leaks `<think>` — unusable for JSON |
-| Zen gateway `https://opencode.ai/zen/v1` (key `sk-ibSIB...`) | small undisclosed caps | `x-preview-f-free` IS ox-alpha's route but 503s under load; `big-pickle`/`hy3-free`/`laguna-s-2.1-free` work |
+| OpenRouter `stealth/ox-alpha` | **1000 req/day, GLOBAL** (shared across every key/account) | Resets 00:00 UTC / **05:30 IST**. Overnight Tier-3 uses NEW key ending `...81c2ad` (D5 rotation); Groq fallback `fqEvp...99G` (gpt-oss-120b). Zen key `ReUj...` RESERVED for post-campaign — do not touch |
+| Groq (console.groq.com key in .env) | **8000 TPM + 200k TPD PER MODEL** (separate buckets) | `openai/gpt-oss-120b` + `gpt-oss-20b` verified clean JSON. qwen leaks `<think>` — unusable for JSON |
+| Zen gateway `https://opencode.ai/zen/v1` | small undisclosed caps | `x-preview-f-free` IS ox-alpha's route but 503s under load; `big-pickle`/`hy3-free`/`laguna-s-2.1-free` work |
 
 **Current `.env`:** all three archs → OpenRouter stealth/ox-alpha with key2.
 **REQUIRED env for S4:** `FUSION_LLM_REASONING=low` + `FUSION_MAX_TOKENS=4000`
 (the stealth model burns 1500 tokens on visible reasoning before any JSON otherwise).
 These live in untracked `vision/.env`.
 
-## 4. CAMPAIGN STATUS: 20/50 sites DONE
+## 4. CAMPAIGN STATUS: 22/30 assigned sites processed (Tier-3 IN PROGRESS)
 
 ### Tier 1 (sites 1–10): ✅ complete
 11/11 runnable end-to-end, FT pass 77%, 19 pipeline defects fixed.
 
-### Tier 2 (sites 11–20): ✅ complete — reports FINAL in `testing/site_reports/`
-FT live aggregate **26/37 = 70%**. Headlines:
-- 🏆 lambdatest 5/5 PASS @ **100% fusion**, 11 novel targets (best run ever)
-- docs.python 7/7 PASS @77.8% · gutenberg 6/6 PASS @54.5% (16 novel targets, record)
-- books 3/3 @75% · quotes 1/2 · openlibrary 3/3 @60%
-- weathersparks 1/3 (canvas blind spot) · sahitest 0/2 (frames unsupported)
-- **phptravels: demo redirects to demoblaze mirror** — real site issue discovered autonomously
+### Tier 2 (sites 11–20): ✅ complete AND DECONTAMINATED
+The contamination incident (5 wrong-site rows + 3 localhost-replay rows, found
+by adversarial audit docs/AUDIT_REPORT.md) is FULLY RESOLVED: all eight
+quarantined sites re-run behind attribution guards (run_attribution +
+assertCatalogDomains + assertVisionStartUrls + folder_purity ALL GREEN).
+Final decontaminated aggregates (testing/CAMPAIGN_EVALUATION.md @ regen
+2026-08-25T15:16Z): fusion offered 86 / accepted 60 / FT live **37/60 = 61.7%**;
+**mean fusion-attributable 48.7%** (n=19 incl. site-moved lambdatest row; n=18
+denominator note recorded for T605); vision rubric 62 tests / 48 PASS (77%) /
+33 STRONG. Gate audit T401 recomputed all of this from raw artifacts: PASS.
 
-### ⚠️ IMMEDIATE NEXT ACTION (first thing next session, before ANY LLM use)
-**The P1a decontamination re-runs FAILED** — ox-alpha pool was already drained by the
-night chain. All 4 runs (run_20260825_092206/093928/095650/101411) hit 429 walls and timed out.
-
-**Do this after the next 05:30 IST reset, BEFORE anything else consumes ox-alpha:**
-```bash
-node testing/rerun_starved.js
-```
-Then update the reports + INDEX rows for those 4 sites with the new run IDs
-(old contaminated runs stay as evidence). This de-contaminates the fusion-% claim
-(A-timeouts had shrunk A's denominator).
+### Tier 3 (sites 21–30): 🔄 IN PROGRESS (launched 2026-08-25 ~22:45 IST per D5/D6)
+Pair assignments on docs/TASK_BOARD.md directive D6; sequential via
+.campaign.lock round-robin. State at last update:
+- #21 wikipedia CLEARED (W1): run_20260825_230647, purity PURE, FT 3/7 live,
+  fusion-attributable 87.5% (weak-A/strong-fusion exemplar)
+- #22 stackoverflow BLOCKED (W2): hard 403 bot-wall confirmed, zero quota
+- #24 imdb BLOCKED (W4): HTTP 202 bot-check reproduced at launch → honest BLOCKED
+- #29 npmjs BLOCKED (W4): hard 403 bot-wall confirmed → honest BLOCKED
+- #26 hackernews (W1), #23 github_trending/#28 archive_org (W3),
+  #25 goodreads/#30 reddit (W5), #27 bbc_news (W2): claimed/running/queued
+- Success bar (pre-registered): ≥6/10 complete pipelines; blocked IS data
 
 ## 5. RESEARCH FINDINGS (validated, use in capstone report)
 
-1. **Fusion value explodes on real sites**: ~20% (Tier 1) → 41% campaign mean / 66–100% Tier-2 — *pending decontamination caveat above*
-2. **Complementary perception quantified**: B sees ~138 elements/run vs A's ~8 (**16×**), but A generates 2.7 tests vs B's 1.2 — neither alone predicts usefulness
+1. **Fusion value explodes on real sites**: ~20% (Tier 1) → **48.7% campaign mean over the fully decontaminated 20-site ledger** (was 41% pre-decontamination)
+2. **Complementary perception quantified**: B sees ~170 elements/run vs A's ~9 (**~19×**, n=18 clean), but A generates 2.7 tests vs B's 0.9 — neither alone predicts usefulness
 3. **Verification ceiling proven** (mutation study, `mutation/results/ANALYSIS.md`): the system verifies actions-work, not values-correct. Wrong-calc/validation/dead-button bugs undetectable even at full coverage → assertion/value-oracle synthesis is the top V2 item
-4. **Autonomous issue detection works**: phptravels mirror found without human hints
+4. **Autonomous issue detection works**: phptravels mirror found without human hints AND independently reproduced on the clean guarded re-run run_20260825_201027
 5. **Exploration stable**: A-steps sd ±0.5 across repeats (contaminated study = lower bound)
+6. **Multi-agent evaluation integrity**: run-attribution corruption mode caught by adversarial self-audit and remediated behind guards — now a first-class methodology finding (docs/AUDIT_REPORT.md + paper §7.2)
 
 ## 6. OPEN WORK QUEUE (priority order)
 
 | Pri | Item | Where |
 |---|---|---|
-| P0 | Re-run 4 starved sites post-reset (see §4) | `testing/rerun_starved.js` |
-| P0 | Update 4 site reports + INDEX rows with new run IDs | `testing/site_reports/` |
-| P1 | Diagnose isolation leak: demoblaze page_keys leaked into phptravels/openlibrary catalogs. Inspect their `dom/memory_log.json` for demoblaze URLs → trace copy path → fix + add post-run catalog-domain assertion to night-chain | `runBoth.js` collectArchitectureB mtime window suspected |
+| P0 | Finish Tier-3 sites per D6 pairs (round-robin lock) | docs/TASK_BOARD.md D6 |
+| P1 | Diagnose isolation leak: demoblaze page_keys leaked into phptravels/openlibrary catalogs during OLD contaminated runs — verify whether guarded re-runs still show it (phptravels re-run report notes mirror finding; openlibrary re-run validator rejected cross-page refs). Root-cause browser-context reuse if present | `runBoth.js` collectArchitectureB mtime window suspected |
 | P1 | Add `schema_version` to dashboard_data.json; make s8 fail loudly on unknown schemas | `fusion/s6_dashboard.js`, `fusion/s8_campaign_eval.js` |
-| P2 | Campaign lockfile enforcement (`.campaign.lock` exists in rerun_starved.js — reuse pattern in night_chain) | `testing/night_chain.js` |
-| P2 | Mark phptravels row MIRROR-EVIDENCE; swap spare into final dataset | `testing/TIER2_SITES.md` |
-| P2 | Log token usage from provider responses going forward | `lib/llmProvider.js` |
-| P3 | Pre-register Tier-3 criteria in CAMPAIGN_PLAN.md §Tier-3 (decided policies below) | `testing/CAMPAIGN_PLAN.md` |
-| P3 | Then launch Tier 3 sites 21–30 | see §7 |
+| P2 | Log token usage from provider responses going forward | `lib/llmProvider.js` (JSONL logging exists from W-2a; extend coverage) |
+| P2 | T402 final freeze after Tier-3 consolidation (Master aggregates at window end, then regen s8/VTQ/INDEX) | docs/TASK_BOARD.md T402 |
+| PARKED | T604 capability flags + executability filter v2; T605 acceptance-rate tightening (+paper denominator wording n=19-vs-n=18) — human decision: no arch changes during campaign | docs/TASK_BOARD.md |
 
-## 7. TIER-3 PLAN (approved by user, not yet started)
+~~P0 Re-run 4 starved sites~~ DONE (Phase-2 clearances landed; gate-audited).
+~~P3 Pre-register Tier-3~~ DONE (CAMPAIGN_PLAN.md §Tier-3 frozen pre-launch).
 
-**Sites (availability-check at runtime, pick 10):**
-wikipedia.org · stackoverflow.com/questions · github.com/trending · imdb.com/chart/top · goodreads.com/list · news.ycombinator.com · bbc.com/news · archive.org · npmjs.com/packages · reddit.com (public) — spares: lite.duckduckgo.com, old.reddit.com, text.npr.org
+## 7. TIER-3 STATUS (policies approved by user; campaign LAUNCHED)
 
-**User-approved policies:**
+**Sites:** see testing/TIER3_SITES.md (frozen list #21–#30) — availability-checked;
+preflight results in testing/TIER3_PREFLIGHT.md.
+
+**User-approved policies (unchanged):**
 - Cookie-consent walls: deterministic auto-dismiss pre-step, recorded in manifest
 - Bot stance: realistic Chrome UA string only (no full stealth stack)
 - ToS: read-only public pages ONLY; no logins/posts/purchases; skip CAPTCHA/bot-walls honestly
 - Pre-registered success criteria: ≥6/10 pipelines complete, blocking rate logged, zero ToS violations, A/B degradation reported as findings not failures
-- Budget: heavy sites burn 60–100+ calls each → pace across 2 daily resets or trim MAX_STEPS for mega-DOMs
+- Budget: heavy sites burn 60–100+ calls each → pace across 2 daily resets or trim MAX_STEPS for mega-DOMs (github/imdb/bbc: MAX_STEPS=18)
 
-**Protocol per site (identical):** `node runBoth.js <url>` → s1→s2→s4→ft→s6 → suites green → report per TEMPLATE → INDEX row → commit+push backup.
+**Protocol per site (identical):** hold `.campaign.lock` → `node runBoth.js <url>`
+(trimmed env MAX_STEPS=25 MAX_STATES=20) → s1→s2→s4→ft→s6 via attributed run dir
+(testing/run_attribution.js findRunDir, NEVER newest-dir) → folder_purity MUST be
+PURE → report per TEMPLATE (numbers only from extract_run.js) → INDEX row → suites
+green → commit+push backup.
 
 ## 8. GOTCHAS (learned expensively)
 
@@ -128,8 +136,9 @@ docs/superpowers/plans/      # earlier plan docs
 
 ## 10. SUGGESTED FIRST PROMPT FOR NEXT SESSION
 
-> Read PROJECT_HANDOFF.md fully, then execute its §6 queue in priority order:
-> first check whether the ox-alpha window is open (it resets 05:30 IST), run
-> `node testing/rerun_starved.js` if so, update the four site reports + INDEX,
-> then continue P1/P2 items, then pre-register Tier-3 in CAMPAIGN_PLAN.md and
-> start the Tier-3 campaign per §7 policies. Push everything to backup remote.
+> Read PROJECT_HANDOFF.md fully, then docs/TASK_BOARD.md directive D6 + comms
+> log (newest first). If Tier-3 is still running: take the next unclaimed site
+> or assist consolidation per Master's orders. If Tier-3 is done: regen
+> aggregates (vision_test_quality.js + s8_campaign_eval.js), update INDEX
+> tier-3 rows, run T402 final freeze checklist, and fold final numbers into
+> docs/RESEARCH_PAPER_DRAFT.md (v3) sections 3.1/4.x. Push everything to backup.
