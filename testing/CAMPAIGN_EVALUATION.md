@@ -1,6 +1,6 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-24T14:08:19.056Z by `fusion/s8_campaign_eval.js`.
+Generated: 2026-08-25T02:34:48.997Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -9,18 +9,18 @@ denominators by design.
 ## 1. Campaign summary
 
 ```text
-Sites attempted:              10
-Sites scored:                 9
+Sites attempted:              20
+Sites scored:                 19
 Sites blocked:                1
 A completed:                  8
 B completed:                  5
-Full A+B pipeline completed:  9
+Full A+B pipeline completed:  14
 Fusion generated (offered):   0
-Fusion accepted:              12
+Fusion accepted:              49
 Fusion live tests executed:   0
-Fusion live PASS:             9
-Fusion live FAIL:             -9
-Mean fusion-attributable %:   15.8%
+Fusion live PASS:             35
+Fusion live FAIL:             -35
+Mean fusion-attributable %:   41.2%
 ```
 
 ## 2. Site matrix
@@ -37,6 +37,16 @@ Mean fusion-attributable %:   15.8%
 | 8s | GlobalSQA (spare for #8) | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
 | 9 | The Internet (Heroku) | SUCCESS | MEDIUM | only A explored fully |
 | 10 | OWASP Juice Shop | SUCCESS | MEDIUM | only A explored fully |
+| 11 | Books to Scrape | PARTIAL | LOW | neither architecture completed exploration |
+| 12 | Quotes to Scrape | PARTIAL | LOW | neither architecture completed exploration |
+| 13 | LambdaTest Playground | PARTIAL | LOW | neither architecture completed exploration |
+| 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
+| 15 | Project Gutenberg | SUCCESS | LOW | neither architecture completed exploration |
+| 16 | WeatherSpark | SUCCESS | LOW | neither architecture completed exploration |
+| 17 | SahiTest Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 18 | The Internet (status codes) | SUCCESS | LOW | neither architecture completed exploration |
+| 19 | PHPTravels Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 20 | Open Library | PARTIAL | LOW | neither architecture completed exploration |
 
 Confidence is a DETERMINISTIC HEURISTIC from ledger signals (both-arch ✅, FT
 PASS, fusion >=20%) — not a human judgment.
@@ -55,12 +65,12 @@ Raw keys of `architecture_comparison` vary per run schema; see each run's dashbo
 
 | Metric | Value |
 |---|---|
-| Runs with dashboard data | 9 |
+| Runs with dashboard data | 19 |
 | Fusion tests offered/generated | 0 |
-| Fusion tests accepted (grounded) | 12 |
+| Fusion tests accepted (grounded) | 49 |
 | Fusion tests executed live | 0 |
-| Executed successfully | 9 |
-| Novel targets exercised by fusion | 17 |
+| Executed successfully | 35 |
+| Novel targets exercised by fusion | 83 |
 
 > Quality note: fusion % alone does not equal value. Cross-origin composed
 > workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative
@@ -70,7 +80,7 @@ Raw keys of `architecture_comparison` vary per run schema; see each run's dashbo
 
 | Variant | Bug | arch_b | fused |
 |---|---|---|---|
-| bad_validation | Checkout accepts invalid email | NOT_DETECTED | NO_REPORT |
+| bad_validation | Checkout accepts invalid email | NOT_COVERED | NO_REPORT |
 | baseline | (baseline) | NOT_COVERED | NOT_COVERED |
 | broken_nav | Broken navigation link | NOT_COVERED | NOT_COVERED |
 | dead_button | Dead submit button | NOT_COVERED | NO_REPORT |
@@ -136,8 +146,18 @@ absence of a listed finding is NOT evidence of absence.
 | GlobalSQA (spare for #8) | 5.1 |
 | The Internet (Heroku) | 4.0 |
 | OWASP Juice Shop | 5.3 |
+| Books to Scrape | 24.2 |
+| Quotes to Scrape | 22.5 |
+| LambdaTest Playground | 13.5 |
+| Python.org Docs | 19.5 |
+| Project Gutenberg | 18.4 |
+| WeatherSpark | 13.7 |
+| SahiTest Demo | 11.3 |
+| The Internet (status codes) | 14.9 |
+| PHPTravels Demo | 15.6 |
+| Open Library | 13.2 |
 
-Total A+B wall time across 9 sites: 52.7 min.
+Total A+B wall time across 19 sites: 219.5 min.
 
 LLM call counts per run: see `runs/<id>/fusion/dashboard_data.json` (`llm_calls`).
 Token counts were not recorded for Tier-1 runs and are reported as not recorded
@@ -175,8 +195,8 @@ Token counts were not recorded for Tier-1 runs and are reported as not recorded
 
 ## 10. Conclusions
 
-1. Full-pipeline success: 9/9 runnable sites (+1 honestly BLOCKED).
-2. Mean fusion-attributable coverage: 15.8%.
+1. Full-pipeline success: 14/19 runnable sites (+1 honestly BLOCKED).
+2. Mean fusion-attributable coverage: 41.2%.
 3. Blocked environments are tracked separately and never counted as failures.
 4. Historical evidence (19 pipeline defects, seeded-bug mutation scorecard in
    `mutation/results/SCORECARD.md`) demonstrates hardening through heterogeneous

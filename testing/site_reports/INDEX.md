@@ -57,3 +57,17 @@ recalculated from this table as the campaign grows.
 - Pipeline bugs discovered mid-test: fix, verify with offline suites, record
   in that report's §5 before moving to the next site.
 - Keep failed runs in `runs/` — they are evidence for the reports.
+
+## TIER 2 (sites 11-20) - night campaign 2026-08-25
+
+| 11 | Books to Scrape | https://books.toscrape.com | 2026-08-25 | `books_toscrape_2026-08-25.md` | `run_20260825_025619` | ?? timeout (Groq TPD) | ? 1/1 PASS (weak verif) | 3/4 grounded | 3/3 PASS | **75%** |
+| 12 | Quotes to Scrape | https://quotes.toscrape.com | 2026-08-25 | `quotes_toscrape_2026-08-25.md` | `run_20260825_035039` | ?? timeout (Groq TPD) | ? 1/1 PASS (input_value) | 2/5 grounded (3 action_mismatch) | 1/2 PASS | **66.7%** |
+| 13 | LambdaTest Playground | https://www.lambdatest.com/selenium-playground/ | 2026-08-25 | `lambdatest_playground_2026-08-25.md` | `run_20260825_053921` | ? Groq-paced | ? 1.0 pass rate | 5/5 grounded, 0 rejected | 4/5 PASS | **100%** |
+| 14 | Python.org Docs | https://docs.python.org/3/ | 2026-08-25 | `docs_python_2026-08-25.md` | `run_20260825_055129` | ?? timeout (Groq TPD) | ? port conflict (contamination disclosed) | 7/8 grounded (cross_page_ref) | 7/7 PASS | **77.8%** |
+| 15 | Project Gutenberg | https://www.gutenberg.org | 2026-08-25 | `gutenberg_2026-08-25.md` | `run_20260825_060707` | ? 24 steps / 15 states | ? 1/1 PASS | 6/8 grounded | 6/6 PASS | **54.5%** |
+| 16 | WeatherSpark | https://weatherspark.com | 2026-08-25 | `weathersparks_2026-08-25.md` | `run_20260825_062152` | ? 8 steps / 9 states | ?? 0/1 honest fail (canvas) | 3/3 grounded | 1/3 PASS | **60%** |
+| 17 | SahiTest Demo | http://www.sahitest.com/demo/ | 2026-08-25 | `sahitest_2026-08-25.md` | `run_20260825_063248` | ? 8 steps / 8 states | ?? 0/1 honest fail (frames) | 2/2 grounded | 0/2 FAIL | **40%** |
+| 18 | The Internet (status codes) | https://the-internet.herokuapp.com/status_codes | 2026-08-25 | `theinternet_spare_pages_2026-08-25.md` | `run_20260825_064713` | ? 11 steps / 9 states | ?? 0/1 honest fail | 2/4 grounded (action_mismatch) | 1/2 PASS | **40%** |
+| 19 | PHPTravels Demo | https://phptravels.com/demo/ | 2026-08-25 | `phptravels_2026-08-25.md` | `run_20260825_065652` | ? 11 steps / 9 states | ?? 0/1 honest fail | 4/5 grounded | 0/4 FAIL (demoblaze mirror!) | **66.7%*** |
+| 20 | Open Library | https://openlibrary.org | 2026-08-25 | `openlibrary_2026-08-25.md` | `run_20260825_070918` | ? 11 steps / 9 states | ?? partial ECONNRESET | 3/6 grounded | 3/3 PASS | **60%** |
+
