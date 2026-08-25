@@ -1,0 +1,345 @@
+[
+ {
+  "run_id": "run_20260825_230647",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://en.wikipedia.org/wiki/Web_testing",
+  "catalog_pages": 13,
+  "ft_step_hosts": [
+   "en.wikipedia.org"
+  ],
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260825_232334",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://www.goodreads.com/list/tag/best",
+  "catalog_pages": 1,
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260825_232415",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://github.com/trending",
+  "catalog_pages": 23,
+  "ft_step_hosts": [
+   "github.com"
+  ],
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260825_234052",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://news.ycombinator.com",
+  "catalog_pages": 9,
+  "ft_step_hosts": [
+   "news.ycombinator.com"
+  ],
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260825_235717",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://www.goodreads.com/list/tag/best",
+  "catalog_pages": 1,
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260825_235819",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://archive.org",
+  "catalog_pages": 2,
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260826_000112",
+  "foreign": [
+   {
+    "src": "vision/execution_results.json",
+    "foreign_hosts": [
+     "testpages.eviltester.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://www.bbc.com/news",
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_000204",
+  "foreign": [
+   {
+    "src": "vision/execution_results.json",
+    "foreign_hosts": [
+     "testpages.eviltester.com"
+    ]
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "testpages.eviltester.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "github.com",
+     "react.dev"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://todomvc.com/examples/typescript-react/#/",
+  "catalog_pages": 11,
+  "ft_step_hosts": [
+   "github.com",
+   "todomvc.com",
+   "react.dev"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_000247",
+  "foreign": [
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "magento.softwaretestingboard.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://testpages.eviltester.com/styled/index.html",
+  "catalog_pages": 19,
+  "ft_step_hosts": [
+   "testpages.eviltester.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_000335",
+  "foreign": [
+   {
+    "src": "vision/execution_results.json",
+    "foreign_hosts": [
+     "testpages.eviltester.com"
+    ]
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "testpages.eviltester.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "developers.cloudflare.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://magento.softwaretestingboard.com/",
+  "catalog_pages": 2,
+  "ft_step_hosts": [
+   "magento.softwaretestingboard.com",
+   "developers.cloudflare.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_001601",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": "https://todomvc.com/examples/typescript-react/#/",
+  "verdict": "PURE"
+ },
+ {
+  "run_id": "run_20260826_001836",
+  "foreign": [
+   {
+    "src": "dom/visited",
+    "url": "https://luma.com/d3b2s20o"
+   },
+   {
+    "src": "vision/execution_results.json",
+    "foreign_hosts": [
+     "www.techlistic.com"
+    ]
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "luma.com",
+     "www.techlistic.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "luma.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://practicetestautomation.com/practice/",
+  "catalog_pages": 13,
+  "ft_step_hosts": [
+   "luma.com",
+   "practicetestautomation.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_002227",
+  "foreign": [
+   {
+    "src": "ft_steps",
+    "urls": [
+     "github.com",
+     "petehuntsposts.quora.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://todomvc.com/examples/typescript-react/#/",
+  "catalog_pages": 4,
+  "ft_step_hosts": [
+   "todomvc.com",
+   "github.com",
+   "petehuntsposts.quora.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_002500",
+  "foreign": [
+   {
+    "src": "vision/execution_results.json",
+    "foreign_hosts": [
+     "practicetestautomation.com"
+    ]
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "practicetestautomation.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "www.jetbrains.com",
+     "pypi.org"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://www.techlistic.com/p/selenium-practice-form.html",
+  "catalog_pages": 19,
+  "ft_step_hosts": [
+   "www.techlistic.com",
+   "www.jetbrains.com",
+   "pypi.org"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_003258",
+  "foreign": [
+   {
+    "src": "dom/visited",
+    "url": "https://luma.com/d3b2s20o"
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "luma.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "luma.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://practicetestautomation.com/practice/",
+  "catalog_pages": 12,
+  "ft_step_hosts": [
+   "luma.com",
+   "practicetestautomation.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_003816",
+  "foreign": [
+   {
+    "src": "dom/visited",
+    "url": "https://luma.com/d3b2s20o"
+   },
+   {
+    "src": "catalog_page_keys",
+    "hosts": [
+     "luma.com",
+     "magento.softwaretestingboard.com"
+    ]
+   },
+   {
+    "src": "ft_steps",
+    "urls": [
+     "luma.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://practicetestautomation.com/practice/",
+  "catalog_pages": 13,
+  "ft_step_hosts": [
+   "practicetestautomation.com",
+   "luma.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_004650",
+  "foreign": [
+   {
+    "src": "ft_steps",
+    "urls": [
+     "developers.cloudflare.com"
+    ]
+   }
+  ],
+  "localFlags": [],
+  "manifest_url": "https://magento.softwaretestingboard.com/",
+  "catalog_pages": 1,
+  "ft_step_hosts": [
+   "magento.softwaretestingboard.com",
+   "developers.cloudflare.com"
+  ],
+  "verdict": "CONTAMINATED"
+ },
+ {
+  "run_id": "run_20260826_005704",
+  "foreign": [],
+  "localFlags": [],
+  "manifest_url": null,
+  "verdict": "NO-MANIFEST",
+  "log_hosts": [
+   "testpages.eviltester.com",
+   "testpages.",
+   "testpages.eviltester.",
+   "testpages.evilteste",
+   "10.2.0.2:5002",
+   "10.2.0.2:5001"
+  ]
+ }
+]

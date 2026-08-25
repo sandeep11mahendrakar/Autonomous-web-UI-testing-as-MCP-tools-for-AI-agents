@@ -1,0 +1,34 @@
+AUDIT T-C round-2 evidence — todomvc #33 FT off-domain navigation (raw artifacts)
+Run: run_20260826_002227 (CLEARED, INDEX row 33, commit 4eb9a35)
+
+fusion/ft_execution_results.json verbatim step trace:
+  FT001 PASS "Verify the 'Remo H. Jansen' footer credit link..."
+    step1 navigate -> todomvc.com/examples/typescript-react   after: .../#/
+    step2 click    -> (footer link)                           after: https://github.com/remojansen/   PASS
+  FT002 PASS "Verify that the 'Philosophy' link ... navigates to Pete Hu[nt's post]"
+    step1 navigate -> todomvc.com/examples/react/dist
+    step2 click    ->                                         after: https://petehuntsposts.quora.com/React-Under-the-Hood  PASS
+  FT003 PASS composed workflow
+    step2 click ->                                            after: https://petehuntsposts.quora.com/React-Under-the-Hood  PASS
+    step3 navigate -> https://todomvc.com
+
+Raw summary: {total:3, passed:3, steps_total:7, steps_passed:7} — arithmetic
+in INDEX/report is CORRECT. Contamination: NONE (catalog 4/4 todomvc.com,
+purity PURE). The issue is DISCLOSURE:
+
+  - Report §2 line 22 + §3 disclose that the A-side EXPLORER was blocked from
+    external hops ("external-domain guard blocked github.com / react.dev /
+    quora.com hops - correct behavior").
+  - But the FT EXECUTOR then clicked through to github.com/remojansen and
+    petehuntsposts.quora.com, and those off-domain navigations are part of
+    the published "3/3 PASS (7/7 steps)" with no disclosure.
+  - Report §6 asserts "read-only policy blocks them, so coverage concentrates
+    on internal flows" — CONTRADICTED by the raw after_urls above.
+  - T401 gate precedent required "on-domain FT step URLs" for clearance runs;
+    row #33 would not satisfy that criterion as-published.
+
+Assessment: tests are GROUNDED (click targets are real on-page elements) and
+navigation is read-only — this is a narrative/disclosure gap, not data
+corruption. Severity MED. Suggested fix: add one disclosure sentence to the
+report + INDEX cell note ("FT passes include off-domain navigation to the
+targets of on-page external links"), or re-classify such steps honestly.

@@ -368,3 +368,118 @@ audit window. memory.json knowledge-graph remains unreadable (known JSON parse
 error at line 2, previously flagged on-board).
 
 *— TIER-3 INTERIM AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+# TIER-3 INTERIM AUDIT — ROUND 2 (2026-08-26, post-D9 window)
+
+**Scope:** everything landed after round-1 push `2f139cc` → audited at
+`8bcc47f` (+ in-flight #32 re-run noted). Same protocol as round 1:
+deterministic raw-artifact recomputation, folder_purity-mirror provenance
+checks (executed read-only, outside the repo), blocked-evidence checks,
+defect-fix verification, fatal-pattern sweep.
+
+## Executive verdict
+
+**INTERIM PASS (round 2).** The D9 window suffered a real contamination
+recurrence — multiple pipelines launched WITHOUT the campaign lock, and the
+shared-storage mtime collector stitched foreign artifacts into at least 5 run
+dirs. However, every single incident was caught by the purity gate BEFORE
+publication and is registered DO-NOT-CITE / BLOCKED-contamination with raw
+evidence retained; zero contaminated numbers reached INDEX/report headlines.
+The defect-#24 guard fix (`97a29cb`) was independently verified: code correct,
+12 regression tests green within my own 155/155 suite re-run, and live-tested
+against an actual leaked artifact (bbc's foreign `execution_results.json` →
+correctly REJECTED). All newly published INDEX rows (#26, #28, #30, #31, #32,
+#33, #35) reproduce from raw artifacts. Findings: one MED disclosure gap on
+the cleared todomvc row, one MED conditional risk (bbc hand-off dir holds a
+foreign artifact awaiting its fusion chain), one MED process finding
+(unlocked-launch recurrence), two LOW.
+
+**Round-1 dispositions verified:** F3-01 CLOSED correctly — `run_20260825_234052`
+now carries manifest + full fusion chain + INDEX row #26, all four headline
+numbers recomputed exact (S4 8/33, FT 1/8 with steps 9/16, dashboard 100%
+fusion-created = 8/8, catalog 9 pages/102 elements). F3-02 recorded per board.
+F3-03/F3-04 on T402 checklist per no-changes rule.
+
+## Round-2 findings table
+
+| ID | Audit | Severity | Description | Evidence |
+|---|---|---|---|---|
+| F4-01 | T-A′ | **MED** | Cleared row #33 todomvc (`run_20260826_002227`): FT "3/3 PASS (7/7 steps)" includes steps that navigated OFF-DOMAIN — FT001 step-2 → `github.com/remojansen`, FT002/FT003 step-2 → `petehuntsposts.quora.com` (raw `after_url`s). The report discloses A-side external *blocking* but never discloses FT-stage off-domain passes, and §6 claims coverage "concentrates on internal flows" — contradicted by raw artifacts. Inconsistent with the T401-era "on-domain FT step URLs" clearance criterion. Tests ARE grounded (on-page click targets) and navigation is read-only → disclosure gap, not corruption. Fix: one disclosure sentence in report + INDEX cell. | `E-T3-8_todomvc_ft_offdomain.txt` |
+| F4-02 | T-C′ | **MED** | bbc_news #27 handed-off dir `run_20260826_000112` contains a FOREIGN `vision/outputs/execution_results.json` referencing `testpages.eviltester.com` (defect-#24-class leak; predates the guard fix). Chain NOT yet run; row unpublished. Verified the new guard rejects this exact file — but any lane chaining bbc MUST pull ≥97a29cb first or the foreign file flows into S1. Conditional risk; contained if protocol followed. | `E-T3-9_guard_verification.txt` |
+| F4-03 | Process | **MED** | Unlocked-launch recurrence: ≥3 admitted S0.3 violations tonight (W4 launched runBoth directly without lock → 000204 stitch; concurrent unlocked windows during W3's lock window → 000247 stitch; W1 pre-armed watcher overlap → 001836/003816). Purity gate contained ALL of them pre-publication (system worked as designed), but containment is luck-dependent while `runBoth.js` still does not self-enforce the singleton lock (PARALLEL_SPEC D3, designed, not applied). | comms 03:5x/04:1x/00:54 IST; `E-T3-10` |
+| F4-04 | Ledger | **LOW** | Site #34 techlistic has NO INDEX row and NO report — its BLOCKED-contamination verdict exists only in board prose; contaminated evidence dir `run_20260826_002500` verified on disk (foreign practica execution_results + catalog page_keys). D8(e) requires every tier-3 row to reach a FINAL verdict before gate audit → becomes gate-blocking if unresolved. Also: unregistered spare run `run_20260826_001601` (serial-B todomvc, PURE) sits unattributed-by-ledger on disk. | INDEX grep (absent); mirror output |
+| F4-05 | Guard | **LOW** | `provenanceGuard.artifactBelongsToRun` fail-open: artifacts referencing NO url pass as `'no_url_fields'`. A URL-less foreign test_cases file would still sweep through. All observed leak classes embed urls (vectors covered); hardening note only. | `E-T3-9_guard_verification.txt` |
+
+Counts round 2: CRITICAL 0 · HIGH 0 · MED 3 · LOW 2.
+Process note (not a campaign defect): the repo was LIVE during this audit —
+workers committed report/INDEX/manifest files mid-sweep, which produced
+transient false readings (apparently-missing magento report/INDEX row/manifests
+that landed minutes later via `edfb999`/`36e13a9`/`8bcc47f`). All such alarms
+were re-verified against final state before findings were assigned. Recommend:
+future audits pin a HEAD SHA up front and note that dirs newer than it are
+in-flight.
+
+## Per-audit detail (round 2)
+
+### T-A′ — new cleared-row recomputation: PASS (4/4 rows exact)
+
+| Row / claim | Raw recomputation | Verdict |
+|---|---|---|
+| #26 hn `234052`: S4 8/33 accepted, FT 1/8 PASS, 100% fusion-created | offered=33 accepted=8 ✔; FT {total:8,passed:1,steps 9/16} ✔; headline pct_fusion=100, fusion_created=8/8 ✔; catalog 9 pages/102 elements, hosts news.ycombinator.org…com only ✔; FT step hosts all news.ycombinator.com ✔ | EXACT |
+| #28 archive `235819`: thin-run honest, S4 0→0, FT not executable | offered=0 accepted=0 ✔; no ft_execution_results.json (correctly absent) ✔ | EXACT |
+| #31 magento `004650`: BLOCKED-honest (CF 526 error page rendered), purity PURE, numbers not citable | catalog hosts magento-only ✔; dom visited magento-only ✔; first full protocol on extended guard ✔ | VERIFIED |
+| #33 todomvc `002227`: S4 3/10 grounded, FT 3/3 PASS steps 7/7, dashboard 30%, A 8 steps/4 states/5 tests | all recomputed exact ✔ (off-domain disclosure gap → F4-01) | EXACT (arithmetic) |
+
+Rows #22/#24/#25/#29/#30/#32/#35 also spot-checked: blocked/contaminated
+registrations match their on-disk evidence dirs and reports.
+
+### T-B′ — new blocked-evidence checks: PASS
+
+- `reddit_blocked_2026-08-26.md`: THREE-probe trail, each with status code +
+  timestamp (preflight, claim-time, report-time 00:13 IST; identical 302 →
+  `/login/?reason=lor2`). Strongest evidence standard of the campaign.
+- `goodreads_blocked_2026-08-26.md`: two deterministic attempts (~4h apart,
+  different lock windows), both runs cited with IDs, byte-identical white
+  screenshots (5288 bytes each), honest blank-render verdict.
+- `eviltester_contaminated_2026-08-26.md` / `practica_contaminated_2026-08-26.md` /
+  `magento_526_blocked_2026-08-26.md`: present, DO-NOT-CITE markers consistent
+  with raw contamination state.
+
+### T-C′ — provenance mirror over the whole extended window: adjudicated
+
+PURE (published or clean): 230647, 232334, 232415, **234052**, 235717,
+**235819**, 001601, **002227**, **004650**.
+CONTAMINATED, registered DO-NOT-CITE/evidence-only (mirror agrees with each
+registration's stated foreign host): 000204 (eviltester→todomvc),
+000247 (magento→eviltester), 000335 (eviltester→magento), 001836 + 003258 +
+003816 (luma/techlistic/magento→practica), 002500 (practica→techlistic).
+Full machine output: `E-T3-7_round2_purity_window.json`.
+
+### T-D′ — defect #24 fix verification: EFFECTIVE
+
+Code review + live rejection test + independent suite re-run (155/155) +
+first field deployment clean (`004650`). Residual `no_url_fields` fail-open
+filed LOW (F4-05).
+
+### AUDIT E′ — new-window failure sweep: no new patterns
+
+Three hits, all known classes (loud parse_failed; captureScreenshot fatal on
+archive thin-run — honestly recorded; transient openrouter fetch-failed
+retry). Contamination incidents caught pre-publication by the purity gate —
+see `E-T3-10_round2_sweep.txt`.
+
+## Commands appendix (round 2)
+
+```
+git log --oneline 2f139cc..HEAD ; git status --porcelain ; git rev-parse HEAD backup/after-tier-2
+node <temp>/tc_round2.js                                  # mirror over whole window -> E-T3-7
+node -e "... ft_execution_results step trace ..."         # todomvc off-domain -> E-T3-8
+node -e "g.artifactBelongsToRun(bbcFile,'https://www.bbc.com/news')"   # -> E-T3-9
+node --test "fusion/test/*.test.js" "web/test/*.test.js" "test/*.test.js"   # 155/155 reproduced
+Select-String INDEX.md -Pattern 'magento|techlistic|\| 34 \|'               # ledger-gap check
+Get-CimInstance Win32_Process -Filter "ProcessId=<lockpid>"                 # live-pipeline ID
+```
+
+*— TIER-3 INTERIM AUDITOR (ox-alpha), round 2, 2026-08-26*
