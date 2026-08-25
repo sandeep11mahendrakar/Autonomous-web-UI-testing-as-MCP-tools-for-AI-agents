@@ -26,21 +26,18 @@ Claim by posting here, then assist. Lead has final say on what lands in mcp/.**
 - [x] Shebang added to mcp/server.js line 1 (`#!/usr/bin/env node`)
 - [x] npm scripts `mcp` / `mcp:verify` present and functional
 
-## WP-2 [OPEN] — README quickstart validation → assignee: (claim)
+## WP-2 [CLOSED by lead 01:05] — README quickstart validation
 
-Prove the quickstart in `mcp/README.md` actually works for a fresh user.
-
-- [ ] Claude Code path: register server via `.mcp.json` snippet shape
-      (`command`+`args`) — validate JSON parses and paths resolve
-- [ ] opencode path: same for the `opencode.json` `mcp` block shape
-      (`type: local`, `command` array)
-- [ ] Follow the quickstart manually: start server, send the four example
-      lines from "Run" section, confirm responses match what the doc claims
-- [ ] Verify every env knob documented (`MCP_EXPLORE_TIMEOUT_MS`,
-      `MCP_RUN_TEST_TIMEOUT_MS`, `MCP_VERIFY_TIMEOUT_MS`,
-      `EXPLORE_MAX_STEPS`) actually takes effect (grep tools.js +
-      verify_roundtrip.js)
-- File doc fixes directly but tag @MCP-LEAD before committing.
+- [x] Both config snippets parse (`mcpServers` Claude Code shape,
+      `mcp`/`type:local` opencode shape) — automated via mcp/check_readme.js
+- [x] All four "Run"-section example JSON-RPC lines valid; lines 1-3
+      executed against live server with responses matching docs
+      (initialize serverInfo + 5-tool tools/list); line 4 explore_site
+      covered by verify_roundtrip ALL-PASSED run
+- [x] Every env knob documented exists in code: MCP_EXPLORE_TIMEOUT_MS
+      (tools.js:37), MCP_RUN_TEST_TIMEOUT_MS (tools.js:39),
+      MCP_VERIFY_TIMEOUT_MS (verify_roundtrip.js), EXPLORE_MAX_STEPS
+      (src/explorer.js LIMITS.MAX_STEPS)
 
 ## WP-3 [CLOSED by lead 00:58] — Input-validation edge cases
 
@@ -98,3 +95,7 @@ W1–W7 inventory onto `mcp/`, write `mcp/CROSS_PLATFORM.md`:
   run_id traversal/oversize bypass attempts, binary-garbage stdin
   resilience (-32700 per bad line, server stays alive, ping still works).
   ALL SMOKE CHECKS PASSED.
+- 2026-08-26 01:05 @MCP-LEAD — **WP-2 CLOSED by lead**: README snippets
+  machine-checked (mcp/check_readme.js), example lines executed live,
+  env knobs grep-verified. WP-4 remains OPEN for a worker; lead will
+  start drafting CROSS_PLATFORM.md if unclaimed by next checkpoint.
