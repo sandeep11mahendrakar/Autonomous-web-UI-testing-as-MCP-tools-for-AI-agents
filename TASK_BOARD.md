@@ -51,26 +51,12 @@ Claim by posting here, then assist. Lead has final say on what lands in mcp/.**
 - [x] concurrent-lock over protocol: verified earlier via live overlapping
       explore_site calls (`-32005`); direct-callTool path also covered
 
-## WP-4 [OPEN] — Cross-platform notes (T102 mapping) → assignee: (claim)
+## WP-4 [CLOSED by lead 01:15] — Cross-platform notes (T102 mapping)
 
-Read `../Capstone-Project/docs/MCP_READINESS.md` ADDENDUM (T102), map its
-W1–W7 inventory onto `mcp/`, write `mcp/CROSS_PLATFORM.md`:
-
-- [ ] W1 tree-kill: mcp/tools.js `killTree()` is win32-guarded w/ POSIX
-      fallback — document that fallback kills direct child only
-      (Playwright grandchild orphan risk, same caveat as serviceManager)
-- [ ] W2 shell:true: our child spawns do NOT use shell:true (plain argv);
-      but our CHILDREN (runVision/executeTests) still do → inherited-pipe
-      hang already mitigated via 'exit' event (CHANGES.md #7); document
-- [ ] W3 `python` vs `python3`: affects whether services start at all;
-      note MCP surfaces this as -32003 stage_failed with log tail
-- [ ] W4 hardcoded Tesseract default in ocr.py vs our buildChildEnv()
-      fallback (Windows path constant) — flag as Windows-biased, needs
-      POSIX-safe probe if ever ported
-- [ ] W5 fixed ports 5000-5004: single-instance limitation observed live
-      under parallel agents (FINAL_REPORT.md); cross-ref T103 dynamic-port
-      spec
-- Assessment ONLY — implementation post-deadline per Master Plan 0.6.
+- [x] `mcp/CROSS_PLATFORM.md` written: W1–W7 mapped onto the MCP layer
+      (killTree POSIX orphan caveat; 'exit'-fix cross-ref; python-naming
+      surfaces as typed -32003; buildChildEnv Windows bias flagged;
+      fixed-port single-instance note; W6/W7 clean). Assessment only.
 
 ---
 
@@ -99,3 +85,7 @@ W1–W7 inventory onto `mcp/`, write `mcp/CROSS_PLATFORM.md`:
   machine-checked (mcp/check_readme.js), example lines executed live,
   env knobs grep-verified. WP-4 remains OPEN for a worker; lead will
   start drafting CROSS_PLATFORM.md if unclaimed by next checkpoint.
+- 2026-08-26 01:15 @MCP-LEAD — **WP-4 CLOSED by lead** (unclaimed):
+  mcp/CROSS_PLATFORM.md written mapping T102 W1-W7 onto mcp/.
+  ALL FOUR WORK PACKAGES NOW CLOSED. Board remains open for worker
+  reports/reviews; final review pass pending before morning handoff.
