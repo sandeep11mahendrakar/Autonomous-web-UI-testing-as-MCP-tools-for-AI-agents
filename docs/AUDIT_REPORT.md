@@ -629,3 +629,228 @@ do not adopt as a production service until the three MCP_READINESS BLOCKERs
 close and `run_test` leaves stub status.
 
 *— FINAL READINESS AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+# PRODUCTION-GRADE GAP ANALYSIS & ROADMAP (2026-08-26)
+
+Deep-dive companion to the FINAL READINESS VERDICT above. Every item cites a
+verified file/line touchpoint in this repo (checked during this audit). Effort
+estimates are single-dev days and assume the existing 157-test offline suite
+as safety net.
+
+## A. What already meets the bar (do NOT rebuild)
+
+| Asset | Evidence |
+|---|---|
+| Provenance guard stack | `lib/provenanceGuard.js` (URL-referencing artifact check, aliases, localhost-by-hostname) + `testing/folder_purity.js` (now flags vacuous Check-1) + suite coverage in `test/provenance_guard.test.js`, `test/regen_ledger.test.js` |
+| Honest failure taxonomy | BLOCKED/bot-wall/thin-run/contamination-skip as first-class INDEX states (`testing/site_reports/INDEX.md`); FT failure_classification in every `runs/<id>/fusion/ft_execution_results.json` |
+| Deterministic ledgers | `regen_ledger.js` / `fusion/s8_campaign_eval.js` regenerate INDEX-stats/VTQ/CE from raw with explicit exclusion headers |
+| Provider pacing | `lib/llmProvider.js:151-190` — 429 exponential retry (env-tunable `LLM_429_RETRIES`), usage JSONL logging (`LLM_USAGE_LOG_PATH`) |
+| Parse honesty | `web/src/llmClient.js` parseAction returns real failure (regression-tested); deterministic fallback is grounded in recorded history |
+
+## B. Gap matrix (problem → fix → touchpoints → effort)
+
+### B1. Concurrency & process isolation — the #1 production blocker
+- **Problem:** `runBoth.js:111-144` `freeVisionPorts()` probes fixed ports
+  5000-5004 and `taskkill /F`s whatever LISTENS on them — under two users it
+  kills *foreign* processes (verified Tier-2 EADDRINUSE storms,
+  `docs/AUDIT_REPORT.md` F-05); `runBoth.js:189` and
+  `vision/src/serviceManager.js:41` use Windows-only `taskkill /T /F`; service
+  endpoints are hardcoded `http://127.0.0.1:500x`
+  (`serviceManager.js:19-24`); B-artifact collection is an mtime-window sweep
+  of the SHARED `vision/storage/outputs` dir (`runBoth.js:274,285`) — the
+  original contamination vector, now filtered but structurally still shared.
+- **Fix (design already exists:** `docs/PARALLEL_SPEC.md` **D1/D2/D3):**
+  1. Dynamic port allocation: services bind port 0, gateway reports actual
+     ports in its health payload; drivers read them instead of assuming.
+  2. Session-scoped storage: `vision/storage/outputs/<session_id>/` written
+     by the owning exploration; collector copies that dir instead of mtime-
+     sweeping the shared root — makes stitching *structurally impossible*
+     rather than filtered.
+  3. `runBoth.js` acquires the campaign lock itself (advisory-file + PID
+     liveness, pattern already in `testing/rerun_quarantine.js`), so "forgot
+     the lock" (3 incidents, this report round 2 F4-03) becomes impossible.
+  4. POSIX-safe tree-kill (`process.kill(-pid)` on detached groups) behind
+     `process.platform` branch; drop bare `taskkill`.
+- **Effort:** 3-5 dev-days. **Unblocks:** multi-user, CI parallelism, non-Windows.
+
+### B2. Verification oracle — green must mean correct
+- **Problem:** `fusion/execute_fusion_tests.js:248` initializes
+  `status:'PASS'` and only specific ladders flip it; strongest current oracles
+  are `url_change` (:358) and `input_value_persisted` (:376);
+  `no_post_action_change` is classified 'semantic_verification' (:84) yet
+  counts toward PASS totals — INDEX row 32 documents live buttons passing
+  probes while the action produced nothing (verifier gap).
+- **Fix:** (a) PASS requires ≥ MEDIUM-class verification (state change or
+  value persistence); body-text-only downgrades to `PASS_WEAK` and is excluded
+  from headline pass-rates (rubric already defines the classes — reuse VTQ's
+  boundary); (b) implement the value-oracle spec slot: synthesize assertions
+  from catalog element state (placeholder text, href targets, toggle state)
+  at S4 time so FT steps carry expected values; (c) optional screenshot-diff
+  oracle for visual regressions using the existing merged screenshots.
+- **Touchpoints:** `fusion/execute_fusion_tests.js`, S4 prompt schema
+  (`fusion/s4_fusion_synthesis.js`), `testing/vision_test_quality.js`
+  (class mapping already exists).
+- **Effort:** 4-6 days. **Payoff:** directly raises the 33/62 STRONG share and
+  removes the "green ≠ correct" caveat that blocks real testing workflows.
+
+### B3. MCP productization — finish the product surface
+- **Problem:** `run_test` is a deliberate stub
+  (`CAPSTONE_BACKUPS\vision-fork-2026-08-25\mcp\tools.js`, `-32006`); the
+  cited `mcp/FINAL_REPORT.md` / `VERIFICATION.md` were never authored;
+  main-repo T501 OPEN.
+- **Fix (in dependency order):**
+  1. Implement `run_test`: thin wrapper over the existing FT executor
+     (`execute_fusion_tests.js`) + lock acquisition (B1.3) + typed errors —
+     the hard parts (executor, evidence screenshots, typed error taxonomy
+     -32001..-32005) all exist.
+  2. Author `mcp/VERIFICATION.md`: extend `verify_roundtrip.js` to cover all
+     five tools incl. a real run_test cycle; commit transcripts as evidence.
+  3. Auth layer (MCP_READINESS blocker #2): per-token identity, key never
+     leaves host — stdio local transport needs only an owner check; HTTP
+     transport needs token auth + rate limits.
+  4. Then write `FINAL_REPORT.md` against measured results.
+- **Effort:** 5-8 days. **Depends on:** B1 (lock/ports).
+
+### B4. Reliability & observability
+- Single-provider dependency: openrouter stealth tier starved repeatedly
+  (429 storms all windows). Add a provider failover chain (openrouter → Groq
+  → reserved Zen) with a circuit breaker keyed on consecutive-429 rate, and
+  surface per-run quota spend in `dashboard_data.json` (usage JSONL already
+  exists — aggregate it).
+- Structured logs: dom/vision logs are human-readable text; emit one
+  `events.jsonl` per run alongside (step, action, urls, llm_latency,
+  token_count) — makes every audit recomputation trivial and enables the
+  flakiness pass (CAMPAIGN_PLAN C4).
+- Manifest schema versioning: stamp `schema_version` in `run_manifest.json`
+  before any format change lands.
+
+### B5. Config, secrets, portability
+- Config is ~15 scattered env vars (ARCH_A_TIMEOUT_MS, GROQ_*, SEED_*,
+  STUB_LLM…). Consolidate into one validated config file (JSON + schema
+  check at startup, fail-loud) with env override.
+- Keys currently live in plain `web/.env` + `vision/.env`; fine for
+  single-tenant, but document rotation + never-log guarantees (llmProvider
+  already redacts); optional OS keyring later.
+- `python` spawned bare (`serviceManager.js:21-22`) with no venv support —
+  honor a `VISION_PYTHON` env (T102 recommendation); add tesseract presence
+  preflight (fail loud, not mid-run UnpicklingError).
+- CI: GitHub Actions matrix (windows + ubuntu) running the offline suites +
+  `folder_purity` over a fixture tree on every push; nightly soak vs two
+  stable demo sites (books.toscrape, the-internet) to catch drift early.
+
+### B6. Test-quality growth (post-beta)
+- Flakiness pass (C4): re-run 5 sites twice, report variance per stage —
+  repeatability study exists (`REPEATABILITY.md` lineage); fold into CE.
+- Raise STRONG share: target ≥60% value-level verifications via B2(b).
+- Identity-space merger (A/B element reconciliation) remains the largest
+  known capability gap (tiny common_elements in gap reports) — schedule as
+  its own epic, do not band-aid via prompts.
+
+## C. Phased plan
+
+| Phase | Contents | Exit criteria |
+|---|---|---|
+| **P0 — safe concurrency** (~1 wk) | B1.1-B1.4, B5-CI gate, suites green | Two pipelines run concurrently on one machine with zero cross-contamination (prove via fixture soak); CI purity gate red-blocks bad pushes |
+| **P1 — beta product** (~2 wks) | B3.1-B3.4, B2(a) min-verification gate, B4 failover+v1 events.jsonl | All five MCP tools verified E2E with committed transcripts; PASS ladder enforces MEDIUM-min; provider outage survives <30s |
+| **P2 — production** (~1 mo) | B2(b,c) value/diff oracles, B5 full config/secrets, multi-session auth, C4 flakiness pass, B6 identity merger epic started | PRODUCTION-GRADE checklist below fully green |
+
+## D. PRODUCTION-GRADE definition of done (auditor's checklist)
+
+1. Concurrent-pipeline soak: N=3 simultaneous runs, zero provenance rejects,
+   zero foreign hosts (folder_purity + guard both silent-clean).
+2. `run_test` E2E transcript committed; all five tools verified.
+3. No PASS without MEDIUM+ verification anywhere in latest ledger; WEAK share
+   visible in every dashboard.
+4. Services bind dynamically; suite passes on linux CI runner.
+5. Ledger regenerated from raw matches published files bit-for-bit in CI.
+6. Provider failover proven by killing the primary key mid-run.
+7. This auditor's three-pass trail (`E-T3-*`) re-runnable from a clean clone.
+
+*— PRODUCTION READINESS DEEP-DIVE (ox-alpha), 2026-08-26*
+
+---
+
+# NUMBERS STRENGTH ASSESSMENT & CONDITIONAL VERDICT UPDATE (2026-08-26)
+
+Requested by Master: are the results actually strong? And fold in the
+statement that MCP `run_test` will be completed before the morning v1-beta
+release. All figures below come from ledger/raw artifacts recomputed in this
+audit trail; nothing projected.
+
+## 1. Are the numbers strong?
+
+**Cross-tier FT live pass-rate gradient (verified cells):**
+
+| Tier | Sites | FT live PASS | Rate |
+|---|---|---|---|
+| 1 — demo apps | 13 executed tests (`testing/site_reports/INDEX.md` L42) | 10 | **77%** |
+| 2 — small real-world | 60 executed (`testing/CAMPAIGN_EVALUATION.md` §1) | 37 | **61.7%** |
+| 3 — popular consumer | 29 executed (rows #21,#23,#26,#32,#33 + #17-rerun: 3/7, 3/5, 1/8, 1/3, 3/3, 3/3) | 14 | **48.3%** |
+
+**What is genuinely strong:**
+1. **The difficulty gradient itself.** 77% → 62% → 48% is exactly the curve a
+   real capability produces when pushed onto harder targets. Systems with
+   inflated or site-tuned results show flat curves; this one degrades
+   honestly and predictably. This is the single most citable strength.
+2. **Zero contaminated cells survived remediation.** Post-quarantine, every
+   recomputed headline matched raw exactly (three audit passes,
+   `docs/audit_evidence/E-T3-*`), and the two contamination attempts that
+   recurred were caught pre-publication. Ledger trustworthiness is the rarest
+   property in this class of project and this one has it.
+3. **Fusion grounding discipline:** every accepted fusion test audited carried
+   `all_accepted_grounded: true`, with strict honest rejections
+   (cross_page_ref/action_mismatch) proving the filter bites — e.g. wikipedia
+   7 of 39 offered accepted, hackernews 8 of 33.
+4. **Scale handling:** 790-element (wikipedia), 616-element (eviltester)
+   mega-catalogs processed with A-side timeout honesty rather than silent
+   truncation.
+5. **Environment-failure breadth as data:** six distinct blocking classes
+   (hard-403 wall, 202 challenge, blank-render, login-wall, CF-526 outage,
+   duplicate-launch contention) each documented with probe trails.
+
+**What is NOT strong (must stay attached to any claim):**
+1. **Absolute Tier-3 throughput is modest:** 6 full pipelines of 15 rows (~40%);
+   the pre-registered bar (≥6/10 complete) was met only with D9 spare sites.
+2. **Small per-site denominators** (3–8 FT tests/site, single execution) —
+   wide confidence intervals; flakiness pass (C4) still pending, so variance
+   is unquantified.
+3. **Oracle ceiling caps meaning of green:** only 33/62 VTQ tests are
+   STRONG (value-level); `no_post_action_change` PASS-class gap documented on
+   row 32. Until B2 lands, "48–77% pass" means "actions worked", not
+   "behavior verified correct".
+4. **Structural inflation warning:** high fusion-attributable % on weak-A runs
+   (87.5%, 100%, 83.3%) reflects A=0 denominators, not fusion superiority —
+   keep the caveat welded to those figures (already practiced in INDEX/paper).
+5. `CAMPAIGN_EVALUATION.md` snapshot is still the 20-site Tier-2 era;
+   Tier-3 aggregates exist only in INDEX rows until regen folds them in.
+
+**Assessment:** the numbers are strong *as an honestly-measured research
+beta* — sufficient to support the paper's claims and a v1-beta release with
+the caveats above printed next to them. They are not yet strong enough to
+market as "autonomous testing that passes half of the real web" — the honest
+framing is "passes ~half of reachable popular sites' synthesized flows, with
+verified-value coverage on one third".
+
+## 2. Verdict update given MCP `run_test` landing before release
+
+Master states MCP development completes before the morning v1-beta release.
+Per audit rules that is recorded as a **management claim, not verified fact**
+— I have not seen a working `run_test`.
+
+**UPDATED VERDICT: BETA — GO for the v1-beta release**, superseding the
+standalone BETA above, subject to three RELEASE-BLOCKING checks at tag time:
+
+1. `run_test` E2E transcript committed to the fork (extend
+   `verify_roundtrip.js`; all five tools exercised; typed errors intact).
+   Until then the MCP surface ships labeled "preview".
+2. F5-01 closed: bbc #27 chained under ≥`97a29cb` or reclassified
+   BLOCKED-honest — INDEX must be 15/15 FINAL before the gate.
+3. Suites green at the release commit (currently 157/157, auditor-run).
+
+If (1) slips: ship anyway as **engine-beta + MCP-preview** — the verdict
+remains BETA either way, because the engine evidence stands on its own and
+the MCP gap is disclosed rather than hidden.
+
+*— STRENGTH ASSESSMENT & CONDITIONAL VERDICT (ox-alpha), 2026-08-26*
