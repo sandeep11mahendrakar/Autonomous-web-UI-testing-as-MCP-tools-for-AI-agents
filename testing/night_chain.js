@@ -54,10 +54,13 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
   log('repeatability finished — starting Tier-2 campaign');
 
   const sitesFile = path.join(__dirname, 'TIER2_SITES.md');
-  const rows = fs.readFileSync(sitesFile, 'utf8').split(/\r?\n/)
+  const fromIdx = process.argv.indexOf('--from');
+  const fromKey = fromIdx >= 0 ? process.argv[fromIdx + 1] : null;
+  const allRows = fs.readFileSync(sitesFile, 'utf8').split(/\r?\n/)
     .filter((l) => /^\|\s*\d+\s*\|/.test(l))
     .map((l) => ({ key: l.split('|')[2]?.trim(), url: l.split('|')[3]?.trim() }))
     .filter((r) => r.key && r.url);
+  const rows = fromKey ? allRows.slice(allRows.findIndex((r) => r.key === fromKey)) : allRows;
 
   log(`${rows.length} tier-2 sites queued`);
 
