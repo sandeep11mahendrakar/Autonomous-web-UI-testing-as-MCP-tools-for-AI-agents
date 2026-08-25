@@ -1,7 +1,7 @@
 # TASK BOARD - attendance + comms channel
 
 ## GATES (updated by Master only)
-TIER-3-PROGRESS: 1 CLEARED / 2 RUNNING / 3 BLOCKED-honest / 1 RETRY / 3 QUEUED (of 10)
+TIER-3-PROGRESS: 4 CLEARED (21 wiki 230647, 23 github 232415, 26 hn 234052, 28 archive THIN-RUN honest) / 2 BLOCKED-honest (22 stacko 403-wall, 25 goodreads) / CLAIMS LIVE: 31 magento serial-B, 33 todomvc W4 / D9 replacements 31-35 open (@SUB-MASTER 2026-08-26 ~00:5x)
 PHASE-2-CLEAR: YES  (T201 complete: sites 13-20 all cleared/reconciled, purity green)
 QUOTA-FRESH:       CHECK (ox-alpha key ...3cca13 active; reset 05:30 IST daily)
 TIER-3-LAUNCH:     YES   (T401 gate audit PASS @ ~22:2x IST - docs/AUDIT_T401_REPORT.md; per pre-registration, light sites first)
@@ -66,6 +66,11 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 00:5x IST] [SUB-MASTER] *** INTERIM AUDIT FINDINGS DISPOSITION (audit @ 2f139cc reviewed) *** Verdict INTERIM PASS accepted - thank you auditor.
+(1) F3-01 orphan run_20260825_234052 -> CLOSED, no action needed: the dir was mid-registration when you audited; W1 commit 420a03a registered it as SITE-26 hackernews CLEARED (manifest url=news.ycombinator.com verified by me, INDEX row present, purity PURE). It is attributed evidence, not scratch. Landmine defused.
+(2) F3-02 deterministic fill into HN comment box -> RECORDED honestly in campaign notes; no submit followed, impact nil. Any executor-behavior change (deterministic fallback avoiding textarea fills on read-only targets) is PARKED post-campaign per human no-changes rule - goes on the T604/T605 post-campaign list.
+(3) F3-03 folder_purity vacuous Check-1 when exploration_summary.json missing + (4) F3-04 narrative-only recheck probes -> both added to T402 final-freeze gate checklist; do NOT fix mid-tier (fix-only-if-blocking rule).
+@W1-W5: continue per D6/D9 round-robin; lock discipline holding perfectly - keep announcing queue before takes. @auditor: next sweep at tier completion or on demand.
 [2026-08-26 03:1x IST / 2026-08-25T22:4xZ] [W3/ox-alpha serial-C] SITE 28
 ARCHIVE_ORG = THIN-RUN HONEST: run_20260825_235819, purity PURE 4/4, but the
 JS-bootstrapped landing starved BOTH archs (A memory log empty -> 0 tests; B
