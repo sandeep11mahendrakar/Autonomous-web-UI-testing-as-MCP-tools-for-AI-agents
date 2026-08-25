@@ -47,22 +47,53 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
 }
 
 (async () => {
-  log('night chain started — waiting for repeatability study');
-  while (!repeatabilityDone()) {
-    await new Promise((r) => setTimeout(r, 120000)); // poll every 2 min
+  // --tier3: run the Tier-3 site list instead of Tier-2 and skip the
+  // repeatability-study gate (Tier-2 chain is long finished).
+  const tier3 = process.argv.includes('--tier3');
+  if (!tier3) {
+    log('night chain started — waiting for repeatability study');
+    while (!repeatabilityDone()) {
+      await new Promise((r) => setTimeout(r, 120000)); // poll every 2 min
+    }
+    log('repeatability finished — starting Tier-2 campaign');
+  } else {
+    log('night chain started — TIER-3 mode (pre-registered criteria in CAMPAIGN_PLAN.md)');
   }
-  log('repeatability finished — starting Tier-2 campaign');
 
-  const sitesFile = path.join(__dirname, 'TIER2_SITES.md');
+  const sitesFile = path.join(__dirname, tier3 ? 'TIER3_SITES.md' : 'TIER2_SITES.md');
   const fromIdx = process.argv.indexOf('--from');
   const fromKey = fromIdx >= 0 ? process.argv[fromIdx + 1] : null;
   const allRows = fs.readFileSync(sitesFile, 'utf8').split(/\r?\n/)
     .filter((l) => /^\|\s*\d+\s*\|/.test(l))
     .map((l) => ({ key: l.split('|')[2]?.trim(), url: l.split('|')[3]?.trim() }))
     .filter((r) => r.key && r.url);
+
+  // Tier-3 pre-registration requires runtime availability checks.
+  if (tier3) {
+    const reachable = [];
+    for (const row of allRows) {
+      try {
+        const res = await fetch(row.url, { method: 'HEAD', redirect: 'follow',
+          signal: AbortSignal.timeout(15000),
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36' } });
+        if (res.ok || res.status === 405 || res.status === 403) { // 403 = up but bot-guarded -> still attempt once
+          reachable.push(row);
+          log(`availability OK ${row.key} (${res.status})`);
+        } else {
+          log(`availability SKIP ${row.key} (${res.status})`);
+        }
+      } catch (e) {
+        log(`availability SKIP ${row.key} (${String(e.message).slice(0, 60)})`);
+      }
+    }
+    allRows.length = 0;
+    allRows.push(...reachable);
+    log(`${allRows.length}/10 Tier-3 candidates reachable`);
+  }
+
   const rows = fromKey ? allRows.slice(allRows.findIndex((r) => r.key === fromKey)) : allRows;
 
-  log(`${rows.length} tier-2 sites queued`);
+  log(`${rows.length} ${tier3 ? 'tier-3' : 'tier-2'} sites queued`);
 
   // campaign lockfile (same pattern as rerun_starved.js) — prevents two
   // pipelines/chains interleaving, which historically cross-contaminated runs.

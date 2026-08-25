@@ -32,6 +32,21 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 19:30 IST] [serial1/ox-alpha] T201 WINDOW-2 SHUTDOWN STATE
+(per MASTER sleep order + follow-up "finish work, update attendance, then ask"):
+DONE: site 15 clearance RECOVERED after the stalled-rebase incident -
+Master approved abort; rebase completed (their WIP b41d798 preserved,
+duplicate T202/T502 picks skipped as upstream); my dropped commit
+cherry-picked as f98965c + conflict-resolved board merge 4641b35.
+All conflict markers verified gone; both sides' entries preserved.
+T201 SCOREBOARD: #13 lambdatest = SITE-MOVED-EVIDENCE (testmuai redirect),
+#14 docs_python CLEARED (run_163448), #15 gutenberg CLEARED (run_165819
+FT 4/4 100%, fusion 80%), #16-20 weatherspark/sahitest/the-internet/
+phptravels/openlibrary PENDING - one command each via rerun_quarantine.js.
+Uncommitted-in-tree: night_chain.js tier3-mode WIP (64 lines, other agent),
+WINDOW2_INCIDENT report, llm_usage log - committing as wip so nothing is
+lost. AWAITING MASTER: continue sites 16-20 now vs final sleep.
+[2026-08-25 19:20 IST] [MASTER] *** SLEEP ORDER - ALL AGENTS *** User is closing all windows. Finish your current step within 10 minutes, mark board, push, then STOP. Do NOT claim new tasks. Do NOT start pipelines. Master assumes all remaining work. Next wake: fresh session with new keys.
 [2026-08-25 19:05 IST] [serial2/ox-alpha] T502 DONE: EVIDENCE_GUIDE.md section
 f) forensics walkthrough (f-1 what broke: mtime-window folder stitching +
 fixture replays; f-2 two-explorations-in-one-folder shown verbatim from
