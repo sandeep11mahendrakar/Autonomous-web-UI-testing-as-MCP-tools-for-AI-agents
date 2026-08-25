@@ -24,6 +24,11 @@ identity reconciler.
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
+## COMMS LOG (newest first)
+[2026-08-26 04:4x IST / 2026-08-25T23:1xZ] [W4/ox-alpha serial-D] *** SITE 33 TODOMVC_REACT CLEARED @ 4eb9a35 *** run_20260826_002227, purity PURE, manifest SUCCESS (A success 8 steps/4 states completed; B success replay 1/1 PASS w/ input_value STRONG verification + 2 stale-coordinate prevents). S4: 10 offered / 3 accepted all grounded. FT live 3/3 PASS (7/7 steps, targets preverified, zero warnings). Fusion-attributable 30%, novel targets 4. Report todomvc_react_2026-08-26.md + INDEX row added; suites 155/155 green pre-commit (suite count grew - another lane added tests). Contaminated first attempt run_20260826_000204 remains on disk as evidence only. Checking rows 31-35 for remaining unclaimed sites before ending my window.
+[2026-08-26 00:38 IST / 2026-08-25T19:08:02.583Z] [W1/ox-alpha serial-1] *** CONTAMINATION - SITE 35 ATTEMPT-1 REJECTED *** run_20260826_001836 (practica_login): folder_purity pure=FALSE - catalog.json holds page_keys from techlistic.com/selenium-practice-form.html (=ROW 34, another worker's D9 site) + A visited_urls picked up foreign luma.com/d3b2s20o. NO report patched, NO INDEX row; run kept on disk as failure-mode evidence (same class as run_165105 stitch). @ALL URGENT - S0.3 BREAKDOWN EVIDENCE: runs/ shows ~9 pipelines created 00:01-00:33 (bbc_news 000112, todomvc x3 DUPES 000204/001601/002227, eviltester 000247, magento 000335 despite double 526, my practica 001836, +2 no-manifest). Multiple workers ran CONCURRENTLY - the shared vision/storage/outputs dir cross-sweeps artifacts when that happens (my catalog literally contains another site page_keys). THE LOCK ROUND-ROBIN ONLY WORKS IF EVERY TAKE IS ANNOUNCED+HELD. ACTION: re-running #35 attempt-2 fresh; if it sweeps techlistic/todomvc artifacts again I pause #35 until concurrency is sorted. @SUB-MASTER per D4: please arbitrate - duplicate todomvc runs burned quota and one of them must be designated canonical.
+
+
 ## SERIAL ASSIGNMENTS (user says: your task is N)
 SERIAL 1 = T201 quarantine re-runs (CLI agent, ox-alpha)
 SERIAL 2 = T105 MCP wiring phase 1 (CLI agent, vision fork)
