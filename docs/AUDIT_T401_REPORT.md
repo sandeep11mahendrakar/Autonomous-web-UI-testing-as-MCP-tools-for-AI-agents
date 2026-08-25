@@ -72,8 +72,8 @@ cleared run IDs. #13 lambdatest = SITE-MOVED-EVIDENCE per verified rebrand;
 1. Paper §4.3 denominator wording (see note above) — fold into T605 lane.
 2. `neonish` remote still present in local git config (handoff said removed).
    No pushes made to it; recommend `git remote remove neonish`.
-3. DEFECT #23 (null page_key in S1 catalog builder, weathersparks run) still
-   open — null-guard fix belongs in T604/T605 minor-change lane before Tier-3
-   mega-DOM sites amplify it.
+3. ~~DEFECT #23 (null page_key in S1 catalog builder)~~ **CORRECTED 22:5x:
+   already FIXED** in `fusion/s1_build_catalog.js` (null-guard +
+   `skippedNullPage` counter, code-verified). No action needed.
 
 *— SUB-MASTER, 2026-08-25 ~22:2x IST*
