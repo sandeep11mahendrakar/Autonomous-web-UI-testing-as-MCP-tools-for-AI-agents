@@ -56,16 +56,20 @@ Final decontaminated aggregates (testing/CAMPAIGN_EVALUATION.md @ regen
 denominator note recorded for T605); vision rubric 62 tests / 48 PASS (77%) /
 33 STRONG. Gate audit T401 recomputed all of this from raw artifacts: PASS.
 
-### Tier 3 (sites 21–30): 🔄 IN PROGRESS (launched 2026-08-25 ~22:45 IST per D5/D6)
+### Tier 3 (sites 21–30 + replacements 31–35): 🔄 IN PROGRESS (launched 2026-08-25 ~22:45 IST per D5/D6; D9 replacement round opened 2026-08-26)
 Pair assignments on docs/TASK_BOARD.md directive D6; sequential via
-.campaign.lock round-robin. State at last update:
-- #21 wikipedia CLEARED (W1): run_20260825_230647, purity PURE, FT 3/7 live,
-  fusion-attributable 87.5% (weak-A/strong-fusion exemplar)
-- #22 stackoverflow BLOCKED (W2): hard 403 bot-wall confirmed, zero quota
-- #24 imdb BLOCKED (W4): HTTP 202 bot-check reproduced at launch → honest BLOCKED
-- #29 npmjs BLOCKED (W4): hard 403 bot-wall confirmed → honest BLOCKED
-- #26 hackernews (W1), #23 github_trending/#28 archive_org (W3),
-  #25 goodreads/#30 reddit (W5), #27 bbc_news (W2): claimed/running/queued
+.campaign.lock round-robin. State at last update (2026-08-26 ~05:30 IST):
+- CLEARED 4: #21 wikipedia run_230647 (FT 3/7, fus 87.5%), #23 github_trending
+  run_232415 (FT 3/5, fus 83.3%, S4 5/5 perfect round), #26 hackernews
+  run_234052 (FT 1/8 honest single-root-cause, 100% fusion-created), #33
+  todomvc_react run_20260826_002227 (FT 3/3 PASS, purity PURE — W4/D9)
+- THIN-RUN-honest: #28 archive_org run_235819 (pure, 0 tests anywhere)
+- BLOCKED-honest 5: #22 stackoverflow(403), #24 imdb(202 bot-check),
+  #25 goodreads(blank-render), #29 npmjs(403), #30 reddit(login-wall)
+- CONTAMINATION-skips: #31 magento, #32 eviltester, #34 techlistic (+ #35
+  practica attempt-1 rejected) — all caught by folder_purity; defect #24
+  logged and guard fix landed @ 97a29cb
+- IN FLIGHT at handoff: #27 bbc_news (W2), #35 practica re-run (W3)
 - Success bar (pre-registered): ≥6/10 complete pipelines; blocked IS data
 
 ## 5. RESEARCH FINDINGS (validated, use in capstone report)
