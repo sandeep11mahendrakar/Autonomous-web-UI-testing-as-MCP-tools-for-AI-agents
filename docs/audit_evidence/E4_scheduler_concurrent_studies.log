@@ -1,0 +1,17 @@
+[scheduler 2026-08-24T13:10:32.828Z] overnight scheduler started
+[scheduler 2026-08-24T13:10:33.241Z] key endpoint unavailable — falling back to UTC-midnight schedule (10.9h)
+[scheduler 2026-08-24T14:48:02.204Z] overnight scheduler started
+[scheduler 2026-08-24T14:48:02.613Z] key endpoint unavailable — falling back to UTC-midnight schedule (9.3h)
+[scheduler 2026-08-24T16:01:41.798Z] overnight scheduler started
+[scheduler 2026-08-24T16:01:42.570Z] key endpoint unavailable — falling back to UTC-midnight schedule (8.1h)
+[scheduler 2026-08-25T00:05:01.876Z] START mutation remaining variants
+[scheduler 2026-08-25T00:51:52.521Z] DONE mutation remaining variants: [mutation] unified run: run_20260825_062136 | [mutation] dead_button: arch_b=NOT_COVERED fused=NO_REPORT | [mutation] Done. Scorecard: C:\Users\sandeep\pes\vs code\Capstone-Project\mutation\results\SCORECARD.md | 
+[scheduler 2026-08-25T00:51:52.523Z] START repeatability study
+[scheduler 2026-08-25T02:42:37.146Z] DONE repeatability study: [repeat] globalsqa run 3: starting | [repeat] globalsqa run 3: done -> run_20260825_075515 | [repeat] Report: C:\Users\sandeep\pes\vs code\Capstone-Project\testing\REPEATABILITY.md | 
+[scheduler 2026-08-25T02:42:37.148Z] tier2: 10 sites queued
+[scheduler 2026-08-25T02:42:37.149Z] tier2 site START books_toscrape (https://books.toscrape.com)
+[scheduler 2026-08-25T02:42:37.150Z] START tier2 books_toscrape
+[scheduler 2026-08-25T02:57:37.486Z] FAIL tier2 books_toscrape: Command failed: node runBoth.js https://books.toscrape.com
+[scheduler 2026-08-25T02:57:37.488Z] tier2 site books_toscrape: run_20260825_081237 -> FAILED
+[scheduler 2026-08-25T02:57:37.488Z] tier2 STOPPING: hard pipeline failure — per campaign rules the next site waits for a fix
+[scheduler 2026-08-25T02:57:37.488Z] overnight scheduler finished

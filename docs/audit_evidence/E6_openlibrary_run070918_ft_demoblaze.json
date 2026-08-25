@@ -1,0 +1,48 @@
+{
+  "claim": "INDEX row 20: Open Library FT live 3/3 PASS",
+  "reality": "all FT steps executed on https://www.demoblaze.com/cart.html",
+  "steps": [
+    {
+      "test": "FT001",
+      "step": 1,
+      "action": "navigate",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "landed on https://www.demoblaze.com/cart.html"
+    },
+    {
+      "test": "FT001",
+      "step": 2,
+      "action": "click",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "URL or body text changed after click (weak signal)"
+    },
+    {
+      "test": "FT002",
+      "step": 1,
+      "action": "navigate",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "landed on https://www.demoblaze.com/cart.html"
+    },
+    {
+      "test": "FT002",
+      "step": 2,
+      "action": "click",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "URL or body text changed after click (weak signal)"
+    },
+    {
+      "test": "FT003",
+      "step": 1,
+      "action": "navigate",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "landed on https://www.demoblaze.com/cart.html"
+    },
+    {
+      "test": "FT003",
+      "step": 2,
+      "action": "click",
+      "url_after": "https://www.demoblaze.com/cart.html",
+      "detail": "URL or body text changed after click (weak signal)"
+    }
+  ]
+}
