@@ -40,8 +40,10 @@ function latestRun() {
 
 (async () => {
   // lockfile so nothing else starts a campaign concurrently
+  // (stale-lock liveness check: dead-PID locks are stolen loudly, not honored)
+  const { lockIsFreeOrStale } = require('./campaign_lock');
   const lock = path.join(__dirname, '.campaign.lock');
-  if (fs.existsSync(lock)) { log('lock exists — aborting'); process.exit(2); }
+  if (!lockIsFreeOrStale(lock, log)) process.exit(2);
   fs.writeFileSync(lock, String(process.pid));
 
   try {

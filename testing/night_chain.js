@@ -97,8 +97,10 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
 
   // campaign lockfile (same pattern as rerun_starved.js) — prevents two
   // pipelines/chains interleaving, which historically cross-contaminated runs.
+  // Stale-lock liveness check: dead-PID locks are stolen loudly, not honored.
+  const { lockIsFreeOrStale } = require('./campaign_lock');
   const lock = path.join(__dirname, '.campaign.lock');
-  if (fs.existsSync(lock)) { log('lock exists — another campaign is running; aborting'); process.exit(2); }
+  if (!lockIsFreeOrStale(lock, log)) process.exit(2);
   fs.writeFileSync(lock, String(process.pid));
   process.on('exit', () => { try { fs.unlinkSync(lock); } catch (_) {} });
 
