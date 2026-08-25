@@ -1,0 +1,20 @@
+[tier3w3 2026-08-25T17:38:14.524Z] lock held by LIVE pid 17948 — aborting
+[tier3w3 2026-08-25T17:38:14.526Z] aborting github_trending
+[tier3w3 2026-08-25T17:54:15.622Z] === START github_trending (https://github.com/trending) ===
+[tier3w3 2026-08-25T18:09:16.942Z] DONE pipeline github_trending took=15min
+[tier3w3 2026-08-25T18:09:17.048Z] attributed github_trending -> run_20260825_232415
+[tier3w3 2026-08-25T18:09:17.049Z] START s1 github_trending (run_20260825_232415)
+[tier3w3 2026-08-25T18:09:17.160Z] DONE s1 github_trending
+[tier3w3 2026-08-25T18:09:17.160Z] START s2 github_trending (run_20260825_232415)
+[tier3w3 2026-08-25T18:09:17.238Z] DONE s2 github_trending
+[tier3w3 2026-08-25T18:09:17.238Z] START s4 github_trending (run_20260825_232415)
+[tier3w3 2026-08-25T18:09:48.636Z] DONE s4 github_trending
+[tier3w3 2026-08-25T18:09:48.636Z] START ft github_trending (run_20260825_232415)
+[tier3w3 2026-08-25T18:10:51.414Z] DONE ft github_trending
+[tier3w3 2026-08-25T18:10:51.414Z] START s6 github_trending (run_20260825_232415)
+[tier3w3 2026-08-25T18:10:51.503Z] DONE s6 github_trending
+[tier3w3 2026-08-25T18:10:51.577Z] purity run_20260825_232415: pure=true checks=4/4
+[tier3w3 2026-08-25T18:10:51.659Z] SUCCESS github_trending (run_20260825_232415) - extract saved, ready for report patch
+[tier3w3 2026-08-25T18:10:51.659Z] lock released after github_trending (runId=run_20260825_232415)
+[tier3w3 2026-08-25T18:11:00.438Z] lock held by LIVE pid 7948 — aborting
+[tier3w3 2026-08-25T18:11:00.440Z] aborting archive_org
