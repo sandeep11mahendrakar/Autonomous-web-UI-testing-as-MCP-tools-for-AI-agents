@@ -62,3 +62,11 @@ node fusion/s4_fusion_synthesis.js run_20260825_035039
 node fusion/execute_fusion_tests.js run_20260825_035039
 node fusion/s6_dashboard.js run_20260825_035039
 ```
+
+
+## Re-run (decontaminated) — run_20260825_131756
+
+- New run ID: `run_20260825_131756` (replaces contaminated `run_20260825_035039` above; old numbers kept as evidence).
+- Status: PARTIAL_FAILURE | A: OK 8 steps / 5 states | B: PARTIAL (exploration produced no test cases)
+- S4: 5/5 accepted | FT live: 4/5 PASS | Fusion-attributable: 83.3%
+- A fully healthy this time; PARTIAL is B-side (B exploration produced no test cases). FT live 4/5, fusion-attributable 83.3%, 10 novel targets. External navigations to goodreads.com / zyte.com blocked by policy and recorded honestly.

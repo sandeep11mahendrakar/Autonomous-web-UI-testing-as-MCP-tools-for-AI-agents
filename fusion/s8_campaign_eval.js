@@ -169,9 +169,15 @@ function pct(n, d) {
 }
 
 function buildEvaluation(indexRows, readJson = loadJson, root = ROOT) {
+  // Schema gate: refuse to aggregate dashboards whose schema we don't
+  // recognize — silent misreads previously produced impossible values.
+  const KNOWN_DASH_SCHEMAS = new Set([undefined, null, 1]); // 1 = current; undefined = legacy pre-schema_version
   const enriched = indexRows.map((row) => {
     const runDir = row.run_id ? path.join(root, 'runs', row.run_id) : null;
     const dd = runDir ? readJson(path.join(runDir, 'fusion', 'dashboard_data.json')) : null;
+    if (dd && !KNOWN_DASH_SCHEMAS.has(dd.schema_version)) {
+      throw new Error(`s8: unknown dashboard_data schema_version=${JSON.stringify(dd.schema_version)} for ${row.run_id || '(no run id)'} — update s8 mappings or regenerate the dashboard (run s6).`);
+    }
     const manifest = runDir ? readJson(path.join(runDir, 'run_manifest.json')) : null;
     return { ...row, dd, manifest, status: classifySite(row, manifest), conf: confidence(row, dd) };
   });

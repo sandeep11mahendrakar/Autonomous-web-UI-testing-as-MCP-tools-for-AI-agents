@@ -115,10 +115,21 @@ async function runVariant(id, bugs, startedAt) {
     const code = await run('node', ['runBoth.js', url], ROOT,
       path.join(variantDir, 'pipeline.log'), 40 * 60 * 1000, DEEP_ENV);
     if (code !== 0) log(`runBoth exited ${code} (may still have artifacts)`);
-    const runs = fs.readdirSync(path.join(ROOT, 'runs'))
-      .filter((d) => d.startsWith('run_') && fs.statSync(path.join(ROOT, 'runs', d)).mtimeMs >= startedAt)
-      .sort();
-    const runId = runs[runs.length - 1] || null;
+    // PINNED attribution (rule: never trust 'latest run dir'): claim only a
+    // run dir created after this variant started whose manifest URL matches
+    // this variant's fixture server URL.
+    const { findRunDir } = require('../testing/run_attribution');
+    let runId = findRunDir({ url, sinceMs: startedAt });
+    // Fallback to old behavior ONLY if attribution fails, loudly marked.
+    let fallbackUsed = false;
+    if (!runId) {
+      const runs = fs.readdirSync(path.join(ROOT, 'runs'))
+        .filter((d) => d.startsWith('run_') && fs.statSync(path.join(ROOT, 'runs', d)).mtimeMs >= startedAt)
+        .sort();
+      const cand = runs[runs.length - 1] || null;
+      if (cand) { log(`ATTRIBUTION FALLBACK for "${id}": using ${cand} without URL match — verify manually`); fallbackUsed = true; }
+      runId = cand;
+    }
 
     if (!runId) {
       const score = { variant: id, run_id: null, error: 'no run dir produced', arch_b: 'NO_REPORT', fused: 'NO_REPORT', arch_a: 'NOT_APPLICABLE_V1' };

@@ -207,6 +207,7 @@ function buildDashboardData(runDir) {
   // ---- findings sections ----------------------------------------------------
   const topN = (arr, n) => (arr || []).slice(0, n);
   const data = {
+    schema_version: 1,
     run_dir: path.basename(runDir),
     generated_from_artifacts: true,
     llm_calls: 0,
