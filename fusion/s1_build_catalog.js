@@ -52,16 +52,21 @@ function buildCatalog(runDir) {
   observations.push(...normalizeATransitions(transitions, states));
 
   // A element evidence from recorded action targets (selector identity space).
+  let skippedNullPage = 0;
   for (let i = 0; i < memoryLog.length; i++) {
     const e = memoryLog[i];
     const ted = e.target_element_details;
     if (!ted || !ted.selector) continue;
+    // Defect #23: null/undefined from_url produced the literal page_key
+    // "null", creating a phantom catalog page. Skip unattributable entries.
+    const pk = pageKey(e.from_url);
+    if (!pk) { skippedNullPage++; continue; }
     observations.push({
       kind: 'element',
       architecture: 'A',
       source: 'dom/memory_log.json',
       page_url: e.from_url,
-      page_key: pageKey(e.from_url),
+      page_key: pk,
       element_type: (ted.tag || 'unknown').toLowerCase(),
       label: ted.text || ted.selector,
       confidence: null,
@@ -70,6 +75,9 @@ function buildCatalog(runDir) {
       timestamp: e.timestamp || null,
       attrs: { selector: ted.selector },
     });
+  }
+  if (skippedNullPage) {
+    console.warn(`[s1] defect-23 guard: skipped ${skippedNullPage} observation(s) with unattributable page_url`);
   }
 
   // ---- Architecture B ----
