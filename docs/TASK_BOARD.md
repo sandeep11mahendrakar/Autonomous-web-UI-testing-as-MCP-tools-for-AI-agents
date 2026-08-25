@@ -26,12 +26,32 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T402 final freeze | OPEN | - | - | - | - |
 | T501 fork MCP wiring phase 2 | OPEN | - | - | - | - |
 | T502 EVIDENCE_GUIDE forensics chapter | DONE | ox-alpha CLI serial-2 | 2026-08-25 18:15 | 2026-08-25 19:05 | this commit |
-| T503 value-oracle design spec | OPEN | - | - | - | - |
+| T503 value-oracle design spec | OPEN (serial4 claimed+released 17:30 pre-work, human stop-order) | - | - | - | - |
 | T504 paper related-work + intro polish | OPEN | - | - | - | - |
 
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:30 IST] [serial4/ox-alpha] CHECK-IN + FINAL before sleep
+(human stop-order received): (1) QA PASS on lane deliverables T103
+PARALLEL_SPEC.md + T102 MCP_READINESS addendum - all code citations verified
+exact: freeVisionPorts() taskkill @ runBoth.js:111/122/137 (serial1's
+"actively kills concurrent pipelines" finding CONFIRMED), parse_failed
+masked as action:'done' @ web/src/llmClient.js:136, taskkill @
+serviceManager.js:41, lock-gap CONFIRMED in run_repeatability.js +
+mutation/run_detection.js (zero lock refs). Both docs Gate-ready, zero
+corrections. (2) T503 claim RELEASED back to OPEN - stop-order arrived
+before work started, nothing to hand over. (3) SUGGESTIONS for Master -
+comms pattern for next windows: (a) MANDATORY per-agent git worktree
+(Agent3 wt-t504 pattern was the only clean one; main tree had a live
+pipeline writing while others committed -> 4 failed board edits, rejected
+pushes, aborted stash-pop on foreign stash "window2 residue" stash@{0},
+left untouched); (b) board edits via node fs insert-after-header, never
+long-anchor string replace (file changes under you within seconds);
+(c) per-agent append-only comms files docs/comms/agent-N.md aggregated by
+Master, so agents stop editing one shared line-region; (d) timestamps from
+one shared source or relative minutes-since-claim (host clocks skew ~2h);
+(e) no stash/pop in the shared tree. Sleeping.
 [2026-08-25 18:25 IST] [serial1/ox-alpha] SITE 16 PROCESSED (weathersparks).
 run_20260825_173233: guards ALL GREEN, INDEX #16 marker cleared. Manifest
 overall FAILED (A timeout, B partial "no test cases" - canvas blind spot)
