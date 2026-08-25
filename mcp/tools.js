@@ -3,16 +3,21 @@
 /**
  * mcp/tools.js — tool schemas + handlers for the Vision MCP server.
  *
- * PHASE 1 WIRING: exactly one tool is real —
- *   explore_site(url, max_steps?) spawns `node runVision.js --explore <url>`
- *   in this repo root, streams its stdout/stderr lines to a caller-installed
- *   log sink (server.js forwards them as JSON-RPC notifications), and
- *   resolves with the run_id + summary parsed from the run's
- *   storage/outputs/<run_id>_exploration_result.json.
+ * PHASE 1 WIRING: explore_site(url, max_steps?) spawns
+ *   `node runVision.js --explore <url>` in this repo root, streams its
+ *   stdout/stderr lines to a caller-installed log sink (server.js forwards
+ *   them as JSON-RPC notifications), and resolves with the run_id + summary
+ *   parsed from the run's storage/outputs/<run_id>_exploration_result.json.
  *
- * The other four tools (get_visual_dom, list_tests, run_test, get_evidence)
- * are still stubs returning the typed error -32006. See docs/MCP_READINESS.md
- * (main Capstone repo) for the full gap analysis and contract design.
+ * PHASE 2 WIRING: three READ-ONLY tools are now real (zero quota, no browser):
+ *   get_visual_dom(run_id, state?)   — YOLO+OCR elements + screenshot ref
+ *   list_tests(run_id)               — tests generated for a run
+ *   get_evidence(run_id, test_id)    — execution record + evidence screenshots
+ * They only read files under storage/outputs + storage/screenshots.
+ *
+ * run_test stays a stub (-32006): it drives a live browser and must hold the
+ * campaign lock — deliberately out of scope for parallel-safe phases. See
+ * docs/MCP_READINESS.md (main Capstone repo) for the contract design.
  */
 
 const { spawn } = require('child_process');
@@ -149,6 +154,208 @@ function killTree(proc) {
   } catch (_) {
     /* ignore */
   }
+}
+
+// ── read-only artifact access (phase 2: get_visual_dom / list_tests / get_evidence)
+
+const HISTORY_SUFFIX = '_exploration_history.json';
+const EXECUTION_RESULTS = path.join(OUTPUT_DIR, 'execution_results.json');
+
+function readJsonSafe(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Resolve a run_id to its artifacts. Returns { result, history, tests } or
+ * null when the run has no exploration_result.json (typed RUN_NOT_FOUND).
+ */
+function resolveRun(runId) {
+  if (typeof runId !== 'string' || !/^run_[A-Za-z0-9_-]+$/.test(runId)) return null;
+  const resultFile = path.join(OUTPUT_DIR, `${runId}_exploration_result.json`);
+  if (!fs.existsSync(resultFile)) return null;
+  const result = readJsonSafe(resultFile);
+  if (!result) return null;
+  const historyFile = path.join(OUTPUT_DIR, `${runId}${HISTORY_SUFFIX}`);
+  const history = fs.existsSync(historyFile) ? readJsonSafe(historyFile) : null;
+  let tests = [];
+  if (result.test_cases_file && fs.existsSync(result.test_cases_file)) {
+    const parsed = readJsonSafe(result.test_cases_file);
+    if (Array.isArray(parsed)) tests = parsed;
+  }
+  return { result, history, tests };
+}
+
+/** Visual-DOM JSON files live flat as <state_id>_<label>_visual_dom.json. */
+function findVisualDomFile(stateId) {
+  if (!fs.existsSync(OUTPUT_DIR)) return null;
+  const matches = fs
+    .readdirSync(OUTPUT_DIR)
+    .filter((f) => f.startsWith(`${stateId}_`) && f.endsWith('_visual_dom.json'))
+    .map((f) => path.join(OUTPUT_DIR, f))
+    .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs); // newest first
+  return matches[0] || null;
+}
+
+/** Trim a visual DOM to the fields an agent caller needs (small payloads). */
+function slimElements(elements) {
+  return (elements || []).map((e) => ({
+    id: e.id,
+    type: e.type,
+    text: e.text,
+    bbox: e.bbox,
+    confidence: e.confidence ? e.confidence.combined ?? e.confidence.yolo : null,
+  }));
+}
+
+function getVisualDom(args) {
+  const run = resolveRun(args.run_id);
+  if (!run) return { error: { ...ERRORS.RUN_NOT_FOUND, data: { run_id: args.run_id } } };
+
+  const states = (run.history && Array.isArray(run.history.states))
+    ? run.history.states
+    : [];
+  if (!states.length) {
+    return {
+      error: {
+        ...ERRORS.STAGE_FAILED,
+        data: { reason: 'no_states_recorded', run_id: args.run_id },
+      },
+    };
+  }
+
+  const wanted = args.state ? String(args.state) : null;
+  const state = wanted
+    ? states.find((s) => s.state_id === wanted || path.basename(String(s.screenshot || '')).startsWith(wanted))
+    : states[0];
+  if (!state) {
+    return {
+      error: {
+        ...ERRORS.STAGE_FAILED,
+        data: {
+          reason: 'state_not_found',
+          requested: wanted,
+          available: states.map((s) => s.state_id),
+        },
+      },
+    };
+  }
+
+  const vdomFile = findVisualDomFile(state.state_id);
+  if (!vdomFile) {
+    return {
+      error: {
+        ...ERRORS.STAGE_FAILED,
+        data: {
+          reason: 'no_visual_dom_file',
+          state_id: state.state_id,
+          detail: `no ${state.state_id}_*_visual_dom.json under storage/outputs`,
+        },
+      },
+    };
+  }
+
+  const vdom = readJsonSafe(vdomFile);
+  if (!vdom) {
+    return {
+      error: {
+        ...ERRORS.STAGE_FAILED,
+        data: { reason: 'visual_dom_unreadable', file: path.basename(vdomFile) },
+      },
+    };
+  }
+
+  return {
+    result: {
+      run_id: args.run_id,
+      state_id: state.state_id,
+      url: state.url,
+      source_file: path.relative(VISION_ROOT, vdomFile).replace(/\\/g, '/'),
+      image_size: vdom.image_size || null,
+      element_count: vdom.element_count ?? (vdom.elements ? vdom.elements.length : 0),
+      elements: slimElements(vdom.elements),
+      screenshot_ref: state.screenshot || null,          // client-readable path
+      merged_evidence_ref: state.merged_evidence || null, // detections drawn on image
+    },
+  };
+}
+
+function withinRepo(p) {
+  const rel = path.relative(VISION_ROOT, p).replace(/\\/g, '/');
+  // Artifacts moved in from elsewhere would produce ../ escapes — degrade to
+  // the file name rather than handing callers a cross-repo path.
+  return rel.startsWith('..') ? path.basename(p) : rel;
+}
+
+function listTests(args) {
+  const run = resolveRun(args.run_id);
+  if (!run) return { error: { ...ERRORS.RUN_NOT_FOUND, data: { run_id: args.run_id } } };
+
+  return {
+    result: {
+      run_id: args.run_id,
+      count: run.tests.length,
+      test_cases_file: run.result.test_cases_file
+        ? withinRepo(run.result.test_cases_file)
+        : null,
+      generated_tests_total: (run.result.totals && run.result.totals.generated_tests) ?? null,
+      tests: run.tests.map((t) => ({
+        test_id: t.id,
+        objective: t.objective,
+        steps: Array.isArray(t.steps) ? t.steps.length : 0,
+        actions: Array.isArray(t.steps) ? t.steps.map((s) => s.action) : [],
+        expect_navigation: t.expect_navigation === true,
+      })),
+    },
+  };
+}
+
+function getEvidence(args) {
+  const run = resolveRun(args.run_id);
+  if (!run) return { error: { ...ERRORS.RUN_NOT_FOUND, data: { run_id: args.run_id } } };
+
+  const test = run.tests.find(
+    (t) => String(t.id).toLowerCase() === String(args.test_id).toLowerCase()
+  );
+  if (!test) {
+    return {
+      error: {
+        ...ERRORS.TEST_NOT_FOUND,
+        data: { run_id: args.run_id, test_id: args.test_id, known_ids: run.tests.map((t) => t.id) },
+      },
+    };
+  }
+
+  // Execution records (written by src/executeTests.js when a replay ran).
+  const execAll = readJsonSafe(EXECUTION_RESULTS);
+  const execRecords = execAll && Array.isArray(execAll.results) ? execAll.results : [];
+  const record = execRecords.find(
+    (r) => String(r.id).toLowerCase() === String(args.test_id).toLowerCase()
+  ) || null;
+
+  // Exploration-time evidence screenshots for context (always available).
+  const screenshots = ((run.history && run.history.states) || [])
+    .filter((s) => s.state_id)
+    .map((s) => ({ state_id: s.state_id, screenshot: s.screenshot, merged_evidence: s.merged_evidence }));
+
+  return {
+    result: {
+      run_id: args.run_id,
+      test_id: test.id,
+      executed: Boolean(record),
+      execution_record: record, // includes status, verification{method,detail}, verification_strength, warnings
+      execution_results_file: record
+        ? path.relative(VISION_ROOT, EXECUTION_RESULTS).replace(/\\/g, '/')
+        : null,
+      note: record
+        ? undefined
+        : 'no execution_results.json record yet — run_test has not been called for this test',
+      exploration_screenshots: screenshots,
+    },
+  };
 }
 
 function listResultFiles() {
@@ -310,9 +517,9 @@ function exploreSite(args) {
 }
 
 /**
- * Dispatch. Synchronous for stubs; explore_site returns a Promise with the
- * same { result } | { error } shape. Argument validation against each tool's
- * inputSchema.required happens in server.js.
+ * Dispatch. Synchronous for read-only tools and stubs; explore_site returns a
+ * Promise with the same { result } | { error } shape. Argument validation
+ * against each tool's inputSchema.required happens in server.js.
  */
 function callTool(name, args) {
   if (!TOOLS.some((t) => t.name === name)) {
@@ -321,7 +528,16 @@ function callTool(name, args) {
   if (name === 'explore_site') {
     return exploreSite(args || {});
   }
-  return { error: { ...ERRORS.NOT_IMPLEMENTED, data: { tool: name } } };
+  if (name === 'get_visual_dom') {
+    return getVisualDom(args || {});
+  }
+  if (name === 'list_tests') {
+    return listTests(args || {});
+  }
+  if (name === 'get_evidence') {
+    return getEvidence(args || {});
+  }
+  return { error: { ...ERRORS.NOT_IMPLEMENTED, data: { tool: name } } }; // run_test
 }
 
-module.exports = { TOOLS, ERRORS, callTool, setLogSink };
+module.exports = { TOOLS, ERRORS, callTool, setLogSink, resolveRun };
