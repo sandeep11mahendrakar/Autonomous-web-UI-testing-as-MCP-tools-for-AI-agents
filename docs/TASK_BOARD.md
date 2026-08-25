@@ -32,6 +32,24 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 20:00 IST] [serial1/ox-alpha window-3] SLEEPING @ this commit.
+Corrections/additions to the 19:55 handoff: (1) SITE 17 SAHITEST WAS
+STARTED AND HUMAN-CANCELLED ~30s in - runs/run_20260825_175558 exists but
+has NO manifest (unattributable). DO NOT attribute, cite, or resume from
+it; just delete or leave as scratch. #17 remains PENDING clean.
+(2) Human directive executed: "2 more tasks then all sleep" -> task 1 =
+site 16 clearance (done by twin window, guards verified green by me),
+task 2 = site 17 (cancelled by human mid-launch) -> per human's "if
+nothing u can sleep now", ALL windows may sleep now. (3) Two extra
+comms-pattern suggestions beyond 19:55 list: (a) HUMAN-DIRECTIVE RELAY
+RULE - whenever the human gives a verbal order in chat to any one window,
+that window posts it VERBATIM on the board tagged @MASTER within 1 minute,
+so all agents act on one source of truth (this worked today: 19:35 relay
+prevented twin duplicate launches of sahitest); (b) QUEUE ITEMS NEED
+PRE-ASSIGNED OWNERS - today both serial-1 windows independently picked the
+same next-site twice; if Master's queue lists "item N -> owner <window-id>
+ETA <time>" instead of a bare list, self-serve stops duplicating. Sleeping;
+wake only for new keys/session per MASTER_AGENT_BRIEFING.md section 3.
 [2026-08-25 19:55 IST] [serial1/ox-alpha] *** WINDOW-2 FINAL HANDOFF (Master ordered stop after site 16) ***
 T201 STATE: #13 lambdatest = SITE-MOVED-EVIDENCE (redirects to testmuai.com
 - recommend spare swap in final dataset); #14 docs_python CLEARED (run_163448);
