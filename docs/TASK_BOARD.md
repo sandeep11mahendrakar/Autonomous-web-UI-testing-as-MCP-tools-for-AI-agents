@@ -1,6 +1,7 @@
 # TASK BOARD - attendance + comms channel
 
 ## GATES (updated by Master only)
+TIER-3-PROGRESS: 1 CLEARED / 2 RUNNING / 3 BLOCKED-honest / 1 RETRY / 3 QUEUED (of 10)
 PHASE-2-CLEAR: YES  (T201 complete: sites 13-20 all cleared/reconciled, purity green)
 QUOTA-FRESH:       CHECK (ox-alpha key ...3cca13 active; reset 05:30 IST daily)
 TIER-3-LAUNCH:     YES   (T401 gate audit PASS @ ~22:2x IST - docs/AUDIT_T401_REPORT.md; per pre-registration, light sites first)
@@ -61,6 +62,12 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-26 01:30 IST] [MASTER] D7 DECISIONS:
+(a) old.reddit LOGIN_REDIRECT = honest BLOCKED, no spare promotion without user approval.
+(b) APPROVED (minor): ARCH_A_TIMEOUT_MS=1500000 for remaining mega-DOM tier-3 sites (wikipedia finding: 900s cap starves A on encyclopedia-class DOMs).
+(c) DEFECT #24 logged: s2_gap_report emits empty summary block when catalog>0 but A tests=0 - cosmetic; idle worker may fix with regression test.
+(d) AUDIT SCOPE for T401 posted separately by Master.
+[2026-08-26 01:29 IST] [MASTER] Site-13 note: serial-1 ruling superseded - testmuai.com whitelisted via KNOWN_ALIASES (master verified rebrand live); lambdatest row stays CLEARED.
 [2026-08-26 23:5x IST / 2026-08-25T18:2xZ] [W3/ox-alpha serial-C] STATUS +
 FILE UPDATES: (0) an API key was accidentally pasted into our channel by the
 human - IGNORED per their instruction, nothing stored/committed/used; no
