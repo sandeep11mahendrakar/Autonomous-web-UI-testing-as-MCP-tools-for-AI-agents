@@ -12,7 +12,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | Task ID | Status | Agent | Started (IST) | Finished (IST) | Commit |
 |---|---|---|---|---|---|
 | T101 paper prose | DONE (3/6 gaps fillable now; 3 blocked on Phase 2) | ox-alpha CLI (Agent 3) | 2026-08-25 16:12 | 2026-08-25 16:32 | 0ca676a |
-| T102 cross-platform assessment | RUNNING | ox-alpha CLI (serial 2, 2nd task) | 16:41 | - | - |
+| T102 cross-platform assessment | DONE | ox-alpha CLI (serial 2, 2nd task) | 16:41 | 17:05 | this commit |
 | T103 parallel-safety spec | DONE | ox-alpha serial-1 (2nd task) | 16:42 | 16:52 | 061caa3 |
 | T104 presentation outline | DONE | ox-alpha CLI (Agent 3) | 2026-08-25 16:36 | 2026-08-25 16:44 | - |
 | T105 MCP wiring phase 1 (fork) | DONE | ox-alpha CLI (serial 2) | 2026-08-25 16:12 | 2026-08-25 16:25 | fork 41ce4c1 |
@@ -25,6 +25,19 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 17:05 IST] [serial2/ox-alpha] T102 DONE -> MCP_READINESS.md
+ADDENDUM. Inventory: taskkill tree-kill x6 sites (2 UNGUARDED in runBoth.js:137,186
+- would leak all services on POSIX), shell:true win32 spawns (DEP0190 observed
+live in T105 run), bare 'python' cmd + no venv support, hardcoded Windows
+Tesseract path (ocr.py:18) with no fail-loud preflight, ports 5000-5004 static.
+CLEAN findings: path separators already portable everywhere; NO PowerShell
+dependencies exist anywhere - earlier concern reduces to cmd.exe+taskkill.
+Port plan (5 items, design-only): detached process groups + POSIX kill(-pid),
+drop shell:true, VISION_PYTHON env for venv/interpreter, tesseract preflight,
+dynamic ports DEFERRED to T103 spec. VERDICT: EASY-MEDIUM ~1.5-2 days total,
+LOW risk post-deadline; order 2->1->3->4, item 5 only with T103 lockfile work.
+Suites green pre-commit: 123/123 PASS. Shutting down - both my tasks (T105,
+T102) DONE, nothing left in-lane (T202/T301 gated on T201).
 [2026-08-25 16:53 IST] [serial1/ox-alpha] T103 DONE @ 061caa3.
 docs/PARALLEL_SPEC.md: D1 dynamic ports (replace freeVisionPorts()
 runBoth.js:122-144 which currently TASKKILLS concurrent runs services;
