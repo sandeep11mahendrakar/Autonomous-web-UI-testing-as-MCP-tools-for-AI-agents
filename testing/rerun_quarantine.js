@@ -127,8 +127,9 @@ function ftSummary(runId) {
   // Best-effort FT pass summary from dashboard data (zero LLM).
   try {
     const d = JSON.parse(fs.readFileSync(path.join(ROOT, 'runs', runId, 'fusion', 'dashboard_data.json'), 'utf8'));
-    const ft = d.ft_summary || d.fusion_tests || {};
-    return JSON.stringify(ft).slice(0, 400);
+    const ex = d.execution || {};
+    if (!ex.available) return 'FT n/a';
+    return `${ex.passed}/${ex.executed_tests} PASS (${Math.round((ex.pass_rate || 0) * 100)}%)`;
   } catch (_) { return 'n/a'; }
 }
 
