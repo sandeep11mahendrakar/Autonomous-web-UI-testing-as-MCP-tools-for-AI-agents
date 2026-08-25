@@ -30,3 +30,46 @@
 [tier3w3 2026-08-25T18:30:56.610Z] START ft archive_org (run_20260825_235819)
 [tier3w3 2026-08-25T18:30:57.159Z] lock released after archive_org (runId=run_20260825_235819)
 [tier3w3 2026-08-25T18:32:47.472Z] === START eviltester_pages (https://testpages.eviltester.com/styled/index.html) ===
+[tier3w3 2026-08-25T18:46:36.746Z] DONE pipeline eviltester_pages took=14min
+[tier3w3 2026-08-25T18:46:36.808Z] attributed eviltester_pages -> run_20260826_000247
+[tier3w3 2026-08-25T18:46:36.808Z] START s1 eviltester_pages (run_20260826_000247)
+[tier3w3 2026-08-25T18:46:36.908Z] DONE s1 eviltester_pages
+[tier3w3 2026-08-25T18:46:36.908Z] START s2 eviltester_pages (run_20260826_000247)
+[tier3w3 2026-08-25T18:46:36.986Z] DONE s2 eviltester_pages
+[tier3w3 2026-08-25T18:46:36.986Z] START s4 eviltester_pages (run_20260826_000247)
+[tier3w3 2026-08-25T18:47:02.590Z] DONE s4 eviltester_pages
+[tier3w3 2026-08-25T18:47:02.590Z] START ft eviltester_pages (run_20260826_000247)
+[tier3w3 2026-08-25T18:48:34.623Z] DONE ft eviltester_pages
+[tier3w3 2026-08-25T18:48:34.624Z] START s6 eviltester_pages (run_20260826_000247)
+[tier3w3 2026-08-25T18:48:34.709Z] DONE s6 eviltester_pages
+[tier3w3 2026-08-25T18:48:34.781Z] lock released after eviltester_pages (runId=run_20260826_000247)
+[tier3w3 2026-08-25T19:02:58.024Z] === START practica_login (https://practicetestautomation.com/practice/) ===
+[tier3w3 2026-08-25T19:14:02.153Z] DONE pipeline practica_login took=11min
+[tier3w3 2026-08-25T19:14:02.171Z] attributed practica_login -> run_20260826_003258
+[tier3w3 2026-08-25T19:14:02.172Z] START s1 practica_login (run_20260826_003258)
+[tier3w3 2026-08-25T19:14:02.287Z] DONE s1 practica_login
+[tier3w3 2026-08-25T19:14:02.288Z] START s2 practica_login (run_20260826_003258)
+[tier3w3 2026-08-25T19:14:02.375Z] DONE s2 practica_login
+[tier3w3 2026-08-25T19:14:02.375Z] START s4 practica_login (run_20260826_003258)
+[tier3w3 2026-08-25T19:14:21.435Z] DONE s4 practica_login
+[tier3w3 2026-08-25T19:14:21.436Z] START ft practica_login (run_20260826_003258)
+[tier3w3 2026-08-25T19:15:57.419Z] DONE ft practica_login
+[tier3w3 2026-08-25T19:15:57.419Z] START s6 practica_login (run_20260826_003258)
+[tier3w3 2026-08-25T19:15:57.500Z] DONE s6 practica_login
+[tier3w3 2026-08-25T19:15:57.570Z] lock released after practica_login (runId=run_20260826_003258)
+[tier3w3 2026-08-25T20:57:42.889Z] === START dynamic_loading (https://the-internet.herokuapp.com/dynamic_loading/2) ===
+[tier3w3 2026-08-25T21:00:06.706Z] DONE pipeline dynamic_loading took=2min
+[tier3w3 2026-08-25T21:00:06.778Z] attributed dynamic_loading -> run_20260826_022742
+[tier3w3 2026-08-25T21:00:06.779Z] START s1 dynamic_loading (run_20260826_022742)
+[tier3w3 2026-08-25T21:00:06.887Z] DONE s1 dynamic_loading
+[tier3w3 2026-08-25T21:00:06.888Z] START s2 dynamic_loading (run_20260826_022742)
+[tier3w3 2026-08-25T21:00:06.981Z] DONE s2 dynamic_loading
+[tier3w3 2026-08-25T21:00:06.982Z] START s4 dynamic_loading (run_20260826_022742)
+[tier3w3 2026-08-25T21:00:23.012Z] DONE s4 dynamic_loading
+[tier3w3 2026-08-25T21:00:23.012Z] START ft dynamic_loading (run_20260826_022742)
+[tier3w3 2026-08-25T21:00:52.448Z] DONE ft dynamic_loading
+[tier3w3 2026-08-25T21:00:52.449Z] START s6 dynamic_loading (run_20260826_022742)
+[tier3w3 2026-08-25T21:00:52.581Z] DONE s6 dynamic_loading
+[tier3w3 2026-08-25T21:00:52.674Z] purity run_20260826_022742: pure=true checks=4/4
+[tier3w3 2026-08-25T21:00:52.771Z] SUCCESS dynamic_loading (run_20260826_022742) - extract saved, ready for report patch
+[tier3w3 2026-08-25T21:00:52.771Z] lock released after dynamic_loading (runId=run_20260826_022742)
