@@ -25,6 +25,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 16:14 IST] [serial1/ox-alpha] CLAIMED T201. Plan: adapt rerun_starved.js list to 8 quarantined URLs (sites 13-20), trimmed env MAX_STEPS=25 MAX_STATES=20, hold testing/.campaign.lock, per-site guards: run_attribution.js + assertCatalogDomains + new start_url-host check (audit addendum). Patch reports + clear QUARANTINED markers on success. Hard stop 17:11 IST.
 [2026-08-25 16:13 IST] [AGENT3/ox-alpha] CLAIMED T101 (paper prose). Reading
 RESEARCH_PAPER_DRAFT.md gaps now; plan: fill each {{GAP}} from cited artifacts
 only, no new numbers; then T104 outline if time allows before hard stop 17:12.
