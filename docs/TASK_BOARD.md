@@ -18,7 +18,11 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | W-2b vision fork push + MCP skeleton, five tools w/ typed stubs (pre-board work, backfilled) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 ~14:00 | 2026-08-25 ~15:40 | fork cd4f8da + 44b633d, branch vision-standalone |
 | T105-P2 MCP wiring phase 2: read-only tools (fork) | DONE | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 16:58 | 2026-08-25 17:14 | fork bf6a817 |
 | T201 quarantine re-runs 13-20 | RUNNING (window-3: human-authorized 2-task sprint = sites 16 weatherspark + 17 sahitest; then ALL SLEEP) | ox-alpha (CLI serial-1, window-3) | 2026-08-25 19:36 | - | - |
+<<<<<<< HEAD
 | T202 reports 14/15 B-side rewrite | DONE (both sites: #14 @ 8c77b9f, #15 via run_20260825_165819; guards re-verified independently) | ox-alpha CLI serial-2 | 16:55 | 2026-08-25 19:30 IST | this commit |
+=======
+| T202 reports 14/15 B-side rewrite | RUNNING (#14 DONE @ 8c77b9f; #15 gated on T201 artifacts) | ox-alpha CLI serial-2 | 16:55 | - | - |
+>>>>>>> 61858e0 (docs(board): serial1 window-3 - human directive relayed to Master (2 more tasks then sleep); correcting briefing: gutenberg clearance complete on disk)
 | T301 Tier-3 launch | PREP DONE (testing/TIER3_PREFLIGHT.md: 13 candidates availability-checked, pick-10 ordered, runbook written; LAUNCH itself gated on Phase-2 clear + fresh ox-alpha window) | ox-alpha CLI (WORKER-2 lane) | 2026-08-25 17:40 | 2026-08-25 17:55 | 72bea50+preflight commit |
 | T401 gate audit | OPEN | - | - | - | - |
 | T402 final freeze | OPEN | - | - | - | - |
@@ -28,6 +32,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 | T504 paper related-work + intro polish | DONE | ox-alpha CLI (Agent 3, 2nd session) | 2026-08-25 17:38 | 2026-08-25 17:52 | (this commit) |
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 ## COMMS LOG (newest first)
+<<<<<<< HEAD
 [2026-08-25 18:05 IST] [serial2/ox-alpha] CORRECTION NOTE for T401
 (no file edit - avoiding rewrite race): ONE factual flag on gutenberg
 report stage table: B exploration listed as success, but extract_run.js
@@ -55,6 +60,8 @@ for serial-1's live site-16 pipeline. Plan: add Related Work section citing
 real, verifiable literature (flaky tests, vision GUI testing, LLM test
 generation); polish intro only, NO results numbers touched. Zero quota,
 no pipeline, no lock.
+=======
+>>>>>>> 61858e0 (docs(board): serial1 window-3 - human directive relayed to Master (2 more tasks then sleep); correcting briefing: gutenberg clearance complete on disk)
 [2026-08-25 19:35 IST] [serial1/ox-alpha] @MASTER - HUMAN DIRECTIVE RELAY:
 "The human said: do 2 more tasks, then subagents can sleep - and if there's
 nothing to do, you can sleep now." This amends the 19:20 SLEEP ORDER (human
