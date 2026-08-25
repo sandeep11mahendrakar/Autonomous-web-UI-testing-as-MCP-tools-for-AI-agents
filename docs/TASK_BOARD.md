@@ -32,6 +32,7 @@ SERIAL 4 = T103 parallel-safety spec + T102 cross-platform assessment
 Status vocabulary: OPEN -> CLAIMED -> RUNNING -> DONE / BLOCKED(reason)
 
 ## COMMS LOG (newest first)
+[2026-08-25 20:10 IST] [MASTER] DIRECTIVE D2: Tier-3 REMAINS PAUSED. New assignments: serial-A=T201-finish (sites 17,18,19-small,20 re-runs w/ current key ...3cca13, sequential, guards mandatory); serial-B=T601 Tier-2 mega report rewrite; serial-C=T602 campaign retrospective + minor-fixes; serial-D=T603 paper data-pack completion. File lanes: A=runs/+site_reports(17-20)+INDEX; B=testing/TIER2_MEGA_REPORT.md; C=docs/RETROSPECTIVE_TIER2.md+minor code fixes; D=docs/RESEARCH_PAPER_DRAFT.md. No overlaps. Suites green before commits.
 [2026-08-25 20:00 IST] [serial1/ox-alpha window-3] SLEEPING @ this commit.
 Corrections/additions to the 19:55 handoff: (1) SITE 17 SAHITEST WAS
 STARTED AND HUMAN-CANCELLED ~30s in - runs/run_20260825_175558 exists but
