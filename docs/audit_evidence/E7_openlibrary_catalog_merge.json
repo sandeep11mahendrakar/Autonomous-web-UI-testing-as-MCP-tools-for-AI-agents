@@ -1,0 +1,35 @@
+{
+  "note": "Catalog merges demoblaze.com pages seen_by:[A] with openlibrary.org pages seen_by:[B] in one run",
+  "pages": [
+    {
+      "page_key": "https://www.demoblaze.com/index.html",
+      "seen_by": [
+        "A"
+      ]
+    },
+    {
+      "page_key": "https://www.demoblaze.com/prod.html",
+      "seen_by": [
+        "A"
+      ]
+    },
+    {
+      "page_key": "https://www.demoblaze.com/cart.html",
+      "seen_by": [
+        "A"
+      ]
+    },
+    {
+      "page_key": "https://www.demoblaze.com",
+      "seen_by": [
+        "B"
+      ]
+    },
+    {
+      "page_key": "https://openlibrary.org",
+      "seen_by": [
+        "B"
+      ]
+    }
+  ]
+}
