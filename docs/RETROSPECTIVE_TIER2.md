@@ -187,6 +187,35 @@ Ranked by expected trust/capability gain. Nothing below is implemented.
    Tier-1 coverage; spare slots should prefer distinct interaction profiles
    (already noted in tier2_notes_3; promote it to shortlist policy).
 
+## 5b. FLAGGED (not scheduled): raising mean fusion-attributable 48.7% honestly
+
+Human decision 2026-08-25 late evening: NO major architecture changes now.
+Recorded here so the analysis survives — revisit post-campaign.
+
+Key insight from final data: the highest attribution numbers came mostly from
+ARCHITECTURE FAILURE shrinking the denominator (docs_python 88.9% = A timeout;
+WeatherSpark 100% = B zero-test canvas blindness; openlibrary 87.5% but FT
+0/7). Suppressing A/B would inflate the metric while destroying value — ruled
+out.
+
+Honest levers, when this work is approved:
+1. Capability flags in S1 + executability filter v2 (openlibrary-class doomed
+   candidates stop being offered) — S-M
+2. Acceptance-rate tightening: 86 offered → 60 accepted (70%); rejections
+   cluster in cross_page_ref / action_mismatch / duplicate classes, two of
+   which are generation-time fixable — S
+3. SPA extraction + iframe traversal → richer catalogs → more real gaps — M
+4. Shared rate limiter so A never starves mid-run (starved A kills gap
+   executability, books-class) — S-M
+5. Value-oracle synthesis makes high attribution MEAN something (strong vs
+   weak green) — M
+
+Explicit non-levers (metric gaming): suppressing A/B test counts, re-admitting
+novelty for navigation-only quiet-page tests, counting attributed-but-failed
+tests toward any quality headline.
+
+---
+
 ## 6. Ranked recommendations for post-campaign architecture work
 
 1. D2+D3 shared lock helper + runBoth singleton → 2. D1 dynamic ports →
