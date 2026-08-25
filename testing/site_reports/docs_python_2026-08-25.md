@@ -70,3 +70,11 @@ node fusion/s6_dashboard.js run_20260825_055129
 - Status: PARTIAL_FAILURE | A: TIMEOUT (internal A 900s cap) | B: OK 1/1 PASS (weak verif)
 - S4: 8/9 accepted | FT live: 2/8 PASS | Fusion-attributable: 88.9%
 - Same revision as lambdatest: A hit its internal 900s cap again despite fresh quota (mega-DOM docs tree), so this run is also NOT fully decontaminated for A. FT live fell to 2/8 vs the original 7/7 — high variance under A-timeout conditions; recorded honestly as a finding.
+
+## Re-run (post-quarantine)
+
+- **New run:** `run_20260825_163448` (replaces quarantined `run_20260825_055129`; old run kept on disk as evidence of the failure mode — see testing/QUARANTINE_TIER2.md)
+- **Manifest status:** PARTIAL_FAILURE
+- **Guards passed:** findRunDir(manifest-url match) + assertCatalogDomains + assertVisionStartUrls (audit addendum)
+- **FT summary:** `1/8 PASS (12.5%)`
+- **Narrative policy:** figures above come ONLY from the new run's artifacts.

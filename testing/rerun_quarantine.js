@@ -129,8 +129,28 @@ function ftSummary(runId) {
     const d = JSON.parse(fs.readFileSync(path.join(ROOT, 'runs', runId, 'fusion', 'dashboard_data.json'), 'utf8'));
     const ex = d.execution || {};
     if (!ex.available) return 'FT n/a';
-    return `${ex.passed}/${ex.executed_tests} PASS (${Math.round((ex.pass_rate || 0) * 100)}%)`;
+    // pass_rate is stored as a percentage number (e.g. 12.5), not a fraction.
+    return `${ex.passed}/${ex.executed_tests} PASS (${ex.pass_rate}%)`;
   } catch (_) { return 'n/a'; }
+}
+
+/** Rebuild the post-Run-ID stat cells of an INDEX row from the new run's
+ * dashboard artifacts so no stale pre-re-run wording survives. */
+function indexStatCells(runId) {
+  let d = null;
+  try {
+    d = JSON.parse(fs.readFileSync(path.join(ROOT, 'runs', runId, 'fusion', 'dashboard_data.json'), 'utf8'));
+  } catch (_) { return null; }
+  const ex = d.execution || {};
+  const head = d.headline || {};
+  const a = d.architecture_comparison?.a || {};
+  const b = d.architecture_comparison?.b || {};
+  const aCell = `${a.states ?? '?'} states${a.tests === 0 ? ' (0 tests)' : ''}`;
+  const bCell = `${b.states ?? '?'} states/${b.elements_seen ?? '?'} elems`;
+  const s4Cell = `${head.tests_fusion_created ?? '?'}/${head.total_final_tests ?? '?'} fusion-created`;
+  const ftCell = ex.available ? `${ex.passed}/${ex.executed_tests} PASS (${ex.pass_rate}%)` : 'n/a';
+  const fusCell = head.pct_final_tests_attributable_to_fusion != null ? `**${head.pct_final_tests_attributable_to_fusion}%**` : '?';
+  return [aCell, bCell, s4Cell, ftCell, fusCell];
 }
 
 function patchReport(key, num, reportFile, oldRunId, runId) {
@@ -162,6 +182,16 @@ function patchReport(key, num, reportFile, oldRunId, runId) {
         // swap whatever run id this row carries (may be a first-decon-batch id,
         // e.g. 133122/134803, not necessarily the QUARANTINE_TIER2 id)
         .replace(/`run_\d+_\d+`/, `\`${runId}\``);
+      // refresh stat cells (A/B expl, S4, FT live, Fusion%) from new artifacts
+      const stats = indexStatCells(runId);
+      if (stats) {
+        const cells = lines[i].split('|');
+        // cells: ['', ' # ', ' Site ', ..., ' Run ID ', ' A ', ' B ', ' S4 ', ' FT ', ' Fus ', '']
+        if (cells.length >= 12) {
+          for (let k = 0; k < 5; k++) cells[7 + k] = ` ${stats[k]} `;
+          lines[i] = cells.join('|');
+        }
+      }
       patched = true;
       break;
     }
