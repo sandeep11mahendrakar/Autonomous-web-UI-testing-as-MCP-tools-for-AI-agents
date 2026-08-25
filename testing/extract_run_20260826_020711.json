@@ -1,0 +1,140 @@
+{
+ "run_id": "run_20260826_020711",
+ "manifest": {
+  "url": "https://demo.guru99.com/V4/",
+  "overall": "SUCCESS",
+  "started": "2026-08-25T20:37:11.766Z",
+  "finished": "2026-08-25T20:55:00.945Z",
+  "a_status": "success",
+  "a_ms": 1069101,
+  "b_status": "success",
+  "b_stage": "execution",
+  "b_ms": 308098
+ },
+ "A": {
+  "termination": "max_states_reached",
+  "totals": {
+   "steps": 25,
+   "states": 20,
+   "unique_states": 20,
+   "unique_urls": 12,
+   "clicks": 3,
+   "fills": 8,
+   "navigates": 10,
+   "repeats_skipped": 8,
+   "errors": 0
+  },
+  "visited_urls": 12,
+  "warnings": []
+ },
+ "A_tests": [
+  {
+   "id": "TC001",
+   "objective": "Replay the recorded workflow (navigate → fill → fill → fill → fill), ending at https://dem",
+   "steps": 5
+  },
+  {
+   "id": "TC002",
+   "objective": "Replay the recorded workflow (fill → fill → click → navigate → click → navigate), ending a",
+   "steps": 6
+  },
+  {
+   "id": "TC003",
+   "objective": "Replay the recorded workflow (fill → fill → navigate → navigate → navigate), ending at htt",
+   "steps": 5
+  }
+ ],
+ "B": {
+  "summary": {
+   "total": 1,
+   "passed": 1,
+   "failed": 0,
+   "errors": 0,
+   "pass_rate": 1,
+   "multi_step_tests": 1,
+   "fill_actions": 6,
+   "scroll_actions": 0,
+   "states_observed": 7,
+   "verification_methods": {
+    "input_value": 1
+   },
+   "weak_verifications": 0,
+   "stale_coordinates_prevented": 0,
+   "unresolved_targets": 0,
+   "warnings": 1
+  },
+  "source_url": "https://demo.guru99.com/V4/"
+ },
+ "B_expl": {
+  "steps": null,
+  "states": null,
+  "urls": 0,
+  "termination": "no_candidates_remaining"
+ },
+ "S1": {
+  "elements": 54,
+  "behaviors": 27,
+  "pages": 13,
+  "conflicts": 2
+ },
+ "S2": {},
+ "S4": {
+  "provider": "openrouter:stealth/ox-alpha",
+  "offered": 18,
+  "candidates": 12,
+  "accepted": 8,
+  "rejected": 4,
+  "rejections": [
+   {
+    "index": 5,
+    "reason": "duplicate_in_batch",
+    "detail": "navigate|https://demo.guru99.com/Agile_Project/Agi_V1/customer/MiniStatementInput.php||select_option|[name=\"accountno\"]|"
+   },
+   {
+    "index": 8,
+    "reason": "action_mismatch",
+    "detail": "step 2: behavior bh_1efmqc8 is click, step is fill"
+   },
+   {
+    "index": 10,
+    "reason": "max_tests_reached",
+    "detail": "Follow the Insurance Project link from the security index to the insurance application."
+   },
+   {
+    "index": 11,
+    "reason": "max_tests_reached",
+    "detail": "Open the Add Tariff Plan to Customer flow from the telecom project hub."
+   }
+  ]
+ },
+ "FT": {
+  "summary": {
+   "total": 8,
+   "passed": 4,
+   "failed": 4,
+   "steps_total": 19,
+   "steps_passed": 15,
+   "targets_preverified": 4,
+   "warnings": 0
+  }
+ },
+ "DASH": {
+  "headline": {
+   "total_final_tests": 12,
+   "tests_from_architecture_a": 3,
+   "tests_from_architecture_b": 1,
+   "tests_fusion_created": 8,
+   "tests_already_covered_by_ab": 0,
+   "duplicate_rejections_audit": 4,
+   "pct_final_tests_attributable_to_fusion": 66.7,
+   "novel_targets_exercised_by_fusion": 16,
+   "sources": [
+    "fusion/fusion_tests.json",
+    "fusion/fusion_report.json",
+    "dom/test_cases.json",
+    "vision/outputs/test_cases_*"
+   ]
+  },
+  "llm_calls": 0
+ }
+}
