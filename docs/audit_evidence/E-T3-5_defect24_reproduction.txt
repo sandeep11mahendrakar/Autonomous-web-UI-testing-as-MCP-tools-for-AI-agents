@@ -1,0 +1,38 @@
+AUDIT T-D evidence — DEFECT #24 reproduction on run_20260825_230647 (wikipedia)
+
+Precondition check (from raw artifacts):
+  fusion/catalog.json  : pages=13, elements=790  -> catalog > 0 : TRUE
+  dom/test_cases.json  : 0 A-side test cases     -> A tests = 0 : TRUE
+
+Emitted fusion/gap_report.json .summary (verbatim):
+  {
+   "llm_calls": 0,
+   "deterministic": true,
+   "totals": {
+    "elements": 790, "behaviors": 25, "conflicts": 62, "pages": 13,
+    "element_coverage_pct": 0, "behavior_coverage_pct": 0
+   }
+  }
+
+Comparison run with same precondition (run_20260825_232415 github_trending,
+also A tests=0): summary identical shape, coverage 0/0 despite catalog of
+564 elements / 23 pages.
+
+Reading: the defect reproduces as a ZERO-SIGNAL summary block — a 790-element
+catalog yields coverage_pct 0/0 because coverage is derived from A/B test
+cases and A produced none; B-side activity contributes nothing to the block.
+(Block is not literally {} in current code — s2_gap_report.js:184-195 always
+emits totals — but it is information-free for weak-A runs, matching the
+spirit of the logged defect.)
+
+Cosmetic-only confirmation (no data corruption):
+  - s6_dashboard.js does NOT consume gap_report.summary for any headline
+    number; dashboard_data.json headline recomputed independently:
+      total_final_tests=8 (A=0, B=1, fusion=7) -> 87.5% EXACT.
+  - S4 accepted 7/39 grounded (fusion_report.json independent of gap summary).
+  - FT results 3/7 PASS, steps 6/14 (ft_execution_results.json independent).
+  - INDEX row #21 matches raw artifacts on all four claims.
+  - No downstream artifact inherits the zero-coverage values as data.
+Verdict: DEFECT #24 CONFIRMED, COSMETIC-ONLY. Fix optional post-campaign;
+regression test should assert a non-zero-signal marker (e.g. "a_tests: 0"
+disclosure field) when A tests = 0.
