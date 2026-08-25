@@ -108,4 +108,37 @@ function assertCatalogDomains(runId, url) {
   return out;
 }
 
-module.exports = { findRunDir, assertCatalogDomains, normalizeUrl, readManifest };
+module.exports = { findRunDir, assertCatalogDomains, normalizeUrl, readManifest, assertVisionStartUrls };
+
+/**
+ * Post-run guard per AUDIT ADDENDUM (2026-08-25): every B-side exploration
+ * result under runs/<id>/vision/outputs/ must have started at the manifest
+ * URL's host. Local-fixture hosts (127.0.0.1 / localhost) or any foreign
+ * host means wrong-site evidence -> the run dir must be rejected.
+ *
+ * @returns {{ok: boolean, checked: number, violations: Array<{file: string, host: string, url: string}>}}
+ */
+function assertVisionStartUrls(runId, url) {
+  const out = { ok: true, checked: 0, violations: [] };
+  const manifest = readManifest(runId);
+  const mHost = (() => { try { return new URL(manifest.url).host.toLowerCase(); } catch (_) { return ''; } })();
+  if (!mHost) { out.ok = false; out.violations.push({ file: 'run_manifest.json', host: '', url: 'manifest missing or unparseable' }); return out; }
+  const vdir = path.join(RUNS_ROOT, runId, 'vision', 'outputs');
+  let files = [];
+  try {
+    files = fs.readdirSync(vdir).filter((f) => f.includes('_exploration_result'));
+  } catch (_) {}
+  for (const f of files) {
+    let r = null;
+    try { r = JSON.parse(fs.readFileSync(path.join(vdir, f), 'utf8')); } catch (_) { continue; }
+    const src = r.start_url || r.source_url || null;
+    if (!src) continue;
+    out.checked += 1;
+    const h = (() => { try { return new URL(src).host.toLowerCase(); } catch (_) { return ''; } })();
+    if (!h || h !== mHost) {
+      out.violations.push({ file: f, host: h || '(unparseable)', url: String(src).slice(0, 120) });
+    }
+  }
+  out.ok = out.violations.length === 0;
+  return out;
+}
