@@ -99,6 +99,16 @@ STILL OPEN POST-FREEZE: T609 MCP ground polish (claimed, serial-B in flight); hu
 [2026-08-27 14:2x IST] [serial-B/ox-alpha] *** D10 LANE F-02 DONE *** docs/AUTHORSHIP_CLAIM.md delivered: empty-graph diagnosis (dissolved PES mail + non-default-branch work, both GitHub attribution conditions failed) + 3 remediation paths w/ exact commands (1 add-PES-email if inbox lives / 2a config noreply + 2b git-filter-repo email-callback rewrite w/ SHA-change + force-push safety warnings + bundle backup step / 3 GitHub Support dissolved-mailbox route) + path-4 default-branch merge (required regardless) + verification checklist. Suites 157/157 green (docs-only change). Facts verified from repo before writing: user.email + author/committer addresses on recent commits.
 
 ## COMMS LOG (newest first)
+[2026-08-27 15:4x IST] [SUB-MASTER] *** D15 INTEGRATOR STATUS CHECK (pulled backup: up-to-date; suites re-run 157/157 green; branch shippable) ***
+COMPLETION CRITERIA SCOREBOARD:
+- [x] T611 SHIP_MANIFEST done - manifest @ 2087c48, cleanup executed @ a07d716 (82 files untracked), W1 verified zero remaining targets. SHEET: DONE.
+- [x] T612 MCP beta pushed - VERIFIED via ls-remote THIS SESSION: refs/tags/v1.0.0-mcp @ 5863275 + refs/heads/master-v1 @ 22c73d2 both ON BACKUP REMOTE. run_test wiring @ 26b5e2b noted by auditor. SHEET: DONE.
+- [~] T614 PARTIAL - docs/V2_ROADMAP.md DONE @ e11f646 (R1-R12 ranked, source-cited; confirmed on disk identical to HEAD this session). docs/SYSTEM_IMPROVEMENTS.md EXISTS but is only the M1-M16 seed table @ dac6aaa (33 lines) - the D14 consolidation sweep (every agent suggestion w/ [source, suggestion, category, status, evidence] columns from retrospectives+audit+comms) is STILL OWED. OPEN for worker claim.
+- [ ] T615 VALUE_ORACLE_SPEC.md MISSING - recreation per D14 spec (predicate schema JSON, 3 worked examples: phantom cart fee / invalid email / dead button; validator legality rules; executor eval paths DOM-vs-OCR; failure taxonomy; rollout risks) from mutation/results/ANALYSIS.md. OPEN for worker claim.
+- [x] suites green - re-run by me just now: 157/157.
+- [x] zero QUARANTINED markers in INDEX - grep count 0 this session.
+- [ ] AUDITOR verdict - correctly pending until T614/T615 close.
+INTEGRATOR NOTES: (1) transient FS scare on docs/V2_ROADMAP.md resolved - file identical to HEAD, no action needed; agents/memory/planning copy = F-03 untracked archive mirror, acceptable. (2) Working tree currently carries OTHER lanes WIP (mobile/, vision/, scripts/, README) - left untouched per one-writer discipline. WORKERS: claim T615 first (only fully-open task), then finish T614 consolidation. I keep integrating.
 
 [2026-08-27 15:5x IST] [serial-B/ox-alpha WORKER] *** T615 DONE @ 1c43fbc *** VALUE_ORACLE_SPEC.md recreated from mutation ANALYSIS findings: predicate schema (kinds/ops/normalize chains/strength honesty), 3 worked examples mapped to real variants (wrong_calc derived-invariant -> DETECTED; missing_required absence predicate; broken_nav navigation tripwire), validator rules V-ORACLE-001..005 (grounding/schema-closure/self-consistency/budget/dedup), executor post-step hook + 5 new taxonomy classes, risks+mitigations, acceptance criteria on the mutation harness. Docs-only. ALL FOUR D15 TASKS NOW DONE (T611 W1, T612 serial-B, T614/T615 serial-B).
 
