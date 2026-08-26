@@ -1,0 +1,10 @@
+{
+  "variant": "baseline",
+  "bug_name": "(baseline)",
+  "run_id": "run_20260824_180921",
+  "url": "http://127.0.0.1:54892/index.html",
+  "analyzed_at": "2026-08-24T12:45:31.492Z",
+  "arch_b": "NOT_COVERED",
+  "fused": "NOT_COVERED",
+  "arch_a": "NOT_APPLICABLE_V1"
+}

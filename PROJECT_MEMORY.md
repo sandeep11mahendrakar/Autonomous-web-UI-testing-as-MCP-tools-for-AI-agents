@@ -1,13 +1,60 @@
 # PROJECT_MEMORY.md — single source of truth
 
-Last updated: 2026-08-23 (evening — first non-DemoQA end-to-end run complete).
-This file MERGES and REPLACES the old `VISION_CONTEXT.md` + `AGENT_HANDOFF.md`
-(both deleted). All metrics come from real saved run artifacts, none are
-estimates.
+Last updated: 2026-08-24 (evening — Tier-2 prep: fuzzy matcher, mutation
+harness, campaign evaluator, repeatability runner; quota-gated work scheduled).
 
 ---
 
-## 0. LATEST SESSION RESULT (2026-08-23, saucedemo.com)
+## 0. SESSION RESULT (2026-08-24 evening, branch `capstone-tier2-prep`)
+
+Branch created off `capstone-final-integrated`; ALL work below committed and
+pushed to the `backup` remote
+(`github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-`).
+**The Neonishh origin remote was REMOVED from git config by user instruction —
+never push there from this clone.**
+
+1. **A2 fuzzy matcher DONE**: `lib/fuzzyMatch.js` (containment -> windowed
+   edit-distance <=2 -> token overlap >=0.6) wired into B's replay
+   `resolveTarget` as tier between exact text match and proximity fallback.
+   Fixes bstackdemo/AutomationExercise OCR-variance replay failures.
+2. **Mutation harness BUILT + RUN (3 rounds)** (`mutation/`): deterministic
+   fixture app with 5 seeded bugs, detection analyzer with honest
+   DETECTED/NOT_DETECTED/NOT_COVERED taxonomy. Round-3 headline finding:
+   **the system verifies actions-work, not values-correct** — wrong-calc /
+   missing-validation / dead-button undetectable even when fully exercised
+   (FT 4/4 PASS on the buggy cart page). Full analysis:
+   `mutation/results/ANALYSIS.md`. New V2 P1 item: assertion/value-oracle
+   synthesis. Rounds 1-2 archived honestly (server-close bug; default depth).
+3. **s8 campaign evaluator DONE** (`fusion/s8_campaign_eval.js`, zero LLM):
+   aggregates INDEX ledger + per-run dashboard_data/manifests ->
+   `testing/CAMPAIGN_EVALUATION.md` (summary, SUCCESS/PARTIAL/BLOCKED matrix,
+   confidence heuristic column, A-vs-B means, fusion contribution quality,
+   curated defect/discovery/limitation ledgers, cost/time). Implements the
+   ChatGPT-report review items approved by the user.
+4. **Repeatability runner READY** (`testing/run_repeatability.js`): N runs/site,
+   separates exploration variability vs execution flakiness vs API variance.
+5. **QUOTA INCIDENT + overnight scheduler**: ox-alpha key = 1000 req/DAY
+   (not near-unlimited); exhausted mid-round-3 at ~18:20 IST. Last 3 mutation
+   variants have fused=NO_REPORT (quota casualties). `testing/
+   overnight_scheduler.js` polls the key endpoint and auto-runs remaining
+   variants + repeatability study after the 00:00 UTC reset.
+
+Offline suites after changes: **116 tests PASS** (was 91).
+
+Code changes this session (all on `capstone-tier2-prep`, pushed to backup):
+`lib/fuzzyMatch.js` (+tests), `vision/src/executeTests.js` (matcher wiring +
+exports), `mutation/*` (fixtures/server/analyze/run_detection + results +
+ANALYSIS), `fusion/s8_campaign_eval.js` (+tests),
+`testing/{CAMPAIGN_EVALUATION.md, run_repeatability.js,
+overnight_scheduler.js}`, backlog priority updates.
+
+NEXT: verify overnight scheduler output in the morning -> finish scorecard ->
+Tier-2 campaign sites 11-20 (list to be availability-checked at runtime;
+~50-60 LLM calls/site fits within a daily 1000 budget if paced).
+
+---
+
+## 0a. PREVIOUS SESSION RESULT (2026-08-23, saucedemo.com)
 
 First full-pipeline validation on a site OTHER than DemoQA, using the
 `stealth/ox-alpha` OpenRouter model (free, reasoning effort=low):
@@ -187,3 +234,36 @@ Dry-run passes: `python mobile/dry_run.py` (needs `mobile/requirements.txt`,
 4. Keep OpenRouter as default provider; remember the 50/day free-request cap
    when planning runs (a full A or B exploration makes many LLM calls — budget
    accordingly or add credits).
+
+## 0b. SESSION RESULT (2026-08-25 morning - MEGA RUN: Tier 2 COMPLETE)
+
+Campaign is now at **20/50 sites**. Everything below committed+pushed to
+`backup` remote (branch `capstone-tier2-prep`).
+
+1. **Provider saga resolved**: OpenRouter stealth pool = global 1000/day;
+   Groq free = 8k TPM + 200k TPD per model (separate buckets per model);
+   Zen gateway x-preview-f-free = ox-alpha route but flaky 503s. Final
+   config: exploration on whichever pool is healthy; S4/FT on ox-alpha
+   reasoning=low + FUSION_MAX_TOKENS=4000 (1500 starved reasoning -> no JSON).
+2. **Defect #20 fixed**: FT executor behavior-ref resolution crashed
+   (`catalog is not defined`); CATALOG_INDEX.elements is a Map.
+3. **LLM hardening**: llmProvider now wait-and-retries 429 honoring the
+   provider's suggested delay; A/B clients retry 5-6x w/ backoff.
+4. **Repeatability study DONE** (3 sites x 3 runs): A-steps variance tiny
+   (7.7 +-0.5) BUT methodology contaminated by concurrent night-chain
+   (disclosed in REPEATABILITY.md); clean C4 re-run recommended.
+5. **TIER-2 CAMPAIGN COMPLETE (10/10 sites, all reports FINAL in
+   testing/site_reports/, INDEX rows added)**:
+   - FT live aggregate 26/37 = 70% pass (all failures classified)
+   - Fusion-attributable mean ~66% on Tier 2 (vs ~20% Tier 1!) - fusion
+     value EXPLODES once catalogs include real-world sites
+   - Standouts: lambdatest 5/5 PASS @100% fusion/11 novel targets;
+     docs.python 7/7 @77.8%; gutenberg 6/6 @54.5%/16 novel targets;
+     openlibrary 3/3 @60%
+   - Real site issues: phptravels demo redirects to demoblaze mirror
+     (recorded as site issue); sahitest frames unsupported (honest limit)
+6. **s8 evaluation regenerated over 20 sites**: testing/CAMPAIGN_EVALUATION.md
+
+REMAINING for full campaign: Tier 3 (21-30), Tier 4 (31-40), sites 41-50
+(repeatability+wildcards), clean C4 repeatability re-run, capstone report.
+

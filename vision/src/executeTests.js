@@ -170,11 +170,15 @@ async function renderMergedEvidence(absShot, elementsFull) {
 // Target resolution against the CURRENT visual state
 // ---------------------------------------------------------------------------
 
-const normTxt = (t) => String(t || '').replace(/\s+/g, ' ').trim().toLowerCase();
+const { normalizeText, fuzzyTextMatch } = require('../../lib/fuzzyMatch');
+
+const normTxt = normalizeText;
 
 /**
  * Resolve a step's target on the CURRENT detected elements.
  * 1) type + OCR-text match (primary evidence)
+ *    1a) exact normalized containment; 1b) fuzzy (edit-distance/token
+ *        overlap — tolerates OCR noise like "lphone" vs "iphone")
  * 2) single controlled fallback: nearest same-type element within
  *    PROXIMITY_PX of the recorded coordinates
  * Never returns invented coordinates — only centers of detected elements.
@@ -200,6 +204,24 @@ function resolveTarget(elements, step, proximityPx = 90) {
   }
   if (bestScore >= 3) {
     return { resolved: true, via: 'text_match', element: best };
+  }
+
+  // Fuzzy tier: OCR variance across runs breaks exact family matching.
+  // Accept type-compatible elements whose text fuzzily matches the target.
+  if (wantText) {
+    const fuzzy = [];
+    for (const el of elements) {
+      if (!el.text) continue;
+      if (wantType && normTxt(el.type) !== wantType) continue;
+      const m = fuzzyTextMatch(el.text, wantText);
+      if (m.match) fuzzy.push({ el, m });
+    }
+    if (fuzzy.length) {
+      fuzzy.sort((a, b) =>
+        (a.m.editDistance - b.m.editDistance)
+        || (b.m.overlap - a.m.overlap));
+      return { resolved: true, via: `fuzzy_${fuzzy[0].m.via}`, element: fuzzy[0].el };
+    }
   }
 
   // Controlled re-localization attempt #2: proximity of same/any type.
@@ -816,3 +838,6 @@ if (require.main === module) {
       process.exit(1);
     });
 }
+
+// Exported for offline unit tests only (script guards its own execution).
+module.exports = { resolveTarget, normTxt };

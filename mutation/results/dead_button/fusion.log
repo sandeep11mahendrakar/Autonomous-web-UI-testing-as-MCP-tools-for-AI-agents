@@ -1,0 +1,165 @@
+
+===== node fusion/s1_build_catalog.js run_20260824_183317 @ 2026-08-24T13:05:20.484Z =====
+[s1] Observations: 92
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 35
+[s1] Canonical behaviors: 15
+[s1] Conflicts: 1
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_183317\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_183317\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_183317 @ 2026-08-24T13:05:20.559Z =====
+[gap] elements: {"common":0,"a_only":19,"b_only":16,"actionable_uncovered":12,"covered":16,"coverage_pct":46}
+[gap] behaviors: {"common":0,"a_only":15,"b_only":0,"uncovered":3,"covered":12,"coverage_pct":80}
+[gap] conflicts: 1
+[gap] anomalies: {"rare":26,"low_confidence":0,"multi_position":5}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_183317\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_183317 @ 2026-08-24T13:05:20.628Z =====
+[s4] gap candidates offered: 7 {"uncovered_behavior":3,"quiet_page":1,"uncovered_actionable_element":3}
+[s4] prompt chars: 4027 (~1007 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[s4] Fusion LLM call failed: LLM HTTP 429 from openrouter: {"error":{"message":"Rate limit exceeded: free-models-per-day-stealth. ","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"1000","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1787616000000"},"limit_source":"openrouter_free_tier_daily","remedy_hint":"Wait for the daily reset (see X-RateLimit-
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_183317 @ 2026-08-24T13:05:21.615Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_201020 @ 2026-08-24T14:42:03.091Z =====
+[s1] Observations: 92
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 36
+[s1] Canonical behaviors: 16
+[s1] Conflicts: 1
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_201020\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_201020\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_201020 @ 2026-08-24T14:42:03.178Z =====
+[gap] elements: {"common":0,"a_only":20,"b_only":16,"actionable_uncovered":12,"covered":17,"coverage_pct":47}
+[gap] behaviors: {"common":0,"a_only":16,"b_only":0,"uncovered":3,"covered":13,"coverage_pct":81}
+[gap] conflicts: 1
+[gap] anomalies: {"rare":27,"low_confidence":0,"multi_position":5}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_201020\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_201020 @ 2026-08-24T14:42:03.250Z =====
+[s4] gap candidates offered: 7 {"uncovered_behavior":3,"quiet_page":1,"uncovered_actionable_element":3}
+[s4] prompt chars: 4061 (~1015 tokens estimated)
+[s4] ONE Fusion call -> openrouter:nvidia/nemotron-3-super-120b-a12b:free (max_tokens=1500) ...
+[s4] Fusion LLM call failed: LLM HTTP 429 from openrouter: {"error":{"message":"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"50","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1787616000000"},"limit_source":"openrouter_free_tier_daily","remedy_hi
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_201020 @ 2026-08-24T14:42:03.474Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_211548 @ 2026-08-24T15:49:25.821Z =====
+[s1] Observations: 360
+[s1] Canonical pages: 6 (multi-arch: 3)
+[s1] Canonical elements: 96
+[s1] Canonical behaviors: 31
+[s1] Conflicts: 11
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_211548 @ 2026-08-24T15:49:25.931Z =====
+[gap] elements: {"common":1,"a_only":22,"b_only":73,"actionable_uncovered":48,"covered":21,"coverage_pct":22}
+[gap] behaviors: {"common":0,"a_only":21,"b_only":10,"uncovered":12,"covered":19,"coverage_pct":61}
+[gap] conflicts: 11
+[gap] anomalies: {"rare":43,"low_confidence":0,"multi_position":47}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_211548 @ 2026-08-24T15:49:26.009Z =====
+[s4] gap candidates offered: 8 {"uncovered_behavior":2,"classification_conflict":3,"quiet_page":1,"uncovered_actionable_element":2}
+[s4] prompt chars: 4684 (~1171 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[s4] raw response chars: 3923 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 7
+[s4] accepted: 4  rejected: 3
+[s4]   REJECT #0: action_mismatch — step 1: behavior bh_ebk2qk is navigate, step is click
+[s4]   REJECT #5: duplicate_in_batch — click|a[href="/shop.html"]||click|shop
+[s4]   REJECT #6: cross_page_ref — step 2: el_tdc15p lives on http://127.0.0.1:63324/shop.html, current http://127.
+[s4] gap ids used: gap_el_8k5k9p, gap_conflict_5, gap_conflict_6, gap_conflict_10
+[s4] all accepted grounded: true
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\fusion_report.json
+
+===== exited code=0 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_211548 @ 2026-08-24T15:49:52.451Z =====
+[exec] Executing 4 Fusion test(s) from C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548
+
+[exec] === FT001: Exercise the uncovered Shop link element on the cart page as an actionable element rather than a recorded behavior replay.
+[exec]   step 1 click    el_8k5k9p                                          -> PASS (action opened a new page (http://127.0.0.1:63324/shop.html))
+[exec] RESULT FT001: PASS
+
+[exec] === FT002: Disambiguate the conflicting classification of the About element on the contact page by clicking it and confirming it behaves as a navigational anchor.
+[exec]   step 1 click    el_1ocqx1c                                         -> PASS (action opened a new page (http://127.0.0.1:63324/about.html))
+[exec] RESULT FT002: PASS
+
+[exec] === FT003: Disambiguate the conflicting classification of the Home element on the contact page by clicking it and observing its navigation target.
+[exec]   step 1 click    el_1s95pim                                         -> PASS (action opened a new page (http://127.0.0.1:63324/index.html))
+[exec] RESULT FT003: PASS
+
+[exec] === FT004: Disambiguate the Cart element classification conflict on the shop page via a direct click probe.
+[exec]   step 1 click    el_tdc15p                                          -> PASS (action opened a new page (http://127.0.0.1:63324/cart.html))
+[exec] RESULT FT004: PASS
+
+[exec] Summary: {"total":4,"passed":4,"failed":0,"steps_total":4,"steps_passed":4,"targets_preverified":4,"warnings":4}
+[exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_211548\fusion\ft_execution_results.json
+[exec] Evidence: fusion\ft_execution_evidence/
+
+===== exited code=0 =====
+
+===== node fusion/s1_build_catalog.js run_20260824_223405 @ 2026-08-24T17:06:04.446Z =====
+[s1] Observations: 94
+[s1] Canonical pages: 6 (multi-arch: 1)
+[s1] Canonical elements: 36
+[s1] Canonical behaviors: 17
+[s1] Conflicts: 1
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223405\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223405\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_223405 @ 2026-08-24T17:06:04.523Z =====
+[gap] elements: {"common":0,"a_only":20,"b_only":16,"actionable_uncovered":13,"covered":16,"coverage_pct":44}
+[gap] behaviors: {"common":0,"a_only":17,"b_only":0,"uncovered":4,"covered":13,"coverage_pct":76}
+[gap] conflicts: 1
+[gap] anomalies: {"rare":27,"low_confidence":0,"multi_position":5}
+[gap] opportunities: quietPages=1
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_223405\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_223405 @ 2026-08-24T17:06:04.592Z =====
+[s4] gap candidates offered: 9 {"uncovered_behavior":4,"quiet_page":1,"uncovered_actionable_element":4}
+[s4] prompt chars: 4759 (~1190 tokens estimated)
+[s4] ONE Fusion call -> groq:openai/gpt-oss-120b (max_tokens=1500) ...
+[s4] Fusion LLM call failed: LLM HTTP 429 from groq: {"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0jtwd1mef2rwtgwe2eyrnhj` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6418, Requested 2751. Please try again in 8.7675s. Need more tokens? Upgrade to Dev Tier today at https://con
+
+===== exited code=4 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_223405 @ 2026-08-24T17:06:04.906Z =====
+No fusion_tests.json — run S4 first.
+
+===== exited code=2 =====

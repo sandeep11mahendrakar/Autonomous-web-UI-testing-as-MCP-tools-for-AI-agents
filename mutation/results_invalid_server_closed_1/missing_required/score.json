@@ -1,0 +1,10 @@
+{
+  "variant": "missing_required",
+  "bug_name": "Login accepts empty credentials",
+  "run_id": "run_20260824_172950",
+  "url": "http://127.0.0.1:55971/index.html",
+  "analyzed_at": "2026-08-24T12:03:08.375Z",
+  "arch_b": "NOT_COVERED",
+  "fused": "NOT_COVERED",
+  "arch_a": "NOT_APPLICABLE_V1"
+}

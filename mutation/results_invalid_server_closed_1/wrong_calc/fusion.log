@@ -1,0 +1,53 @@
+
+===== node fusion/s1_build_catalog.js run_20260824_172248 @ 2026-08-24T11:56:27.181Z =====
+[s1] Observations: 346
+[s1] Canonical pages: 6 (multi-arch: 4)
+[s1] Canonical elements: 88
+[s1] Canonical behaviors: 24
+[s1] Conflicts: 9
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\observations.json
+[s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\catalog.json
+
+===== exited code=0 =====
+
+===== node fusion/s2_gap_report.js run_20260824_172248 @ 2026-08-24T11:56:27.397Z =====
+[gap] elements: {"common":1,"a_only":16,"b_only":71,"actionable_uncovered":44,"covered":17,"coverage_pct":19}
+[gap] behaviors: {"common":0,"a_only":15,"b_only":9,"uncovered":9,"covered":15,"coverage_pct":63}
+[gap] conflicts: 9
+[gap] anomalies: {"rare":44,"low_confidence":0,"multi_position":44}
+[gap] opportunities: quietPages=0
+[gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\gap_report.json
+
+===== exited code=0 =====
+
+===== node fusion/s4_fusion_synthesis.js run_20260824_172248 @ 2026-08-24T11:56:27.570Z =====
+[s4] gap candidates offered: 2 {"classification_conflict":2}
+[s4] prompt chars: 3226 (~807 tokens estimated)
+[s4] ONE Fusion call -> openrouter:stealth/ox-alpha (max_tokens=1500) ...
+[s4] raw response chars: 1167 -> C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\fusion_raw_response.txt
+[s4] candidates from LLM: 2
+[s4] accepted: 2  rejected: 0
+[s4] gap ids used: gap_conflict_6, gap_conflict_8
+[s4] all accepted grounded: true
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\fusion_tests.json
+[s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\fusion_report.json
+
+===== exited code=0 =====
+
+===== node fusion/execute_fusion_tests.js run_20260824_172248 @ 2026-08-24T11:56:35.938Z =====
+[exec] Executing 2 Fusion test(s) from C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248
+
+[exec] === FT001: Disambiguate the conflicting a/link element labeled 'Home' on the About page by clicking it and verifying it navigates to the home/index page
+[exec]   step 1 click    el_7lbuy1                                          -> FAIL (selector a[href="/index.html"] not present on current page chrome-erro)
+[exec] RESULT FT001: FAIL
+
+[exec] === FT002: Disambiguate the conflicting a/link element labeled 'Cart' on the Shop page by clicking it after composing an add-to-cart workflow
+[exec]   step 1 click    el_khqxop                                          -> FAIL (selector a[href="/cart.html"] not present on current page chrome-error)
+[exec] RESULT FT002: FAIL
+
+[exec] Summary: {"total":2,"passed":0,"failed":2,"steps_total":2,"steps_passed":0,"targets_preverified":0,"warnings":2}
+[exec] Failure classification: [{"step":1,"stage":"selector_not_found","class":"target_resolution"},{"step":1,"stage":"selector_not_found","class":"target_resolution"}]
+[exec] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260824_172248\fusion\ft_execution_results.json
+[exec] Evidence: fusion\ft_execution_evidence/
+
+===== exited code=0 =====
