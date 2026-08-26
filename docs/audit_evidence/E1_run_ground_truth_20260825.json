@@ -1,0 +1,218 @@
+[
+  {
+    "run": "run_20260825_021918",
+    "manifest_url": "https://books.toscrape.com",
+    "a_loaded": "https://books.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_025619",
+    "manifest_url": "https://books.toscrape.com",
+    "a_loaded": "https://books.toscrape.com",
+    "b_source_url": "https://books.toscrape.com"
+  },
+  {
+    "run": "run_20260825_031338",
+    "manifest_url": "https://quotes.toscrape.com",
+    "a_loaded": "https://quotes.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_035039",
+    "manifest_url": "https://quotes.toscrape.com",
+    "a_loaded": "https://quotes.toscrape.com",
+    "b_source_url": "https://quotes.toscrape.com"
+  },
+  {
+    "run": "run_20260825_040758",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_044459",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_052159",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_053502",
+    "manifest_url": "http://127.0.0.1:58621/index.html",
+    "a_loaded": "http://127.0.0.1:58621/index.html",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_053921",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_055110",
+    "manifest_url": "http://127.0.0.1:49205/index.html",
+    "a_loaded": "http://127.0.0.1:49205/index.html",
+    "b_source_url": "http://127.0.0.1:49205/index.html"
+  },
+  {
+    "run": "run_20260825_055129",
+    "manifest_url": "https://docs.python.org/3/",
+    "a_loaded": "https://docs.python.org/3/",
+    "b_source_url": "http://127.0.0.1:49205/index.html"
+  },
+  {
+    "run": "run_20260825_060644",
+    "manifest_url": "http://127.0.0.1:50172/index.html",
+    "a_loaded": "http://127.0.0.1:50172/index.html",
+    "b_source_url": "http://127.0.0.1:50172/index.html"
+  },
+  {
+    "run": "run_20260825_060707",
+    "manifest_url": "https://www.gutenberg.org",
+    "a_loaded": "https://www.gutenberg.org",
+    "b_source_url": "http://127.0.0.1:50172/index.html"
+  },
+  {
+    "run": "run_20260825_062136",
+    "manifest_url": "https://weatherspark.com",
+    "a_loaded": "https://weatherspark.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_062152",
+    "manifest_url": "https://www.saucedemo.com",
+    "a_loaded": "https://www.saucedemo.com",
+    "b_source_url": "https://www.saucedemo.com"
+  },
+  {
+    "run": "run_20260825_063220",
+    "manifest_url": "http://www.sahitest.com/demo/",
+    "a_loaded": "http://www.sahitest.com/demo/",
+    "b_source_url": "http://www.sahitest.com/demo/"
+  },
+  {
+    "run": "run_20260825_063248",
+    "manifest_url": "https://www.saucedemo.com",
+    "a_loaded": "https://www.saucedemo.com",
+    "b_source_url": "https://www.saucedemo.com"
+  },
+  {
+    "run": "run_20260825_063920",
+    "manifest_url": "https://the-internet.herokuapp.com/status_codes",
+    "a_loaded": "https://the-internet.herokuapp.com/status_codes",
+    "b_source_url": "https://www.saucedemo.com"
+  },
+  {
+    "run": "run_20260825_063932",
+    "manifest_url": "https://www.saucedemo.com",
+    "a_loaded": "https://www.saucedemo.com",
+    "b_source_url": "https://www.saucedemo.com"
+  },
+  {
+    "run": "run_20260825_064713",
+    "manifest_url": "https://www.demoblaze.com",
+    "a_loaded": "https://www.demoblaze.com",
+    "b_source_url": "https://phptravels.com/demo/"
+  },
+  {
+    "run": "run_20260825_064941",
+    "manifest_url": "https://phptravels.com/demo/",
+    "a_loaded": "https://phptravels.com/demo/",
+    "b_source_url": "https://www.demoblaze.com"
+  },
+  {
+    "run": "run_20260825_065652",
+    "manifest_url": "https://www.demoblaze.com",
+    "a_loaded": "https://www.demoblaze.com",
+    "b_source_url": "https://www.demoblaze.com"
+  },
+  {
+    "run": "run_20260825_070445",
+    "manifest_url": "https://openlibrary.org",
+    "a_loaded": "https://openlibrary.org",
+    "b_source_url": "https://openlibrary.org"
+  },
+  {
+    "run": "run_20260825_070918",
+    "manifest_url": "https://www.demoblaze.com",
+    "a_loaded": "https://www.demoblaze.com",
+    "b_source_url": "https://openlibrary.org"
+  },
+  {
+    "run": "run_20260825_072257",
+    "manifest_url": "https://www.globalsqa.com/demo-site/",
+    "a_loaded": "https://www.globalsqa.com/demo-site/",
+    "b_source_url": "https://www.globalsqa.com/demo-site/"
+  },
+  {
+    "run": "run_20260825_073812",
+    "manifest_url": "https://www.globalsqa.com/demo-site/",
+    "a_loaded": "https://www.globalsqa.com/demo-site/",
+    "b_source_url": "https://www.globalsqa.com/demo-site/"
+  },
+  {
+    "run": "run_20260825_075515",
+    "manifest_url": "https://www.globalsqa.com/demo-site/",
+    "a_loaded": "https://www.globalsqa.com/demo-site/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_081237",
+    "manifest_url": "https://books.toscrape.com",
+    "a_loaded": "https://books.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_092206",
+    "manifest_url": "https://books.toscrape.com",
+    "a_loaded": "https://books.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_093928",
+    "manifest_url": "https://quotes.toscrape.com",
+    "a_loaded": "https://quotes.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_095650",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_101411",
+    "manifest_url": "https://docs.python.org/3/",
+    "a_loaded": "https://docs.python.org/3/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_131135",
+    "manifest_url": "https://books.toscrape.com",
+    "a_loaded": "https://books.toscrape.com",
+    "b_source_url": "https://books.toscrape.com"
+  },
+  {
+    "run": "run_20260825_131756",
+    "manifest_url": "https://quotes.toscrape.com",
+    "a_loaded": "https://quotes.toscrape.com",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_133122",
+    "manifest_url": "https://www.lambdatest.com/selenium-playground/",
+    "a_loaded": "https://www.lambdatest.com/selenium-playground/",
+    "b_source_url": "-"
+  },
+  {
+    "run": "run_20260825_134803",
+    "manifest_url": "https://docs.python.org/3/",
+    "a_loaded": "https://docs.python.org/3/",
+    "b_source_url": "https://docs.python.org/3/"
+  }
+]

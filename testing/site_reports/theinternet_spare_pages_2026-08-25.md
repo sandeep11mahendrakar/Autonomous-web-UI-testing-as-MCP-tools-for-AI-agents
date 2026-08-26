@@ -62,3 +62,44 @@ node fusion/s4_fusion_synthesis.js run_20260825_064713
 node fusion/execute_fusion_tests.js run_20260825_064713
 node fusion/s6_dashboard.js run_20260825_064713
 ```
+
+## Re-run (post-quarantine)
+
+- **New run:** `run_20260825_195406` (replaces quarantined `run_20260825_064713`; old run kept on disk as evidence of the failure mode — see testing/QUARANTINE_TIER2.md)
+- **Manifest status:** PARTIAL_FAILURE — **scope note:** the "failure" is ONLY
+  Architecture-A hitting its internal 900s exploration cap before emitting its
+  own test cases (a budget limitation, not an execution error). Every stage
+  that ran, ran successfully and live: A explored 9 steps/5 states with 0
+  errors; B replay PASSED live; fusion composed 3 grounded tests; FT executed
+  live **3/3 PASS (5/5 steps)** with per-step screenshot evidence; folder_purity PURE.
+  Read this row as: *full pipeline success on all executed stages; A's test
+  generation was capped, so the final suite is B + fusion only.*
+- **Guards passed:** findRunDir(manifest-url match) + assertCatalogDomains + assertVisionStartUrls (audit addendum)
+- **FT summary:** `3/3 PASS (100%)`
+
+## Re-run (post-quarantine) — SECOND POST, same run (duplicate watcher fired)
+
+- **What happened:** an auto-watcher ran `post` a second time against the SAME
+  run `run_20260825_195406`. This re-executed S4 (fusion synthesis, 2× 429
+  backoff absorbed), FT live execution and S6 on top of the first post.
+- **Effect:** fusion re-synthesized one additional test → final suite is now
+  **4/4 PASS (4/4 steps)** live; dashboard now shows total_final_tests=5
+  (0 A + 1 B + 4 fusion), **fusion-attributable 80%**, 8 novel targets.
+- **Integrity re-checked after second post:** findRunDir +
+  assertCatalogDomains + assertVisionStartUrls all green;
+  folder_purity **PURE** (manifest/visited/start_url/page_keys all
+  the-internet.herokuapp.com). The INDEX "QUARANTINED" patch was correctly a
+  no-op this time ("no QUARANTINED INDEX row found for #18") because the
+  marker was already cleared by the first post.
+- **Authoritative numbers for site #18 = the LATEST artifacts:**
+  FT `4/4 PASS (100%)`, fusion 80%, purity PURE. The earlier `3/3 PASS`
+  figures above are retained as history of the first post.
+- **Narrative policy:** figures above come ONLY from the new run's artifacts.
+
+## Re-run (post-quarantine)
+
+- **New run:** `run_20260825_195406` (replaces quarantined `run_20260825_064713`; old run kept on disk as evidence of the failure mode — see testing/QUARANTINE_TIER2.md)
+- **Manifest status:** PARTIAL_FAILURE
+- **Guards passed:** findRunDir(manifest-url match) + assertCatalogDomains + assertVisionStartUrls (audit addendum)
+- **FT summary:** `4/4 PASS (100%)`
+- **Narrative policy:** figures above come ONLY from the new run's artifacts.

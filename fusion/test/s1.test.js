@@ -183,3 +183,12 @@ test('A and B actions on the same page stay separate behaviors (conservative clu
   const page = catalog.pages.get ? undefined : catalog.pages[0];
   assert.equal(page.seen_by.includes('A') && page.seen_by.includes('B'), true);
 });
+
+test('defect-23: pageKey returns empty for null/undefined/"null" URLs', () => {
+  const { pageKey } = require('../lib/normalize');
+  assert.strictEqual(pageKey(null), '');
+  assert.strictEqual(pageKey(undefined), '');
+  assert.strictEqual(pageKey('null'), '');
+  assert.strictEqual(pageKey('undefined'), '');
+  assert.strictEqual(pageKey('https://example.com/x/'), 'https://example.com/x');
+});

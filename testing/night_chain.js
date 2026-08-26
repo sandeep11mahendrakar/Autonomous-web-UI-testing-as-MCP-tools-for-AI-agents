@@ -47,22 +47,62 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
 }
 
 (async () => {
-  log('night chain started — waiting for repeatability study');
-  while (!repeatabilityDone()) {
-    await new Promise((r) => setTimeout(r, 120000)); // poll every 2 min
+  // --tier3: run the Tier-3 site list instead of Tier-2 and skip the
+  // repeatability-study gate (Tier-2 chain is long finished).
+  const tier3 = process.argv.includes('--tier3');
+  if (!tier3) {
+    log('night chain started — waiting for repeatability study');
+    while (!repeatabilityDone()) {
+      await new Promise((r) => setTimeout(r, 120000)); // poll every 2 min
+    }
+    log('repeatability finished — starting Tier-2 campaign');
+  } else {
+    log('night chain started — TIER-3 mode (pre-registered criteria in CAMPAIGN_PLAN.md)');
   }
-  log('repeatability finished — starting Tier-2 campaign');
 
-  const sitesFile = path.join(__dirname, 'TIER2_SITES.md');
+  const sitesFile = path.join(__dirname, tier3 ? 'TIER3_SITES.md' : 'TIER2_SITES.md');
   const fromIdx = process.argv.indexOf('--from');
   const fromKey = fromIdx >= 0 ? process.argv[fromIdx + 1] : null;
   const allRows = fs.readFileSync(sitesFile, 'utf8').split(/\r?\n/)
     .filter((l) => /^\|\s*\d+\s*\|/.test(l))
     .map((l) => ({ key: l.split('|')[2]?.trim(), url: l.split('|')[3]?.trim() }))
     .filter((r) => r.key && r.url);
+
+  // Tier-3 pre-registration requires runtime availability checks.
+  if (tier3) {
+    const reachable = [];
+    for (const row of allRows) {
+      try {
+        const res = await fetch(row.url, { method: 'HEAD', redirect: 'follow',
+          signal: AbortSignal.timeout(15000),
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36' } });
+        if (res.ok || res.status === 405 || res.status === 403) { // 403 = up but bot-guarded -> still attempt once
+          reachable.push(row);
+          log(`availability OK ${row.key} (${res.status})`);
+        } else {
+          log(`availability SKIP ${row.key} (${res.status})`);
+        }
+      } catch (e) {
+        log(`availability SKIP ${row.key} (${String(e.message).slice(0, 60)})`);
+      }
+    }
+    allRows.length = 0;
+    allRows.push(...reachable);
+    log(`${allRows.length}/10 Tier-3 candidates reachable`);
+  }
+
   const rows = fromKey ? allRows.slice(allRows.findIndex((r) => r.key === fromKey)) : allRows;
 
-  log(`${rows.length} tier-2 sites queued`);
+  log(`${rows.length} ${tier3 ? 'tier-3' : 'tier-2'} sites queued`);
+
+  // campaign lockfile (same pattern as rerun_starved.js) — prevents two
+  // pipelines/chains interleaving, which historically cross-contaminated runs.
+  // Stale-lock liveness check: dead-PID locks are stolen loudly, not honored.
+  const { lockIsFreeOrStale } = require('./campaign_lock');
+  const lock = path.join(__dirname, '.campaign.lock');
+  if (!lockIsFreeOrStale(lock, log)) process.exit(2);
+  fs.writeFileSync(lock, String(process.pid));
+  process.on('exit', () => { try { fs.unlinkSync(lock); } catch (_) {} });
 
   for (const site of rows) {
     log(`=== TIER-2 ${site.key} (${site.url}) ===`);
@@ -71,9 +111,16 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
       const startedAt = Date.now();
       const out = runStep(`tier2 ${site.key} pipeline (attempt ${attempt})`, 'runBoth.js', site.url, 50 * 60 * 1000);
 
+      // VERIFIED attribution: only claim a run dir created after launch whose
+      // manifest URL matches the launched URL. Prevents the P1b cross-run
+      // mis-attribution that contaminated openlibrary/phptravels overnight.
+      const { findRunDir } = require('./run_attribution');
       const runsRoot = path.join(ROOT, 'runs');
-      const dirs = fs.readdirSync(runsRoot).filter((d) => d.startsWith('run_')).sort();
-      const latest = dirs[dirs.length - 1];
+      const latest = findRunDir({ url: site.url, sinceMs: startedAt });
+      if (!latest) {
+        log(`STOPPING tier-2: ${site.key} — could not attribute a run dir to this site (manifest URL mismatch). CONTAMINATION GUARD.`);
+        process.exit(1);
+      }
       let status = null;
       try {
         status = JSON.parse(fs.readFileSync(path.join(runsRoot, latest, 'run_manifest.json'), 'utf8')).overall_status;
@@ -106,6 +153,15 @@ function runStep(label, script, args, timeoutMs = 60 * 60 * 1000) {
       runStep(`s4 ${site.key}`, 'fusion/s4_fusion_synthesis.js', latest, 15 * 60 * 1000);
       runStep(`ft ${site.key}`, 'fusion/execute_fusion_tests.js', latest, 20 * 60 * 1000);
       runStep(`s6 ${site.key}`, 'fusion/s6_dashboard.js', latest, 10 * 60 * 1000);
+
+      // Post-run contamination guard: every catalog page_key host must be the
+      // target host or a host this run actually visited (legit redirects).
+      const { assertCatalogDomains } = require('./run_attribution');
+      const guard = assertCatalogDomains(latest, site.url);
+      if (!guard.ok) {
+        log(`CONTAMINATION: ${site.key} (${latest}) catalog has foreign hosts [${guard.foreignHosts.join(', ')}]; allowed: [${guard.allowedHosts.join(', ')}]. FAILING LOUDLY.`);
+        process.exit(1);
+      }
 
       log(`tier2 ${site.key} COMPLETE: ${latest} status=${status} took=${Math.round((Date.now() - startedAt) / 60000)}min`);
       done = true;

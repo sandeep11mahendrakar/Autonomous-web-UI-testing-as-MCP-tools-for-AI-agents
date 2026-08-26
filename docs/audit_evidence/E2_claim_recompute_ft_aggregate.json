@@ -1,0 +1,154 @@
+{
+  "claimed": {
+    "executed": 49,
+    "passed": 35,
+    "failed": 14
+  },
+  "recomputed": {
+    "executed": 49,
+    "passed": 35,
+    "failed": 14
+  },
+  "per_run": {
+    "run_20260823_225906": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "steps_total": 8,
+      "steps_passed": 6,
+      "targets_preverified": 5,
+      "warnings": 3
+    },
+    "run_20260824_001108": {
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "steps_total": 2,
+      "steps_passed": 1,
+      "targets_preverified": 0,
+      "warnings": 0
+    },
+    "run_20260824_001544": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "steps_total": 10,
+      "steps_passed": 10,
+      "targets_preverified": 4,
+      "warnings": 3
+    },
+    "run_20260824_002709": "no_ft_file",
+    "run_20260824_015222": "no_ft_file",
+    "run_20260824_094432": "no_ft_file",
+    "run_20260824_095724": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "steps_total": 8,
+      "steps_passed": 8,
+      "targets_preverified": 4,
+      "warnings": 9
+    },
+    "run_20260824_101451": "no_ft_file",
+    "run_20260824_102041": {
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "steps_total": 3,
+      "steps_passed": 2,
+      "targets_preverified": 1,
+      "warnings": 3
+    },
+    "run_20260825_025619": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "steps_total": 7,
+      "steps_passed": 7,
+      "targets_preverified": 4,
+      "warnings": 0
+    },
+    "run_20260825_035039": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "steps_total": 7,
+      "steps_passed": 6,
+      "targets_preverified": 4,
+      "warnings": 1
+    },
+    "run_20260825_053921": {
+      "total": 5,
+      "passed": 4,
+      "failed": 1,
+      "steps_total": 11,
+      "steps_passed": 10,
+      "targets_preverified": 4,
+      "warnings": 3
+    },
+    "run_20260825_055129": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "steps_total": 17,
+      "steps_passed": 17,
+      "targets_preverified": 10,
+      "warnings": 0
+    },
+    "run_20260825_060707": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "steps_total": 9,
+      "steps_passed": 9,
+      "targets_preverified": 4,
+      "warnings": 7
+    },
+    "run_20260825_062152": {
+      "total": 3,
+      "passed": 1,
+      "failed": 2,
+      "steps_total": 8,
+      "steps_passed": 5,
+      "targets_preverified": 3,
+      "warnings": 2
+    },
+    "run_20260825_063248": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2,
+      "steps_total": 3,
+      "steps_passed": 0,
+      "targets_preverified": 0,
+      "warnings": 2
+    },
+    "run_20260825_064713": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "steps_total": 2,
+      "steps_passed": 1,
+      "targets_preverified": 1,
+      "warnings": 2
+    },
+    "run_20260825_065652": {
+      "total": 4,
+      "passed": 0,
+      "failed": 4,
+      "steps_total": 5,
+      "steps_passed": 1,
+      "targets_preverified": 0,
+      "warnings": 3
+    },
+    "run_20260825_070918": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "steps_total": 6,
+      "steps_passed": 6,
+      "targets_preverified": 3,
+      "warnings": 3
+    }
+  },
+  "note": "Aggregate arithmetic VERIFIES, but runs 062152,063248,064713,065652,070918 executed against wrong sites (see E1): 14 FT executions / 5 passes are wrong-site data."
+}

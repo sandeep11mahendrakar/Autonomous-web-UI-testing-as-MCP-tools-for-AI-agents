@@ -1,0 +1,34 @@
+{
+  "note": "CURA attempt run_20260824_002017 (same night, not registered in INDEX) FT 0/4 ALL FAILED. Ledger registers only 002709 which has no FT file.",
+  "summary": {
+    "total": 4,
+    "passed": 0,
+    "failed": 4,
+    "steps_total": 5,
+    "steps_passed": 1,
+    "targets_preverified": 0,
+    "warnings": 3
+  },
+  "tests": [
+    {
+      "id": "FT001",
+      "status": "FAIL",
+      "obj": "Verify clicking the info@katalon.com footer link triggers a mailto navigation"
+    },
+    {
+      "id": "FT002",
+      "status": "FAIL",
+      "obj": "Disambiguate the conflicting classification of the sidebar 'Login' element by activating it as an anchor"
+    },
+    {
+      "id": "FT003",
+      "status": "FAIL",
+      "obj": "Verify the CURA Healthcare brand link returns the user to the homepage"
+    },
+    {
+      "id": "FT004",
+      "status": "FAIL",
+      "obj": "Composed workflow: navigate home, open sidebar, go to Login, then return via Home link"
+    }
+  ]
+}

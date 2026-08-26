@@ -62,3 +62,11 @@ node fusion/s4_fusion_synthesis.js run_20260825_025619
 node fusion/execute_fusion_tests.js run_20260825_025619
 node fusion/s6_dashboard.js run_20260825_025619
 ```
+
+
+## Re-run (decontaminated) — run_20260825_131135
+
+- New run ID: `run_20260825_131135` (replaces contaminated `run_20260825_025619` above; old numbers kept as evidence).
+- Status: SUCCESS | A: OK 8 steps / 8 states (no timeout) | B: OK 1/1 PASS
+- S4: 5/5 grounded | FT live: 4/5 PASS | Fusion-attributable: 71.4%
+- A completed fully; decontamination CONFIRMED for this site: with A healthy the pipeline finished SUCCESS. FT live 4/5, fusion-attributable 71.4% (5/7 final tests), 8 novel targets.

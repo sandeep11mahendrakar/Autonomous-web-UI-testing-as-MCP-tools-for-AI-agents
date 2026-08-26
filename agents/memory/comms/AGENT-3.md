@@ -1,0 +1,20 @@
+﻿# AGENT-3 comms mirror (append-only)
+
+Tracked mirror of TASK_BOARD.md entries by AGENT-3/serial-C while the board is untracked (T611 side-effect). Master: see SHIP_MANIFEST.md section 7 for the re-tracking decision. Newest first.
+
+[2026-08-27 12:5x IST] [AGENT-3/ox-alpha] STANDING-RULE ACK + LATEST STATUS: (1) Rule adopted - board (or tracked mirror) updated after EVERY completed work item. (2) Completed since last sync: T608 SHIP_MANIFEST.md DONE @ 2087c48; T611 QA of W1 execution DONE @ f357bce (faithful on data classes; WARNING: TASK_BOARD untracked -> board no longer syncs cross-window - see SHIP_MANIFEST.md section 7, 3 options for Master, recommend A: git add -f docs/TASK_BOARD.md). (3) SYNC MECHANISM until Master rules: local board copy + tracked mirror at docs/comms/AGENT-3.md (append-only). Other windows: read both. (4) No unclaimed worker tasks remain: T606/T607/T608/T610/T611 DONE, T609 serial-B, T402 Master-gated. AGENT-3 idle-by-design, standing by.
+
+
+[2026-08-27 13:4x IST] T501 DONE @ fork 26b5e2b: run_test wired (phase 3), zero stubs remain across all 5 MCP tools; offline verification passed; pushed backup.
+
+[2026-08-27 14:1x IST] [AGENT-3/ox-alpha] T501 DISPOSITION — DUPLICATE DETECTED, YIELDED: MCP-LEAD's remote vision-standalone tip (5863275 lineage) already contains a COMPLETE runTest implementation (line 605+) - more thorough than mine (test_cases_file/start_url guards, campaignBusy shared flag, suite-file execution w/ requested-test reporting). Per #33 precedent theirs is authoritative; my variant NOT pushed, preserved locally on fork branch t501-w3-alt-run-test @ 26b5e2b for reference. QA of theirs: solid - extra preflight guards I lacked. LESSON repeated from T606: check remote tip BEFORE implementing (git log HEAD..backup first). Local fork window left diverged intentionally (dirty screenparser .pt preserved - do NOT reset --hard in that tree). Zero harm to canonical history.
+(Also: standing rule active - every completed item now mirrored here. See SHIP_MANIFEST.md section 7 re board-untracked sync caveat.)
+
+[2026-08-27 15:0x IST] F-03 DONE @ 3d1db66: agents/ restructure complete (memory/planning/comms layout), dead files archived to _TEMP_BIN/final_archive/, references updated, suites 157/157. Mirror relocated to agents/memory/comms/AGENT-3.md.
+
+[2026-08-27 15:5x IST] T614 DONE: SYSTEM_IMPROVEMENTS consolidated (27 rows) + V2_ROADMAP.md ranked roadmap created.
+
+[2026-08-27 16:3x IST] ALL CRITERIA MET - PROJECT READY TO CLOSE. Independent re-verification complete; AGENT-3 signed off.
+
+[2026-08-27 17:0x IST] [AGENT-3/ox-alpha] PENDING-WORK SURVEY RESULT: NOTHING LEFT TO CLAIM. Verified across board + backup: T402 freeze EXECUTED (campaign-v2-end tagged), all D15 criteria met + auditor verdict appended (075514c), suites 157/157. HOUSEKEEPING: the 'REMARKING WORK REGISTERED' block (T611 listed as claimable) is STALE - T611 was executed @ a07d716 (W1) + QA'd @ f357bce (me); do not re-claim it. Any agent reading this: project is in post-freeze state; only human-side actions remain (final paper write-up from RESEARCH_DATA_PACK.md, GitHub web-UI items per SHIP_MANIFEST M16). AGENT-3 going idle.
+(mirror entry)

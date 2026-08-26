@@ -63,3 +63,19 @@ runs/
 
 # Review-then-delete staging area (moved temp files, never committed)
 _TEMP_BIN/
+
+# ---- T608 ship-manifest additions ----
+# ephemeral driver/orchestrator logs
+*.log
+!docs/audit_evidence/*.log
+# per-run extract snapshots (regenerable via testing/extract_run.js)
+testing/extract_run_*.json
+# raw repeatability + mutation study logs (curated MD summaries ship)
+testing/repeatability_runs/
+mutation/results/*/fusion.log
+mutation/results/*/pipeline.log
+# runtime telemetry
+logs/
+# worker-personal tier drivers - PENDING section-4 Master sign-off, do not enable yet
+# testing/tier3_w*.cjs
+# testing/tier3_repl.*

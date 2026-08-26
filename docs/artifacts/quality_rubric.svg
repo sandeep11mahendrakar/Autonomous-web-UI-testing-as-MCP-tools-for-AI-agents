@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" font-family="Helvetica,Arial,sans-serif">
+  <title>Verification strength rubric</title>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="30" font-size="16" text-anchor="start" fill="#222222" font-weight="bold">B-side test verification strength</text>
+  <path d="M 170.0 60.0 A 110 110 0 0 1 174.9 279.9 L 172.7 231.9 A 62 62 0 0 0 170.0 108.0 Z" fill="#2e9e5b"><title>STRONG: 35</title></path>
+  <path d="M 174.9 279.9 A 110 110 0 0 1 131.9 66.8 L 148.5 111.8 A 62 62 0 0 0 172.7 231.9 Z" fill="#d8a53b"><title>MEDIUM: 32</title></path>
+  <path d="M 131.9 66.8 A 110 110 0 0 1 170.0 60.0 L 170.0 108.0 A 62 62 0 0 0 148.5 111.8 Z" fill="#c94f4f"><title>WEAK: 4</title></path>
+  <rect x="370" y="78" width="16" height="16" fill="#2e9e5b"/>
+  <text x="394" y="90" font-size="13" text-anchor="start" fill="#222222" font-weight="normal">STRONG: 35 (49.3%)</text>
+  <rect x="370" y="108" width="16" height="16" fill="#d8a53b"/>
+  <text x="394" y="120" font-size="13" text-anchor="start" fill="#222222" font-weight="normal">MEDIUM: 32 (45.1%)</text>
+  <rect x="370" y="138" width="16" height="16" fill="#c94f4f"/>
+  <text x="394" y="150" font-size="13" text-anchor="start" fill="#222222" font-weight="normal">WEAK: 4 (5.6%)</text>
+  <text x="170" y="334" font-size="14" text-anchor="middle" fill="#222222" font-weight="bold">71 tests</text>
+  <text x="20" y="364" font-size="10" text-anchor="start" fill="#555555" font-weight="normal">Boundary: STRONG iff any step used input_value/checked_state/dropdown/select/scroll verification</text>
+</svg>

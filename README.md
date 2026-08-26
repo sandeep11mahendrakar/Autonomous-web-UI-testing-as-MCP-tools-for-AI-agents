@@ -1,63 +1,137 @@
-# Capstone Project — AI-Assisted Test Case Generation for Mobile and Web UI/UX Applications
+# Vision Test MCP + Dual-Perception Web Testing System
 
-Team 101, PES University.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Status](https://img.shields.io/badge/status-v1.0.0--mcp%20beta-blue)
+![Campaign](https://img.shields.io/badge/campaign-40_sites_evaluated-green)
 
-| Folder | Architecture |
+**Autonomous web UI testing as MCP tools for AI agents.** Two independent
+explorers test any website — one reads the DOM, one *looks at screenshots*
+(YOLO ScreenParser + OCR) — and a deterministic fusion layer merges their
+findings into grounded, live-executed test cases. No selectors invented,
+no coordinates trusted blindly, no failures hidden.
+
+- **MCP server (beta):** [`vision-test-mcp`](https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-/releases/tag/v1.0.0-mcp) — 5 tools, stdio JSON-RPC, verified end-to-end
+- **Validated on:** 40-site evaluation campaign (demo apps → real e-commerce, banking, docs, news, production platforms)
+- **Audited:** independent adversarial audit; every headline number recomputes from raw artifacts
+
+---
+
+## Why pick this MCP over selector-based testing tools
+
+| Capability | Selector-based tools | **This system** |
+|---|---|---|
+| Works on canvas/visual-only UIs | ❌ | ✅ screenshot-driven |
+| Detects silently broken values | partial | ⚠️ documented ceiling ([mutation study](mutation/results/ANALYSIS.md)) |
+| Failure honesty | varies | **every FAIL classified**, zero silent passes |
+| Grounding | selector trust | live re-detection + pre-click verification |
+| Evidence trail | logs | per-step screenshots + typed JSON verdicts |
+
+## Architecture
+
+![System architecture](docs/artifacts/system_architecture.svg)
+
+*PNG fallbacks for every chart above live beside the SVGs at `docs/artifacts/<same-basename>.png` (rendered by `node scripts/generate_graphs.js`, zero dependencies).*
+
+
+**MCP server** (`new mcp testing ground/mcp/server.js` in the dev clone;
+[`vision-test-mcp` release](https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-/releases/tag/v1.0.0-mcp))
+exposes 5 tools over stdio JSON-RPC: `explore_site`, `list_tests`,
+`run_test`, `get_evidence`, `get_visual_dom`.
+
+## Verified MCP capabilities
+
+| Check | Result |
 |---|---|
-| `web/`    | Architecture A — DOM + Memory Log (selector-based, text LLM) |
-| `vision/` | Architecture B — Vision (screenshot → ScreenParser YOLO + OCR → visual DOM → coordinate-based tests) |
-| `mobile/` | Mobile exploration (Appium) |
+| initialize + tools/list roundtrip | PASS |
+| explore_site live roundtrip (example.com + real site) | PASS |
+| run_test live replay (4/4 steps in 10.3s over stdio) | PASS |
+| get_evidence (results + screenshot paths) | PASS |
+| typed errors (-32601/-32602/-32002/-32006) | PASS |
 
-Each architecture is independent; see the README inside each folder.
+Known limits (honest): single-instance under parallel agents (fixed vision-service
+ports), first-capture flake ~1-in-3 (retry succeeds upstream of MCP), upstream
+LLM provider rate limits apply.
 
-## Unified Web Demo
+## Results — 40-site evaluation campaign
 
-Run both web architectures against the SAME URL in parallel under one shared run ID:
+Final scoreboard (every row verdict-registered; full table in
+[testing/site_reports/INDEX.md](testing/site_reports/INDEX.md)):
 
-```bash
-node runBoth.js
-# Enter website URL:
-# > https://demoqa.com
+```text
+Sites attempted:             40
+Cleared (guard-passing):     29
+BLOCKED-honest:               7   (bot-walls recorded without quota burn)
+DO-NOT-CITE (evidence only):  4   (contamination incident, remediated + audited)
+Fusion tests accepted:       98
+Fusion live executed:        98   PASS 56 / FAIL 42 (all classified)
+Mean fusion-attributable:    48.7% (n=19 dashboards)
 ```
 
-- One URL, one run ID (`run_YYYYMMDD_HHMMSS`).
-- Architecture A and Architecture B start simultaneously and stay technically
-  independent (separate pipelines, separate outputs).
-- Results are separated into one run folder:
+### Fusion-attributable coverage by site
+
+![Fusion attribution by site](docs/artifacts/fusion_attribution_by_site.svg)
+
+### Live fusion-test pass rates
+
+![FT pass rates](docs/artifacts/ft_pass_rates.svg)
+
+### Vision test-quality rubric
+
+![Quality rubric](docs/artifacts/quality_rubric.svg)
+
+### Perception asymmetry — what each architecture sees alone
+
+![Perception asymmetry](docs/artifacts/perception_asymmetry.svg)
+
+**Key findings:** fusion value grows with site realism (~20% on friendly demo
+apps → 48.7% campaign mean, up to 100% on real sites); B sees ~16–22× more
+elements than A while A generates more executable tests; the system verifies
+that *actions work*, not that *values are correct* — proven by seeded-bug
+mutation study, making assertion-oracle synthesis the top future item.
+
+Full data: [TIER2_MEGA_REPORT](testing/TIER2_MEGA_REPORT.md) ·
+[TIER3_MEGA_REPORT](testing/TIER3_MEGA_REPORT.md) ·
+[D11_FINAL_BATCH_MEGA_REPORT](testing/D11_FINAL_BATCH_MEGA_REPORT.md) ·
+[CAMPAIGN_EVALUATION](testing/CAMPAIGN_EVALUATION.md) ·
+[VISION_TEST_QUALITY](testing/VISION_TEST_QUALITY.md)
+
+## Quickstart (Claude Code / opencode)
+
+Prerequisites: Node.js 18+, Python 3.10+ (`pip install -r
+services/yolo-service/requirements.txt -r services/ocr-service/requirements.txt`),
+Tesseract OCR, and LLM API keys in `.env` (never committed — see `.env.example`).
+
+```json
+{
+  "mcpServers": {
+    "vision-test-mcp": {
+      "command": "node",
+      "args": ["path/to/mcp/server.js"],
+      "env": { "ARCH_B_LLM_API_KEY": "<your-key>" }
+    }
+  }
+}
+```
+
+Then ask your agent: *"explore https://example.com and generate tests"*.
+
+## Repository map
 
 ```
-runs/<run_id>/
-├── run_manifest.json   statuses, timings, artifact lists
-├── dom/                Architecture A: memory_log.json, screenshots/, ...
-└── vision/             Architecture B: screenshots/evidence, visual DOMs,
-                        generated test cases, execution results
+web/       Architecture A — DOM + state-machine explorer (Node)
+vision/    Architecture B — Vision explorer (Node + YOLO Python services)
+fusion/    Deterministic merge + grounded synthesis + live executor + dashboard
+lib/       Shared LLM transport + fuzzy matching
+testing/   40-site campaign ledger, reports, audit trail, quality rubric
+mutation/  Seeded-bug detection harness (verification-ceiling evidence)
+docs/      Audit report, readiness analysis, research paper draft, graphs
+runs/      Per-site artifacts (gitignored; regenerate via commands in reports)
 ```
 
-If one architecture fails, the other still runs to completion and the failure is
-recorded in the manifest (`overall_status`: SUCCESS / PARTIAL_FAILURE / FAILED).
+## License & Credits
 
-## LLM Provider Configuration
+[MIT](LICENSE) © 2026 sandeep11mahendrakar.
 
-Each architecture has its OWN independently configurable LLM provider. The two
-configurations never mix: Architecture A reads only `ARCH_A_*` variables,
-Architecture B reads only `ARCH_B_*` variables.
-
-```bash
-# Architecture A (web/)
-ARCH_A_LLM_PROVIDER=groq
-ARCH_A_LLM_MODEL=openai/gpt-oss-120b
-ARCH_A_LLM_API_KEY=<your_arch_a_key>
-
-# Architecture B (vision/) — can use a completely different provider/model
-ARCH_B_LLM_PROVIDER=openrouter
-ARCH_B_LLM_MODEL=openai/gpt-oss-20b:free
-ARCH_B_LLM_API_KEY=<your_openrouter_key>
-```
-
-- Supported providers: `groq`, `openrouter` (any OpenAI-compatible endpoint via
-  `<PREFIX>LLM_BASE_URL` override).
-- Legacy variables (`GROQ_API_KEY`, `GROQ_MODEL_A/B`, `GROQ_MODEL`) are still
-  honoured when the `ARCH_*_LLM_*` equivalents are absent.
-- API keys live only in untracked `.env` files (`web/.env.example`,
-  `vision/.env.example` document all options). Keys are never printed.
-- `STUB_LLM=true` runs both architectures fully offline without any key.
+_Acknowledgement: initial architecture concept (v0) developed in collaboration
+with Team 101, PES University; all implementation, evaluation, and documentation
+by the repository author._

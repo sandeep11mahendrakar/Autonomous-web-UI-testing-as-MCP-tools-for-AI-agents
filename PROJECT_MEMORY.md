@@ -10,7 +10,7 @@ harness, campaign evaluator, repeatability runner; quota-gated work scheduled).
 Branch created off `capstone-final-integrated`; ALL work below committed and
 pushed to the `backup` remote
 (`github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-`).
-**The Neonishh origin remote was REMOVED from git config by user instruction —
+**A former origin remote was REMOVED from git config by user instruction —
 never push there from this clone.**
 
 1. **A2 fuzzy matcher DONE**: `lib/fuzzyMatch.js` (containment -> windowed
@@ -121,7 +121,7 @@ design; needs parameterization if used beyond the reference run.
   - **Mobile** (`mobile/`) — Appium-based exploration (offline dry-run framework only, not production-ready).
 - **Repo:** `C:\Users\sandeep\pes\vs code\Capstone-Project`
   (NEVER use older clone at `C:\Users\sandeep\pes\CAPSTONE\Capstone-Project`)
-- **Remote:** https://github.com/Neonishh/Capstone-Project.git
+- **Remote:** backup only (URL: see `git remote -v`; no other remote is permitted)
 - **Branch:** `capstone-final-integrated`. HEAD `0afd04b` "feat: finalize closed-loop vision execution". Never modify `main`; never force-push.
 - **PR #5** (`capstone-final-integrated` → `main`): OPEN, not merged.
 - **All Fusion-phase work is UNCOMMITTED** (fusion/, lib/, test/, web+vision changes, this file). Commit/push ONLY with explicit user authorization.
@@ -267,3 +267,92 @@ Campaign is now at **20/50 sites**. Everything below committed+pushed to
 REMAINING for full campaign: Tier 3 (21-30), Tier 4 (31-40), sites 41-50
 (repeatability+wildcards), clean C4 repeatability re-run, capstone report.
 
+
+
+
+## 0c. SESSION RESULT (2026-08-25 evening -> 2026-08-26 - DECONTAMINATION COMPLETE + TIER-3 LAUNCHED)
+
+Branch `after-tier-2`, all work pushed to `backup` remote.
+
+1. **PHASE-2 DECONTAMINATION COMPLETE**: all eight quarantined Tier-2 rows
+   (sites 13-20) re-run behind the full guard set (run_attribution.js
+   birthtime+manifest, assertCatalogDomains, assertVisionStartUrls,
+   folder_purity). Replacement runs: #14 run_20260825_163448, #15 165819,
+   #16 173233, #17 194511 (sahitest), #18 195406 (theinternet status codes),
+   #19 201027 (phptravels), #20 203014 (openlibrary); #13 lambdatest CLEARED
+   as SITE-MOVED-EVIDENCE (testmuai rebrand verified). Old contaminated runs
+   retained on disk as evidence only.
+2. **FINAL DECONTAMINATED AGGREGATES** (regen @2026-08-25T15:16Z):
+   fusion offered 86 / accepted 60 / FT live 37/60 = 61.7%; MEAN
+   FUSION-ATTRIBUTABLE 48.7% (n=19; n=18 denominator note recorded);
+   vision rubric 62 tests / 48 PASS = 77% / 33 STRONG. Gate audit T401
+   recomputed everything from raw artifacts: PASS (docs/AUDIT_T401_REPORT.md).
+3. **PAPER v3 FINAL-NUMBERS** (docs/RESEARCH_PAPER_DRAFT.md): all gap markers
+   resolved post Phase-2 - final clean-site table (20 sites), refreshed rubric/
+   perception/fusion sections, full artifact index. Zero {{GAP}} markers remain.
+4. **TIER-3 CAMPAIGN LAUNCHED** (D5/D6 on docs/TASK_BOARD.md): sites 21-30,
+   five worker pairs, sequential via .campaign.lock round-robin, trimmed env
+   MAX_STEPS=25 MAX_STATES=20 (mega-DOMs 18). Early results: #21 wikipedia
+   CLEARED run_20260825_230647 purity-PURE FT 3/7 fusion-attributable 87.5%
+   (weak-A/strong-fusion exemplar); honest BLOCKS confirmed by dual probes:
+   #22 stackoverflow 403, #24 imdb 202 bot-check, #29 npmjs 403. Success bar:
+   >=6/10 complete pipelines; blocked IS data.
+5. **Key rotation (D5)**: overnight pipelines use OpenRouter key ...81c2ad;
+   Groq fallback fqEvp...99G; Zen key ReUj... RESERVED for tomorrow.
+
+4b. **TIER-3 PROGRESS + D9 REPLACEMENT ROUND (2026-08-26)**: original rows
+   21-30 -> CLEARED 4 (wikipedia FT3/7 fus87.5%; github_trending FT3/5 fus83.3%
+   S4 5/5 perfect round; hackernews FT1/8 honest single-root-cause 100%
+   fusion-created; archive_org THIN-RUN pure) + BLOCKED-honest 5 (stackoverflow
+   403, imdb 202 bot-check, goodreads blank-render, npmjs 403, reddit
+   login-wall). Replacement rows 31-35 (D9): #33 todomvc_react CLEARED by W4
+   (run_20260826_002227 purity PURE, FT 3/3 PASS, fus 30%); #31/#32/#34
+   CONTAMINATION-skips caught by folder_purity (defect #24: collector copied
+   neighbor-pipeline test_cases_*/visual DOMs during unlocked overlap); guard
+   fix landed @ 97a29cb (collector now covers test_cases_* +
+   execution_results.json). #27 bbc_news and #35 practica re-run were in
+   flight at last update. LESSON now thrice-proven: runBoth.js does not
+   self-enforce .campaign.lock - driver-level locking is load-bearing.
+
+4c. **D9 REPLACEMENT LANE COMPLETE (2026-08-26 ~06:5x IST, replacement worker)**:
+    all three assigned sites closed, every cycle lock-held, zero quarantined
+    rows added.
+    - **Defect-#24 guard landed @ 97a29cb**: lib/provenanceGuard.js +
+      runBoth PROVENANCE_FILE_RE now provenance-filter test_cases_*exploration.json
+      AND execution_results.json (previously exploration_result only); 12
+      regression tests (test/provenance_guard.test.js); suites 155/155. The
+      round-2 audit verified it live and SUB-MASTER gated other lanes on
+      pull>=97a29cb (directive F4-02).
+    - **#31 magento_luma BLOCKED-HONEST @ 8bcc47f**: full protocol executed
+      (run_20260826_004650 purity PURE 4/4) but the site serves a Cloudflare
+      526 origin-SSL error page (4 HTTP probes over ~3h + in-run evidence:
+      A blocked-nav warnings to cloudflare 5xx-error pages, B
+      no_valid_candidate). CF-error-page S1/S4/FT numbers flagged NOT citable;
+      retry only when a probe returns non-526.
+    - **#32 eviltester_pages CLEARED-BY-RERUN @ 93a010f**: run_20260826_005704
+      manifest SUCCESS both archs; A 19 steps/20 states/19 URLs 0 errors;
+      B replay 1/1 PASS (body_text_fallback weak x1 disclosed); S1 616 elems/
+      24 pages; S4 offered 5 accepted 3 ZERO rejections; FT live 1/3 - both
+      fails no_post_action_change on live-probe-passing buttons (scroll_y
+      shift implies unseen DOM effect) = concrete value-oracle-gap evidence;
+      pct_fusion 42.9%, novel targets 5.
+    - **#17 sahitest CLEARED-BY-RERUN @ b2ad7ff**: run_20260826_010716 SUCCESS
+      both archs; FT live 3/3 PASS (9/9 steps); S4 offered 3 accepted 3 zero
+      rejections; pct_fusion 60%, novel targets 4; B replay 0/1 honest FAIL
+      (verification method none). Supersedes voided run_20260825_194511 per
+      Master directive.
+
+4c. **TIER-3 FINAL AUDIT + D9 CLOSE (2026-08-26 morning)**: replacement lane
+   closed all remaining rows - #31 magento BLOCKED-honest (Cloudflare 526,
+   full protocol still run purity-PURE), #32 eviltester CLEARED-BY-RERUN
+   run_20260826_005704 (FT 1/3, fus 42.9%), #17 sahitest CLEARED-BY-RERUN
+   run_20260826_010716 (FT 3/3 9/9 steps, fus 60%, supersedes voided 194511).
+   TIER-3 FINAL AUDIT: PASS with ONE gate-blocker F5-01 (#27 bbc_news has no
+   INDEX verdict row; run_000112 never chained; "15/15" wording corrected to
+   14/15+1 pending). Minor audit fixes F3-03/F4-05 landed @ 0df6786 (suites
+   157/157). Campaign tally: original rows 6 cleared / 6 blocked / 2
+   contamination-skips of 15 registered rows; success bar >=6/10 MET.
+REMAINING for full campaign: finish Tier 3 in-flight runs (#27, #35), Master
+consolidation regen at window end (must include the three replacement-lane
+rows above), Tier 4 (31-40), sites 41-50 (repeatability+wildcards), clean C4
+repeatability re-run, capstone report finalization (T402 freeze).

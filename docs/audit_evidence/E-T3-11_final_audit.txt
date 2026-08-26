@@ -1,0 +1,50 @@
+TIER-3 FINAL AUDIT evidence — post-D9-close verification (2026-08-26)
+Audited at HEAD cf7915a (= backup/after-tier-2, tree clean, lock free).
+
+1. NEW CLEARED RUNS — raw recomputation:
+
+#32 eviltester_pages  run_20260826_005704  (commit 93a010f)
+  catalog: 616 elements / 24 pages, hosts = testpages.eviltester.com ONLY
+  S4: offered=5 accepted=3 rejected=0 all_accepted_grounded=true
+  FT: {total:3, passed:1, failed:2, steps 4/7}; step hosts ALL on-domain
+  dashboard: pct_fusion=42.9 (=3/7), total_final_tests=7
+  INDEX row 32: matches (supersedes contaminated 000247; weak-replay
+  disclosure present). "3/3 accepted, 0 rejections" phrasing consistent with
+  raw accepted_count=3 / rejected_count=0. VERDICT: EXACT.
+
+#17 sahitest_demo  run_20260826_010716  (commit b2ad7ff)
+  catalog: 131 elements / 5 pages, hosts = www.sahitest.com ONLY
+  S4: offered=3 accepted=3 rejected=0
+  FT: {total:3, passed:3, steps 9/9}; step hosts ALL on-domain
+  dashboard: pct_fusion=60 (=3/5), total_final_tests=5
+  INDEX row 17: matches; supersedes voided run_20260825_194511 (kept on disk);
+  B replay 0/1 honest FAIL disclosed in row. VERDICT: EXACT.
+
+2. PROVENANCE (shipped guard, stronger than mirror):
+  provenanceGuard.artifactBelongsToRun executed against EVERY guarded
+  artifact class (*_exploration_result.json, test_cases_*exploration.json,
+  execution_results.json) in BOTH runs => zero rejections needed, all
+  host_match/no_url_fields. Both runs CLEAN.
+
+3. ROUND-2 FINDING DISPOSITIONS — verified IN ARTIFACTS:
+  F4-01 APPLIED: INDEX row 33 now carries off-domain nav disclosure
+    (github.com/remojansen, petehuntsposts.quora.com, read-only);
+    todomvc report sec6 has dedicated "Off-domain disclosure (audit F4-01)"
+    paragraph citing raw after_urls.
+  F4-04 APPLIED: INDEX row 34 registered DO-NOT-CITE per D8(e) (evidence dir
+    002500 retained on disk).
+  F4-02/F4-03 directives posted on board; F4-05 parked. All confirmed in
+    commit 2764ae8 and on-disk state.
+
+4. LOG SWEEP (005704 + 010716, all *.log): zero fatal/error hits.
+
+5. CODE DELTA CHECK: commits 93a010f/b2ad7ff touch docs/reports/extract
+    snapshots ONLY (no pipeline code) -> suites claim stands from auditor-
+    verified 155/155 @ 97a29cb.
+
+6. GATE COVERAGE PER D8(e) — INDEX tier-3 row census:
+  PRESENT (14): 21,22,23,24,25,26,28,29,30,31,32,33,34,35
+  MISSING (1):  **27 bbc_news** — pipeline run_20260826_000112 handed off,
+    fusion chain never run, no verdict row. Board T301 claim "15/15 rows
+    verdict-registered in INDEX" is OVERSTATED (scoreboard elsewhere says
+    "1 pending" correctly). This is the sole remaining gate-blocker.

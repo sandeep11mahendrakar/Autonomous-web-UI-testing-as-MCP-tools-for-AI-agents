@@ -1,0 +1,146 @@
+{
+  "catalog_pages": 13,
+  "catalog_elements": 0,
+  "catalog_hosts": [
+    "en.wikipedia.org"
+  ],
+  "fusion_report_keys": [
+    "phase",
+    "llm_calls",
+    "provider",
+    "prompt_chars",
+    "approx_prompt_tokens",
+    "gap_candidates_offered",
+    "candidates_generated",
+    "accepted_count",
+    "rejected_count",
+    "rejections",
+    "novelty_reasons",
+    "gap_ids_used",
+    "all_accepted_grounded",
+    "duplicated_existing_ab_tests",
+    "offline_deterministic"
+  ],
+  "s4_offered": null,
+  "s4_accepted": 7,
+  "fusion_report_summary": {
+    "phase": "S4_fusion_synthesis",
+    "llm_calls": 1,
+    "provider": "openrouter:stealth/ox-alpha",
+    "prompt_chars": 15669,
+    "approx_prompt_tokens": 3917,
+    "gap_candidates_offered": 39,
+    "candidates_generated": 10,
+    "accepted_count": 7,
+    "rejected_count": 3,
+    "rejections": [
+      {
+        "index": 2,
+        "reason": "cross_page_ref",
+        "detail": "step 3: el_17ernua lives on https://en.wikipedia.org/wiki/Talk:Web_testing, current https://en.wikipedia.org/wiki/Web_testing"
+      },
+      {
+        "index": 3,
+        "reason": "cross_page_ref",
+        "detail": "step 3: el_uo929 lives on https://en.wikipedia.org/wiki/Wikipedia:Policies_and_guidelines, current https://en.wikipedia.org/wiki/Help:Log"
+      },
+      {
+        "index": 7,
+        "reason": "cross_page_ref",
+        "detail": "step 3: el_ftlygl lives on https://en.wikipedia.org/wiki/Help_talk:I_have_been_blocked, current https://en.wikipedia.org/wiki/Help:I_have_been_blocked"
+      }
+    ],
+    "novelty_reasons": [
+      {
+        "test_id": "FT001",
+        "source_gap_id": "gap_conflict_0",
+        "reason": "Architecture A classified el_1tf1k12 as 'a' while B saw a 'link'; no existing test probes this anchor, and covered keys only include unrelated content links, so this disambiguation probe is novel."
+      },
+      {
+        "test_id": "FT002",
+        "source_gap_id": "gap_conflict_1",
+        "reason": "A/B disagree on whether the Talk tab is an 'a' or a 'tab'; existing tests never touch this element (covered keys list only content links), so a click verifying tab-to-page navigation is uncovered."
+      },
+      {
+        "test_id": "FT003",
+        "source_gap_id": "gap_bh_bh_6dj5kh",
+        "reason": "The external meta.wikimedia Global_blocks link has 0 successes and appears in no existing test or covered key; testing cross-domain navigation from index.php is novel."
+      },
+      {
+        "test_id": "FT004",
+        "source_gap_id": "gap_el_157uh0u",
+        "reason": "The collapsible 'show' toggle button on Blocking_policy was never clicked by A or B; covered keys contain no toggle interactions, so verifying expand/collapse state change is novel."
+      },
+      {
+        "test_id": "FT005",
+        "source_gap_id": "gap_el_1ikk7n7",
+        "reason": "Log in link had 0 successful navigations and is absent from both architectures' tests and covered keys; verifying the returnto query parameters survive login redirect is novel."
+      },
+      {
+        "test_id": "FT006",
+        "source_gap_id": "gap_el_gew8ee",
+        "reason": "'View logs for this page' link was never exercised by A or B and does not appear in covered keys; chaining it after View history composes two log/audit surfaces not yet combined."
+      },
+      {
+        "test_id": "FT007",
+        "source_gap_id": "gap_el_vt6p5s",
+        "reason": "The Edit link on index.php targeting Talk:Web_testing was never clicked by either architecture; covered keys contain no edit-form access tests, so this probe is novel."
+      }
+    ],
+    "gap_ids_used": [
+      "gap_conflict_0",
+      "gap_conflict_1",
+      "gap_bh_bh_6dj5kh",
+      "gap_el_157uh0u",
+      "gap_el_1ikk7n7",
+      "gap_el_gew8ee",
+      "gap_el_vt6p5s"
+    ],
+    "all_accepted_grounded": true,
+    "duplicated_existing_ab_tests": false,
+    "offline_deterministic": false
+  },
+  "ft": {
+    "total": 7,
+    "passed": 3,
+    "failed": 4
+  },
+  "ft_steps": "0/14",
+  "ft_step_hosts": [
+    "en.wikipedia.org"
+  ],
+  "dashboard_fusion_snippets": null,
+  "dashboard.headline": {
+    "total_final_tests": 8,
+    "tests_from_architecture_a": 0,
+    "tests_from_architecture_b": 1,
+    "tests_fusion_created": 7,
+    "tests_already_covered_by_ab": 0,
+    "duplicate_rejections_audit": 3,
+    "pct_final_tests_attributable_to_fusion": 87.5,
+    "novel_targets_exercised_by_fusion": 16,
+    "sources": [
+      "fusion/fusion_tests.json",
+      "fusion/fusion_report.json",
+      "dom/test_cases.json",
+      "vision/outputs/test_cases_*"
+    ]
+  },
+  "dashboard_headline": {
+    "total_final_tests": 8,
+    "tests_from_architecture_a": 0,
+    "tests_from_architecture_b": 1,
+    "tests_fusion_created": 7,
+    "tests_already_covered_by_ab": 0,
+    "duplicate_rejections_audit": 3,
+    "pct_final_tests_attributable_to_fusion": 87.5,
+    "novel_targets_exercised_by_fusion": 16,
+    "sources": [
+      "fusion/fusion_tests.json",
+      "fusion/fusion_report.json",
+      "dom/test_cases.json",
+      "vision/outputs/test_cases_*"
+    ]
+  },
+  "manifest_url": "https://en.wikipedia.org/wiki/Web_testing"
+}

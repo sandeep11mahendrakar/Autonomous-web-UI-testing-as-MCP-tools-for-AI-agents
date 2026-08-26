@@ -1,0 +1,30 @@
+EXCERPT: night_chain.log lines ~119-150 UTC. Pipeline step reports run dir X, fusion chain writes into DIFFERENT run dir Y created seconds later by a concurrent process.
+
+[night-chain 2026-08-25T00:51:36.585Z] === TIER-2 weathersparks (https://weatherspark.com) ===
+[night-chain 2026-08-25T00:51:36.586Z] START tier2 weathersparks pipeline (attempt 1)
+[night-chain 2026-08-25T01:01:41.771Z] DONE tier2 weathersparks pipeline (attempt 1):   runs\run_20260825_062136\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:01:41.773Z] START s1 weathersparks
+[night-chain 2026-08-25T01:01:41.844Z] DONE s1 weathersparks: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\catalog.json | 
+[night-chain 2026-08-25T01:01:41.845Z] START s2 weathersparks
+[night-chain 2026-08-25T01:01:41.910Z] DONE s2 weathersparks: [gap] opportunities: quietPages=1 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:01:41.910Z] START s4 weathersparks
+[night-chain 2026-08-25T01:02:20.072Z] DONE s4 weathersparks: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:02:20.072Z] START ft weathersparks
+[night-chain 2026-08-25T01:02:20.489Z] FAIL ft weathersparks: Command failed: node fusion/execute_fusion_tests.js run_20260825_062152
+[night-chain 2026-08-25T01:02:20.489Z] START s6 weathersparks
+[night-chain 2026-08-25T01:02:20.566Z] DONE s6 weathersparks: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_062152\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/2); novel targets: 0 | 
+[night-chain 2026-08-25T01:02:20.566Z] tier2 weathersparks COMPLETE: run_20260825_062152 status=null took=11min
+[night-chain 2026-08-25T01:02:20.567Z] === TIER-2 sahitest (http://www.sahitest.com/demo/) ===
+[night-chain 2026-08-25T01:02:20.567Z] START tier2 sahitest pipeline (attempt 1)
+[night-chain 2026-08-25T01:08:36.275Z] DONE tier2 sahitest pipeline (attempt 1):   runs\run_20260825_063220\run_manifest.json | ========================================= | 
+[night-chain 2026-08-25T01:08:36.278Z] START s1 sahitest
+[night-chain 2026-08-25T01:08:36.367Z] DONE s1 sahitest: [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\observations.json | [s1] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\catalog.json | 
+[night-chain 2026-08-25T01:08:36.368Z] START s2 sahitest
+[night-chain 2026-08-25T01:08:36.436Z] DONE s2 sahitest: [gap] opportunities: quietPages=0 | [gap] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\gap_report.json | 
+[night-chain 2026-08-25T01:08:36.436Z] START s4 sahitest
+[night-chain 2026-08-25T01:09:19.505Z] DONE s4 sahitest: [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_tests.json | [s4] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\fusion_report.json | 
+[night-chain 2026-08-25T01:09:19.506Z] START ft sahitest
+[night-chain 2026-08-25T01:09:19.917Z] FAIL ft sahitest: Command failed: node fusion/execute_fusion_tests.js run_20260825_063248
+[night-chain 2026-08-25T01:09:19.918Z] START s6 sahitest
+[night-chain 2026-08-25T01:09:19.996Z] DONE s6 sahitest: [s6] Wrote C:\Users\sandeep\pes\vs code\Capstone-Project\runs\run_20260825_063248\fusion\dashboard.html (standalone — open directly in a browser) | [s6] Headline: 0% of final tests attributable to Fusion (0/3); novel targets: 0 | 
+[night-chain 2026-08-25T01:09:19.997Z] tier2 sahitest COMPLETE: run_20260825_063248 status=SUCCESS took=7min

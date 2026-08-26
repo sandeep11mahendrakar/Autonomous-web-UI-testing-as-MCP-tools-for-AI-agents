@@ -34,6 +34,9 @@ const path = require('path');
 const readline = require('readline');
 const net = require('net');
 const { selectExplorationTestCases, archBOutcome } = require('./lib/archBStage');
+// Audit ADDENDUM remediation (defect candidate #24): per-artifact provenance
+// guard shared with test/provenance_guard.test.js.
+const { artifactBelongsToRun } = require('./lib/provenanceGuard');
 
 const ROOT = __dirname;
 const WEB_DIR = path.join(ROOT, 'web');
@@ -244,8 +247,26 @@ function collectArchitectureA(domDir) {
   return copied;
 }
 
-function collectArchitectureB(visionDir, startedAt) {
+// KNOWN_ALIASES / hostMatchesTarget moved to lib/provenanceGuard.js (shared
+// with the regression tests).
+
+/**
+ * Provenance guard (audit remediation, extended per defect candidate #24):
+ * a vision-output artifact is only this run's artifact if every URL it
+ * references matches the manifest URL host (redirect aliases allowed).
+ * Covers *_exploration_result.json, test_cases_*.json AND
+ * execution_results.json — the mtime window previously stitched OTHER
+ * pipelines' test cases + execution results into this run's folder even
+ * after exploration results were filtered (site 31/32 contamination-skips,
+ * 2026-08-26). Anything foreign stays OUT of the run folder.
+ */
+const PROVENANCE_FILE_RE = /exploration_result|test_cases_.*exploration\.json$|^execution_results\.json$/;
+
+function j(p){ try { return JSON.parse(fs.readFileSync(p,String.fromCharCode(117,116,102,56))); } catch(_) { return null; } }
+
+function collectArchitectureB(visionDir, startedAt, manifestUrl) {
   const copied = [];
+  const rejected = [];
   const shotsRoot = path.join(VISION_DIR, 'storage', 'screenshots');
   if (fs.existsSync(shotsRoot)) {
     for (const dir of fs.readdirSync(shotsRoot)) {
@@ -261,10 +282,35 @@ function collectArchitectureB(visionDir, startedAt) {
   fs.mkdirSync(destOut, { recursive: true });
   for (const f of fs.readdirSync(outs)) {
     const full = path.join(outs, f);
-    if (fs.statSync(full).isFile() && fs.statSync(full).mtimeMs >= startedAt - 5000) {
-      fs.copyFileSync(full, path.join(destOut, f));
-      copied.push(`outputs/${f}`);
+    if (!fs.statSync(full).isFile() || fs.statSync(full).mtimeMs < startedAt - 5000) continue;
+    // Provenance check (audit F-01/F-02 remediation + defect #24 extension):
+    // the mtime window previously stitched OTHER studies' artifacts into
+    // this run's folder - the root cause of the Tier-2 quarantine and the
+    // site 31/32 contamination-skips. Now guards exploration results,
+    // test_cases_* files AND execution_results.json.
+    let belongs = true;
+    if (PROVENANCE_FILE_RE.test(f)) {
+      const r = j(full);
+      const verdict = artifactBelongsToRun(r, manifestUrl);
+      if (!verdict.ok) {
+        belongs = false;
+        rejected.push(`${f}: ${verdict.via}`);
+        log('RUN', `PROVENANCE REJECT ${f} -> ${verdict.via} (quarantined out of run folder)`);
+        continue;
+      }
+      if (verdict.warn) {
+        // AUDIT F4-05: url-less artifacts pass but must not pass silently.
+        log('RUN', `PROVENANCE WARN ${f} -> ${verdict.via}: ${verdict.warn}`);
+      }
     }
+    fs.copyFileSync(full, path.join(destOut, f));
+    copied.push(`outputs/${f}`);
+  }
+  if (rejected.length && manifestUrl) {
+    try {
+      fs.writeFileSync(path.join(visionDir, 'CONTAMINATION_REJECTS.json'),
+        JSON.stringify({ manifest_url: manifestUrl, rejected, at: new Date().toISOString() }, null, 2));
+    } catch (_) {}
   }
   return copied;
 }
@@ -401,7 +447,7 @@ function parseAuthSeed() {
 
   log('RUN', 'Collecting artifacts into unified run tree...');
   const aCopied = collectArchitectureA(domDir);
-  const bCollected = collectArchitectureB(visionDir, runStartedAt);
+  const bCollected = collectArchitectureB(visionDir, runStartedAt, url);
   const archB = { ...archBraw, collected: bCollected };
 
   const overall = archA.status === 'success' && archB.status === 'success'

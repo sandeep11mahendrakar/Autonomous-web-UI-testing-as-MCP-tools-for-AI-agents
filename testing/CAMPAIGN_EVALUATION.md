@@ -1,6 +1,8 @@
 # Campaign Evaluation (auto-generated)
 
-Generated: 2026-08-25T03:35:37.321Z by `fusion/s8_campaign_eval.js`.
+<!-- Regenerated 2026-08-26T07:13:26.906Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+
+Generated: 2026-08-26T07:13:27.533Z by `fusion/s8_campaign_eval.js`.
 Deterministic, zero LLM. Values are COMPUTED from `testing/site_reports/INDEX.md`
 and `runs/<id>/fusion/dashboard_data.json` unless marked **CURATED** (historical
 evidence quoted with source). Sites marked BLOCKED are excluded from pass-rate
@@ -9,70 +11,90 @@ denominators by design.
 ## 1. Campaign summary
 
 ```text
-Sites attempted:              20
-Sites scored:                 19
-Sites blocked:                1
-A completed:                  17
-B completed:                  9
-Full A+B pipeline completed:  14
-Fusion generated (offered):   70
-Fusion accepted:              49
-Fusion live tests executed:   49
-Fusion live PASS:             35
-Fusion live FAIL:             14
-Mean fusion-attributable %:   41.2%
+Sites attempted:              40
+Sites scored:                 29
+Sites blocked:                11
+A completed:                  16
+B completed:                  10
+Full A+B pipeline completed:  19
+Fusion generated (offered):   136
+Fusion accepted:              98
+Fusion live tests executed:   98
+Fusion live PASS:             56
+Fusion live FAIL:             42
+Mean fusion-attributable %:   50.3%
 ```
 
 ## 2. Site matrix
 
 | # | Site | Status | Confidence (heuristic) | Why |
 |---|---|---|---|---|
-| 1 | SauceDemo | SUCCESS | LOW | neither architecture completed exploration |
-| 3 | BrowserStack Demo | SUCCESS | LOW | neither architecture completed exploration |
-| 4 | Demoblaze | SUCCESS | LOW | neither architecture completed exploration |
-| 5 | CURA Healthcare | SUCCESS | LOW | neither architecture completed exploration |
-| 6 | Parasoft ParaBank | SUCCESS | LOW | neither architecture completed exploration |
-| 7 | Automation Exercise | SUCCESS | LOW | neither architecture completed exploration |
+| 1 | SauceDemo | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 3 | BrowserStack Demo | SUCCESS | MEDIUM | only A explored fully |
+| 4 | Demoblaze | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 5 | CURA Healthcare | SUCCESS | MEDIUM | only B explored fully |
+| 6 | Parasoft ParaBank | SUCCESS | MEDIUM | only A explored fully |
+| 7 | Automation Exercise | SUCCESS | MEDIUM | only A explored fully |
 | 8 | OpenCart Demo | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
-| 8s | GlobalSQA (spare for #8) | SUCCESS | LOW | neither architecture completed exploration |
-| 9 | The Internet (Heroku) | SUCCESS | LOW | neither architecture completed exploration |
-| 10 | OWASP Juice Shop | SUCCESS | LOW | neither architecture completed exploration |
-| 11 | Books to Scrape | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
-| 12 | Quotes to Scrape | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
-| 13 | LambdaTest Playground | PARTIAL | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 8s | GlobalSQA (spare for #8) | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 9 | The Internet (Heroku) | SUCCESS | MEDIUM | only A explored fully |
+| 10 | OWASP Juice Shop | SUCCESS | MEDIUM | only A explored fully |
+| 11 | Books to Scrape | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 12 | Quotes to Scrape | PARTIAL | MEDIUM | only A explored fully; FT live PASS though |
+| 13 | LambdaTest Playground | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
 | 14 | Python.org Docs | PARTIAL | LOW | neither architecture completed exploration |
-| 15 | Project Gutenberg | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
-| 16 | WeatherSpark | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
-| 17 | SahiTest Demo | SUCCESS | MEDIUM | only A explored fully |
-| 18 | The Internet (status codes) | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
-| 19 | PHPTravels Demo | SUCCESS | MEDIUM | only A explored fully |
-| 20 | Open Library | PARTIAL | MEDIUM | only A explored fully; FT live PASS though |
+| 15 | Project Gutenberg | PARTIAL | LOW | neither architecture completed exploration |
+| 16 | WeatherSpark | PIPELINE FAILURE | LOW | neither architecture completed exploration |
+| 17 | SahiTest Demo | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 18 | The Internet (status codes) | PARTIAL | LOW | neither architecture completed exploration |
+| 19 | PHPTravels Demo | SUCCESS | LOW | neither architecture completed exploration |
+| 20 | Open Library | PARTIAL | LOW | neither architecture completed exploration |
+| 22 | StackOverflow Questions | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 24 | IMDb Chart Top | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 29 | npmjs Packages | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 21 | Wikipedia (Web testing) | PARTIAL | LOW | neither architecture completed exploration |
+| 23 | GitHub Trending | PARTIAL | MEDIUM | only B explored fully; FT live PASS though |
+| 26 | Hacker News | PIPELINE FAILURE | LOW | neither architecture completed exploration |
+| 27 | 🚫 BBC News | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 32 | EvilTester Test Pages | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 35 | Practice Test Automation | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 37 | GlobalSQA Example Pages Hub | SUCCESS | MEDIUM | only A explored fully; FT live PASS though |
+| 28 | Archive.org (Internet Archive) | PARTIAL | LOW | neither architecture completed exploration |
+| 25 | Goodreads Lists | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 30 | Reddit Public (old.reddit) | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 31 | Magento Luma (softwaretestingboard) | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 33 | TodoMVC React (TS) | SUCCESS | LOW | neither architecture completed exploration |
+| 34 | Techlistic (Selenium practice) | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
+| 36 | Guru99 Bank demo | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS; fusion-attributable >=20% |
+| 38 | Dynamic Loading Example 2 | SUCCESS | HIGH | both architectures explored end-to-end; FT live PASS |
+| 39 | The Internet: Tables | SUCCESS | LOW | neither architecture completed exploration |
+| 40 | W3Schools <input> reference | BLOCKED | LOW | blocked environment; no meaningful interaction possible |
 
 Confidence is a DETERMINISTIC HEURISTIC from ledger signals (both-arch ✅, FT
 PASS, fusion >=20%) — not a human judgment.
 
 ## 3. A vs B comparison (means over runs with dashboard data)
 
-(n=19 runs with comparison data; values are means)
+(n=27 runs with comparison data; values are means)
 
 | Measure | Arch A | Arch B |
 |---|---|---|
-| Tests generated | 2.7 | 1.2 |
-| States explored | 7.4 | 6.1 |
-| Elements seen | 8.3 | 138.3 |
-| Behaviors seen | 8.7 | 4.9 |
-| Targets covered | 6.2 | 5.1 |
+| Tests generated | 2.6 | 0.9 |
+| States explored | 9.1 | 5.9 |
+| Elements seen | 10.3 | 204.8 |
+| Behaviors seen | 10.4 | 5.3 |
+| Targets covered | 5.4 | 4.1 |
 
 ## 4. Fusion contribution quality
 
 | Metric | Value |
 |---|---|
-| Runs with dashboard data | 19 |
-| Fusion tests offered/generated | 70 |
-| Fusion tests accepted (grounded) | 49 |
-| Fusion tests executed live | 49 |
-| Executed successfully | 35 |
-| Novel targets exercised by fusion | 83 |
+| Runs with dashboard data | 27 |
+| Fusion tests offered/generated | 136 |
+| Fusion tests accepted (grounded) | 98 |
+| Fusion tests executed live | 98 |
+| Executed successfully | 56 |
+| Novel targets exercised by fusion | 169 |
 
 > Quality note: fusion % alone does not equal value. Cross-origin composed
 > workflows (GlobalSQA) and quiet-page coverage (DemoQA FT001) are qualitative
@@ -86,7 +108,7 @@ PASS, fusion >=20%) — not a human judgment.
 | baseline | (baseline) | NOT_COVERED | NOT_COVERED |
 | broken_nav | Broken navigation link | NOT_COVERED | NOT_COVERED |
 | dead_button | Dead submit button | NOT_COVERED | NO_REPORT |
-| missing_required | Login accepts empty credentials | NOT_DETECTED | NO_REPORT |
+| missing_required | Login accepts empty credentials | NOT_COVERED | NO_REPORT |
 | wrong_calc | Wrong cart total | NOT_COVERED | NOT_COVERED |
 
 Full analysis incl. verification-strength ceiling finding:
@@ -148,18 +170,26 @@ absence of a listed finding is NOT evidence of absence.
 | GlobalSQA (spare for #8) | 5.1 |
 | The Internet (Heroku) | 4.0 |
 | OWASP Juice Shop | 5.3 |
-| Books to Scrape | 24.2 |
-| Quotes to Scrape | 22.5 |
-| LambdaTest Playground | 13.5 |
-| Python.org Docs | 19.5 |
-| Project Gutenberg | 18.4 |
-| WeatherSpark | 13.7 |
-| SahiTest Demo | 11.3 |
-| The Internet (status codes) | 14.9 |
-| PHPTravels Demo | 15.6 |
-| Open Library | 13.2 |
+| Books to Scrape | 6.5 |
+| Quotes to Scrape | 18.4 |
+| Python.org Docs | 19.3 |
+| Project Gutenberg | 18.2 |
+| WeatherSpark | 15.5 |
+| SahiTest Demo | 4.9 |
+| The Internet (status codes) | 23.6 |
+| PHPTravels Demo | 18.8 |
+| Open Library | 18.0 |
+| Wikipedia (Web testing) | 18.9 |
+| GitHub Trending | 20.9 |
+| Hacker News | 15.2 |
+| EvilTester Test Pages | 8.5 |
+| Archive.org (Internet Archive) | 4.4 |
+| TodoMVC React (TS) | 12.3 |
+| Guru99 Bank demo | 23.0 |
+| Dynamic Loading Example 2 | 3.8 |
+| The Internet: Tables | 4.9 |
 
-Total A+B wall time across 19 sites: 219.5 min.
+Total A+B wall time across 27 sites: 307.8 min.
 
 LLM call counts per run: see `runs/<id>/fusion/dashboard_data.json` (`llm_calls`).
 Token counts were not recorded for Tier-1 runs and are reported as not recorded
@@ -197,8 +227,8 @@ Token counts were not recorded for Tier-1 runs and are reported as not recorded
 
 ## 10. Conclusions
 
-1. Full-pipeline success: 14/19 runnable sites (+1 honestly BLOCKED).
-2. Mean fusion-attributable coverage: 41.2%.
+1. Full-pipeline success: 19/29 runnable sites (+11 honestly BLOCKED).
+2. Mean fusion-attributable coverage: 50.3%.
 3. Blocked environments are tracked separately and never counted as failures.
 4. Historical evidence (19 pipeline defects, seeded-bug mutation scorecard in
    `mutation/results/SCORECARD.md`) demonstrates hardening through heterogeneous

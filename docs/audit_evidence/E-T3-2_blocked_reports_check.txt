@@ -1,0 +1,27 @@
+AUDIT T-B evidence check — blocked-site dual-probe reports (2026-08-26)
+Auditor: ox-alpha (independent). Method: file existence + content scan +
+cross-check against testing/TIER3_PREFLIGHT.md (committed preflight record).
+
+Files verified present in testing/site_reports/:
+  stackoverflow_2026-08-26.md  (2178 bytes, LastWrite 25-08-2026 23:09:30 local)
+  imdb_blocked_2026-08-26.md   (2367 bytes, LastWrite 25-08-2026 23:08:42 local)
+  npmjs_blocked_2026-08-26.md  (2254 bytes, LastWrite 25-08-2026 23:08:59 local)
+
+Probe record #1 (preflight) — independently confirmed verbatim in
+testing/TIER3_PREFLIGHT.md (generated 2026-08-25 ~17:45 IST):
+  L16: https://www.npmjs.com/packages        BOT_WALL 403 (705 ms)
+  L17: https://stackoverflow.com/questions   BOT_WALL 403 (867 ms)
+  L19: https://www.imdb.com/chart/top/       BOT_CHECK 202 (1193 ms)
+
+Probe record #2 (launch-time re-check) — present in each report as narrative:
+  stackoverflow: "HTTP 403 Forbidden ... verified twice: 2026-08-25 ~17:55 IST
+    preflight and again at D6 claim time" + curl reproduction command.
+  imdb:          "Launch re-check (2026-08-26 ~00:5x IST, realistic Chrome UA):
+                  HTTP 202, content length 0".
+  npmjs:         "Launch re-check (2026-08-26 ~00:5x IST ...): HTTP 403 Forbidden".
+
+Verdict: PASS. All three honest-BLOCKED rows carry dual-probe records with
+status codes + timestamps per policy. Residual (LOW): probe #2 exists only as
+narrative with approximate timestamps; no raw command output/log artifact was
+committed for the launch re-checks (probe #1 IS machine-verifiable via
+TIER3_PREFLIGHT.md).

@@ -1,0 +1,31 @@
+AUDIT E round-2 — fatal/error sweep over all new Tier-3 window logs (2026-08-26)
+Scope: runs 20260825_234052..20260826_005704 (dom/run_explore.log +
+vision/run_generate.log + vision/run_execute.log)
+
+HITS (all map to KNOWN classes):
+  run_20260825_234052 | [ERR] parseAction all strategies failed -> KNOWN
+      parse_failed class, fired LOUDLY (F-04 fix working); deterministic
+      fallback then executed fill — covered by interim F3-02, dispositioned.
+  run_20260825_235819 | Termination fatal_error: page.screenshot
+      Protocol error (captureScreenshot) -> KNOWN captureScreenshot class
+      (gutenberg precedent); honestly recorded as THIN-RUN in report.
+  run_20260826_000112 | [ERR] llmClient Attempt 1 failed: LLM network error
+      (openrouter): fetch failed -> transient provider retry, recovered.
+
+NO NEW UNDOCUMENTED FATAL PATTERNS. Contamination incidents in the window
+(000204 todomvc/eviltester stitch, 000247 eviltester/magento page_keys,
+000335 magento/eviltester sweep, 001836+003816 practica stitches, 002500
+techlistic/practica sweep) were all caught by folder_purity BEFORE
+publication and are registered DO-NOT-CITE / BLOCKED-contamination with raw
+evidence retained — verified against my independent mirror:
+
+  001836 catalog hosts: practica + luma.com + techlistic.com   CONTAMINATED ✔ matches board
+  003258 catalog+visited: practica + luma.com                  CONTAMINATED ✔ matches INDEX row 35
+  003816 catalog: practica + luma.com + magento...             CONTAMINATED ✔ matches W1 addendum
+  004650 catalog+visited: magento ONLY                          PURE ✔ matches INDEX row 31
+
+NOTE on luma.com: appears in dom visited_urls of EVERY practica attempt while
+co-runner domains rotate — supports workers' root-cause split (luma = likely
+legit external embed on the practica page; rotating foreign page_keys =
+shared-storage stitching). Registered as DEFECT #25 candidate; conservative
+CONTAMINATION-SKIP treatment is honest either way.

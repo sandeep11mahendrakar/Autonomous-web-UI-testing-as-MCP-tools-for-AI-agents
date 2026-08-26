@@ -129,6 +129,18 @@ test('buildTestCasePrompt embeds workflows and grounding rules', () => {
   assert.ok(prompt.toLowerCase().includes('never invent a selector'));
 });
 
+// ── llmClient parseAction honesty ────────────────────────────────────────────
+
+test('parseAction never masks a total parse failure as action:done (AUDIT F-04)', () => {
+  // Lazy-require so STUB_MODE env state does not affect other tests.
+  process.env.STUB_LLM = 'true';
+  const { parseAction } = require('../src/llmClient');
+  const r = parseAction('this is not JSON at all {{{');
+  assert.equal(r.reason, 'parse_failed');
+  assert.notEqual(r.action, 'done'); // must not masquerade as legitimate completion
+  delete process.env.STUB_LLM;
+});
+
 // ── deterministic test generation ────────────────────────────────────────────
 
 test('_deterministicTestCases are grounded in recorded history', () => {
