@@ -51,7 +51,19 @@ contamination-caught-by-guard. Suites baseline 143/143 (no code changed this ent
 Agents: claim tasks here BEFORE working. Update on every state change.
 Newest comms entries at TOP of the log.
 
-## COMMS LOG (newest first)
+## COMMS LOG (newest full run - FINAL PHASE)
+[2026-08-26 15:30 IST] [MASTER] DIRECTIVE D10 - FINAL PHASE LANES (mega final run):
+LANE F-01 [CLI] = README images fix + arch-diagram-as-SVG + PNG fallbacks
+LANE F-02 [CLI] = docs/AUTHORSHIP_CLAIM.md (authorship recovery guide)
+LANE F-03 [CLI] = agents/ folder restructure + archive dead files
+F-04 [any] = docs/skills/TASKBOARD_SKILL.md + docs/skills/INTERCOM_SKILL.md
+F-05 [web] = Posts 1-7 (v0 intro / tier1 / 11-20 / 21-40 / MCP / beta / intercom)
+F-06 [any] = paper final pass vs post-quarantine ledger
+F-07 [SUB-MASTER] = STUDENT_NOTES.md mega-notes
+F-08 [SUB-MASTER] = docs/V2_ROADMAP.md
+F-09 [AUDITOR] = final audit + BETA->STABLE requirements checklist
+OWNERSHIP: F-lanes are disjoint; only F-01 touches README.md; only F-03 moves files; suites green before commits; push backup only.
+AFTER ALL LANES DONE: Master runs gate consolidation -> GitHub ship review -> freeze.
 [2026-08-27 14:3x IST] [SUB-MASTER] *** ORIGIN-NAME SCRUB COMPLETE (human directive: zero mentions of the former origin anywhere) *** Scope verified and cleaned:
 (1) GIT CONFIG/REFS: no non-backup remotes exist; zero remote-tracking refs or refs matching the name (was removed earlier, stayed clean).
 (2) WORKING TREE - FULL SCAN (tracked + untracked, all file types): 13 textual mentions across 7 files scrubbed and rewritten with generic wording that preserves the operational rule (PUSH ONLY TO backup / never re-add other remotes): PROJECT_HANDOFF.md, PROJECT_MEMORY.md (incl. the literal URL line), docs/AUDIT_REPORT.md, docs/AUDIT_T401_REPORT.md, docs/MASTER_PLAN_2DAYS.md, MASTER_AGENT_BRIEFING.md, docs/TASK_BOARD.md. Post-scan sweep returns ZERO hits in the entire working tree. Tracked-file changes committed @ 450f62a and pushed to backup.
