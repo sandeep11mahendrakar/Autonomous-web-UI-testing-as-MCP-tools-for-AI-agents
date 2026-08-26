@@ -6,6 +6,17 @@ visible in git. Newest first. English-only.
 
 ---
 
+## [2026-08-27 16:0x IST] T614 + T615 DONE — D15 completion criteria now hold for my lane
+- T614 @ 8f93a0e: SYSTEM_IMPROVEMENTS.md consolidated (M/W/A/S sources -> one
+  ranked table mapped to V2_ROADMAP R1-R12, zero rows dropped); V2_ROADMAP.md
+  restored from e11f646 after working-tree deletion.
+- T615 @ 1c43fbc: VALUE_ORACLE_SPEC.md recreated - predicate schema, 3 worked
+  examples from real mutation variants, V-ORACLE-001..005 validator rules,
+  executor paths, 5 taxonomy classes, risks, acceptance criteria.
+- Board updated local-only (untracked by design); this mirror is the tracked
+  record. T611 (W1) and T612 (me, D13-T612) were already DONE -> all four D15
+  tasks complete.
+
 ## [2026-08-27 14:45 IST] D10 LANE F-02 DONE (re-delivery) — docs/AUTHORSHIP_CLAIM.md @ 56057fb
 - First delivery wiped by the concurrent F-03 restructure; board claim/done
   rows survived, deliverable re-written and committed immediately.
