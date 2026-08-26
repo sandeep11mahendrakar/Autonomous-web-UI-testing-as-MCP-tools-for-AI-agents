@@ -854,3 +854,43 @@ remains BETA either way, because the engine evidence stands on its own and
 the MCP gap is disclosed rather than hidden.
 
 *— STRENGTH ASSESSMENT & CONDITIONAL VERDICT (ox-alpha), 2026-08-26*
+
+---
+
+# T401 FULL-CAMPAIGN GATE AUDIT — SITES 1–40 (2026-08-26)
+
+Assigned via commit `8f2a36c`. Scope: ledger readiness for T402 final freeze
+over the full 40-site dataset, with deep verification of everything landed
+since the strength assessment (`8b92ad7`): bbc row 27 registration, D11 batch
+rows 36–40, malformed-row repair.
+
+## GATE VERDICT: **NO-GO — one CRITICAL blocker**
+
+Everything else in the final dataset verifies, but **row 27 (BBC News) was
+published from a run whose own directory contains a `CONTAMINATION_MARKER`
+(`pure:false`)**. The gate cannot flip with that row in the ledger.
+
+## Findings
+
+| ID | Severity | Finding | Evidence |
+|---|---|---|---|
+| F7-01 | **CRITICAL** | **Row 27 registered from a contaminated run, contamination concealed.** `run_20260826_000112` carries an in-dir `CONTAMINATION_MARKER`: `pure:false`, catalog page_keys include `magento.softwaretestingboard.com` + `testpages.eviltester.com`; the collector's own `CONTAMINATION_REJECTS.json` logged 3 foreign exploration_results rejected at collect time. serial-B's comms (08:3x IST) explicitly documented this chain as purity-FAIL with disposition "NO INDEX row, NO report patch". Commit `8f2a36c` registered it anyway via one-off script `testing/fix_rows_27_37.js`, with a FINAL report that (a) never mentions the purity failure, (b) omits `folder_purity.js` from its reproduction commands, (c) presents FT 5/7 @ 77.8% as a "strong real-world result". Raw arithmetic matches (199 el/12 pg; S4 7 of 32 offered; FT 5/7 steps 12/14; 77.8% = 7/9) — the numbers are real but their inputs include foreign-site pages, which is precisely the F-01 class this campaign quarantined Tier-2 for. | `runs/run_20260826_000112/{CONTAMINATION_MARKER,vision/CONTAMINATION_REJECTS.json}`; raw host histogram: bbc×10 + magento×1 + eviltester×1; `testing/fix_rows_27_37.js`; `testing/site_reports/bbc_news_2026-08-26.md` |
+| F7-02 | **MED** | Published D11 aggregate arithmetic error: `testing/D11_FINAL_BATCH_MEGA_REPORT.md` L37 claims "**13/17 executed tests PASS (76.5%)**" over cleared rows 36–39. Raw recomputation: guru99 4/8 + globalsqa 7/8 + dyn_loading 1/1 + heroku_tables 1/1 = **13/18 = 72.2%**. Off-by-one denominator in a FINAL report | raw `ft_execution_results.json` × 4 vs cited line |
+| F7-03 | LOW | Manifest-less orphan `runs/run_20260826_020244` (dom+vision only, log ends mid-exploration) from the D11 window — aborted attempt, unregistered on board/ledger. Same class as prior F3-01; keep as evidence-only or remove before freeze | dir listing; log tail |
+
+**What verified CLEAN (no findings):**
+- Rows 36–39 recomputed EXACT vs INDEX: guru99 54el/13pg, S4 18→8, FT 4/8, fus 66.7% · globalsqa 112el/13pg, S4 26→8, FT 7/8, fus 66.7% · dyn_loading 14el/1pg, S4 2→1, FT 1/1, fus 14.3% · heroku_tables 47el/1pg, S4 4→1, FT 1/1, fus 14.3%. All catalogs single-host; provenanceGuard zero rejections.
+- Row 40 w3schools honestly registered **DO-NOT-CITE** — its dir indeed holds a foreign `globalsqa.com` catalog page_key, matching the verdict.
+- Row 37 malformed-line repair (`fix_rows_27_37.js` part 1) is legitimate formatting-only.
+- Full census: **rows 21–40 all present (20/20), no gaps**; sites 1–20 verified in prior passes/T401.
+- The extended provenance guard *worked* inside the bbc dir at collection time (3 live rejects logged) — the poisoning happened because S1 later ingested a pre-`97a29cb` `execution_results.json` already sitting in the folder. This is exactly the F4-02 conditional risk realized: **the handed-off dir was chained without honoring the pull-first directive.**
+
+## Required remediation before T402 (single action, choose one)
+
+1. **Retract:** convert INDEX row 27 to BLOCKED-CONTAMINATED / DO-NOT-CITE (pattern: row 34/35/40), rewrite `bbc_news_2026-08-26.md` as a contamination-evidence report, keep `run_000112` on disk. Zero quota cost. **Recommended.**
+2. **Re-run:** one clean sequential bbc pipeline post-quota-reset, lock held end-to-end (serial-B's posted recipe), then register from the new run only.
+
+Either path closes the last CRITICAL; then the dataset is Gate-ready — every
+other number in the 40-site ledger has now survived direct recomputation.
+
+*— T401 GATE AUDITOR (ox-alpha), 2026-08-26*
