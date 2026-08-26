@@ -894,3 +894,47 @@ Either path closes the last CRITICAL; then the dataset is Gate-ready — every
 other number in the 40-site ledger has now survived direct recomputation.
 
 *— T401 GATE AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+# POST-FREEZE RE-AUDIT — REMEDIATION & SHIP PREP VERIFIED (2026-08-26)
+
+Scope: everything landed since the NO-GO gate audit (`dcf5670..f702986`):
+T401-c remediation (`3c67d3f`), T402 final freeze (tag `campaign-v2-end` @
+`a07d716`), and D12 ship prep (graphs `2a4ecd2`, data pack `d7ad563`,
+ship manifest `2087c48`, README/LICENSE `d074837`, paper final `467cb80`,
+MCP ground `1b3d43d`).
+
+## Verdict: **REMEDIATION VERIFIED — GATE OBJECTION SATISFIED**
+
+The NO-GO's single CRITICAL is properly closed, and the freeze tag contains
+the remediation:
+
+| Prior finding | Status | Evidence |
+|---|---|---|
+| **F7-01 CRITICAL** (bbc row poisoned) | **CLOSED ✔** | INDEX row 27 retracted to DO-NOT-CITE citing catalog host mix (bbc×10/magento×1/eviltester×1), `CONTAMINATION_REJECTS.json`, and serial-B's dishonored disposition; `bbc_news_2026-08-26.md` rewritten as a contamination-evidence document titled "RETRACTED"; `git merge-base --is-ancestor 3c67d3f campaign-v2-end` → true (remediation is inside the shipped tag) |
+| **F7-02 MED** (13/17 vs 13/18) | **SUBSTANTIVELY CLOSED, one residual instance ✔/⚠** | Corrected figure **13/18 = 72.2%** present in `docs/RESEARCH_DATA_PACK.md` (L182), `docs/RESEARCH_PAPER_FINAL.md`, `testing/TIER2_MEGA_REPORT.md`, board. Residual: `testing/D11_FINAL_BATCH_MEGA_REPORT.md` L37 still prints "13/17 … (76.5%)" — the correction commit patched `TIER2_MEGA_REPORT.md` instead of the file that carried the error (F8-01 below) |
+| **F7-03 LOW** (orphan `020244`) | **CLOSED ✔** | Annotated do-not-cite (`3c67d3f`; also noted in `testing/QUARANTINE_TIER2.md`) |
+
+## New findings (small)
+
+| ID | Severity | Finding |
+|---|---|---|
+| F8-01 | **LOW** | `testing/D11_FINAL_BATCH_MEGA_REPORT.md:37` still publishes the wrong aggregate "13/17 executed tests PASS (76.5%)". All citable surfaces (data pack, paper final, TIER2 mega report) carry the audited 13/18 = 72.2%, so nothing downstream cites the wrong number — but the stale line should be corrected or the file marked superseded-by-data-pack before external release |
+| F8-02 | **LOW** | Post-freeze working-tree drift: `PROJECT_MEMORY.md` carries ~10 uncommitted inserted lines (4c close-out notes) and several planning docs are now intentionally untracked (`TASK_BOARD.md` etc., ship-manifest T611) — which has already broken cross-window board sync once (`f357bce` WARNING). The **tag itself is clean and includes the remediated ledger**; recommend committing/stashing the drift so tree == `campaign-v2-end`, and designating `docs/comms/*` mirrors as the tracked channel going forward |
+
+## Ship-prep deliverables spot-checked
+
+- `docs/RESEARCH_DATA_PACK.md`: headline figures match every auditor-recomputed value (FT 37/23 = 61.7%; VTQ 62/48 = 77% with 33 STRONG / 25 MEDIUM / 4 WEAK; D11 correction 13/18 = 72.2% explicitly noted at L182).
+- Graphs: 4 SVGs present under `docs/artifacts/` (modified in tree — EOL-only churn, no content delta detected in sampled diff).
+- Census: rows 21–40 remain complete (20/20); sites 1–20 unchanged since prior passes.
+
+## Bottom line
+
+The campaign ledger is now clean: zero CRITICAL open, both gate-audit MEDs
+substantively closed (one cosmetic residual), freeze tag verified to contain
+the remediated dataset. **T402 final freeze stands approved from the audit
+side.** Remaining hygiene: fix the one stale D11 line (F8-01) and settle the
+working-tree drift (F8-02).
+
+*— POST-FREEZE RE-AUDITOR (ox-alpha), 2026-08-26*
