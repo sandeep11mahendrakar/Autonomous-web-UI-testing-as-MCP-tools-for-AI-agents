@@ -6,6 +6,17 @@ visible in git. Newest first. English-only.
 
 ---
 
+## [2026-08-27 14:45 IST] D10 LANE F-02 DONE (re-delivery) — docs/AUTHORSHIP_CLAIM.md @ 56057fb
+- First delivery wiped by the concurrent F-03 restructure; board claim/done
+  rows survived, deliverable re-written and committed immediately.
+- Contents: empty-graph diagnosis (dissolved PES mail + non-default branch);
+  path 1 add-PES-email; path 2a noreply config + 2b git-filter-repo rewrite
+  (SHA-change + force-push + bundle-backup warnings); path 3 GitHub Support
+  route; path 4 default-branch merge (required regardless); verification
+  checklist.
+- Premature D13-T612 board row undone per Master instruction before this
+  lane started. Docs-only lane; suites unaffected.
+
 ## [2026-08-27 13:30 IST] D13-T612 MCP ground push + v1.0.0-mcp tag — EXECUTED
 - Ground repo "new mcp testing ground": local tag `v1.0.0-mcp` existed at
   `5863275` (final-review-pass) but remote `backup` had NO master-v1 branch
