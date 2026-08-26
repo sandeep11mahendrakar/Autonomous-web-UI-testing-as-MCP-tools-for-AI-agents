@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="752" viewBox="0 0 740 752" font-family="Helvetica,Arial,sans-serif">
+  <title>Fusion attribution by site</title>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="30" font-size="16" text-anchor="start" fill="#222222" font-weight="bold">Fusion-attributable % of final tests (per site)</text>
+  <text x="250" y="69" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">WeatherSpark</text>
+  <rect x="260" y="55" width="420" height="14" fill="#3b7dd8"><title>WeatherSpark: 100%</title></rect>
+  <text x="686" y="69" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">100%</text>
+  <text x="250" y="91" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Hacker News</text>
+  <rect x="260" y="77" width="420" height="14" fill="#3b7dd8"><title>Hacker News: 100%</title></rect>
+  <text x="686" y="91" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">100%</text>
+  <text x="250" y="113" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Magento Luma (softwaretestingboard)</text>
+  <rect x="260" y="99" width="420" height="14" fill="#3b7dd8"><title>Magento Luma (softwaretestingboard): 100%</title></rect>
+  <text x="686" y="113" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">100%</text>
+  <text x="250" y="135" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Python.org Docs</text>
+  <rect x="260" y="121" width="373" height="14" fill="#3b7dd8"><title>Python.org Docs: 88.9%</title></rect>
+  <text x="639" y="135" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">88.9%</text>
+  <text x="250" y="157" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Open Library</text>
+  <rect x="260" y="143" width="368" height="14" fill="#3b7dd8"><title>Open Library: 87.5%</title></rect>
+  <text x="634" y="157" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">87.5%</text>
+  <text x="250" y="179" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Wikipedia (Web testing)</text>
+  <rect x="260" y="165" width="368" height="14" fill="#3b7dd8"><title>Wikipedia (Web testing): 87.5%</title></rect>
+  <text x="634" y="179" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">87.5%</text>
+  <text x="250" y="201" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Quotes to Scrape</text>
+  <rect x="260" y="187" width="350" height="14" fill="#3b7dd8"><title>Quotes to Scrape: 83.3%</title></rect>
+  <text x="616" y="201" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">83.3%</text>
+  <text x="250" y="223" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">GitHub Trending</text>
+  <rect x="260" y="209" width="350" height="14" fill="#3b7dd8"><title>GitHub Trending: 83.3%</title></rect>
+  <text x="616" y="223" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">83.3%</text>
+  <text x="250" y="245" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Project Gutenberg</text>
+  <rect x="260" y="231" width="336" height="14" fill="#3b7dd8"><title>Project Gutenberg: 80%</title></rect>
+  <text x="602" y="245" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">80%</text>
+  <text x="250" y="267" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">The Internet (status codes)</text>
+  <rect x="260" y="253" width="336" height="14" fill="#3b7dd8"><title>The Internet (status codes): 80%</title></rect>
+  <text x="602" y="267" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">80%</text>
+  <text x="250" y="289" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Books to Scrape</text>
+  <rect x="260" y="275" width="300" height="14" fill="#3b7dd8"><title>Books to Scrape: 71.4%</title></rect>
+  <text x="566" y="289" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">71.4%</text>
+  <text x="250" y="311" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Guru99 Bank demo</text>
+  <rect x="260" y="297" width="280" height="14" fill="#3b7dd8"><title>Guru99 Bank demo: 66.7%</title></rect>
+  <text x="546" y="311" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">66.7%</text>
+  <text x="250" y="333" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">SahiTest Demo</text>
+  <rect x="260" y="319" width="252" height="14" fill="#3b7dd8"><title>SahiTest Demo: 60%</title></rect>
+  <text x="518" y="333" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">60%</text>
+  <text x="250" y="355" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">PHPTravels Demo</text>
+  <rect x="260" y="341" width="252" height="14" fill="#3b7dd8"><title>PHPTravels Demo: 60%</title></rect>
+  <text x="518" y="355" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">60%</text>
+  <text x="250" y="377" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Practice Test Automation</text>
+  <rect x="260" y="363" width="252" height="14" fill="#3b7dd8"><title>Practice Test Automation: 60%</title></rect>
+  <text x="518" y="377" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">60%</text>
+  <text x="250" y="399" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">EvilTester Test Pages</text>
+  <rect x="260" y="385" width="180" height="14" fill="#3b7dd8"><title>EvilTester Test Pages: 42.9%</title></rect>
+  <text x="446" y="399" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">42.9%</text>
+  <text x="250" y="421" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Techlistic (Selenium practice)</text>
+  <rect x="260" y="407" width="175" height="14" fill="#3b7dd8"><title>Techlistic (Selenium practice): 41.7%</title></rect>
+  <text x="441" y="421" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">41.7%</text>
+  <text x="250" y="443" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Demoblaze</text>
+  <rect x="260" y="429" width="168" height="14" fill="#3b7dd8"><title>Demoblaze: 40%</title></rect>
+  <text x="434" y="443" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">40%</text>
+  <text x="250" y="465" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">SauceDemo</text>
+  <rect x="260" y="451" width="158" height="14" fill="#3b7dd8"><title>SauceDemo: 37.5%</title></rect>
+  <text x="424" y="465" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">37.5%</text>
+  <text x="250" y="487" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">GlobalSQA (spare for #8)</text>
+  <rect x="260" y="473" width="140" height="14" fill="#3b7dd8"><title>GlobalSQA (spare for #8): 33.3%</title></rect>
+  <text x="406" y="487" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">33.3%</text>
+  <text x="250" y="509" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">TodoMVC React (TS)</text>
+  <rect x="260" y="495" width="126" height="14" fill="#3b7dd8"><title>TodoMVC React (TS): 30%</title></rect>
+  <text x="392" y="509" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">30%</text>
+  <text x="250" y="531" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">OWASP Juice Shop</text>
+  <rect x="260" y="517" width="70" height="14" fill="#3b7dd8"><title>OWASP Juice Shop: 16.7%</title></rect>
+  <text x="336" y="531" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">16.7%</text>
+  <text x="250" y="553" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">BrowserStack Demo</text>
+  <rect x="260" y="539" width="60" height="14" fill="#3b7dd8"><title>BrowserStack Demo: 14.3%</title></rect>
+  <text x="326" y="553" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">14.3%</text>
+  <text x="250" y="575" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Dynamic Loading Example 2</text>
+  <rect x="260" y="561" width="60" height="14" fill="#3b7dd8"><title>Dynamic Loading Example 2: 14.3%</title></rect>
+  <text x="326" y="575" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">14.3%</text>
+  <text x="250" y="597" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">The Internet: Tables</text>
+  <rect x="260" y="583" width="60" height="14" fill="#3b7dd8"><title>The Internet: Tables: 14.3%</title></rect>
+  <text x="326" y="597" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">14.3%</text>
+  <text x="250" y="619" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">CURA Healthcare</text>
+  <rect x="260" y="605" width="2" height="14" fill="#3b7dd8"><title>CURA Healthcare: 0%</title></rect>
+  <text x="268" y="619" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="250" y="641" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Parasoft ParaBank</text>
+  <rect x="260" y="627" width="2" height="14" fill="#3b7dd8"><title>Parasoft ParaBank: 0%</title></rect>
+  <text x="268" y="641" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="250" y="663" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Automation Exercise</text>
+  <rect x="260" y="649" width="2" height="14" fill="#3b7dd8"><title>Automation Exercise: 0%</title></rect>
+  <text x="268" y="663" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="250" y="685" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">The Internet (Heroku)</text>
+  <rect x="260" y="671" width="2" height="14" fill="#3b7dd8"><title>The Internet (Heroku): 0%</title></rect>
+  <text x="268" y="685" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="250" y="707" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">Archive.org (Internet Archive)</text>
+  <rect x="260" y="693" width="2" height="14" fill="#3b7dd8"><title>Archive.org (Internet Archive): 0%</title></rect>
+  <text x="268" y="707" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="250" y="729" font-size="11" text-anchor="end" fill="#222222" font-weight="normal">W3Schools <input> reference</text>
+  <rect x="260" y="715" width="2" height="14" fill="#3b7dd8"><title>W3Schools <input> reference: 0%</title></rect>
+  <text x="268" y="729" font-size="11" text-anchor="start" fill="#222222" font-weight="normal">0%</text>
+  <text x="20" y="740" font-size="11" text-anchor="start" fill="#555555" font-weight="normal">Mean across 31 sites: 48.2%  (canonical runs per testing/site_reports/INDEX.md)</text>
+</svg>

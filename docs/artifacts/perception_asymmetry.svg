@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="360" viewBox="0 0 730 360" font-family="Helvetica,Arial,sans-serif">
+  <title>A vs B perception means</title>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="30" font-size="15" text-anchor="start" fill="#222222" font-weight="bold">Perception asymmetry: Architecture A (DOM) vs B (vision), means over 31 sites</text>
+  <rect x="80" y="289" width="46" height="11" fill="#3b7dd8"><title>A Elements seen: 10.8</title></rect>
+  <text x="103" y="283" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">10.8</text>
+  <rect x="138" y="100" width="46" height="200" fill="#e07b39"><title>B Elements seen: 192.4</title></rect>
+  <text x="161" y="94" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">192.4</text>
+  <text x="145" y="318" font-size="11" text-anchor="middle" fill="#222222" font-weight="normal">Elements seen</text>
+  <rect x="230" y="290" width="46" height="10" fill="#3b7dd8"><title>A States explored: 9.5</title></rect>
+  <text x="253" y="284" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">9.5</text>
+  <rect x="288" y="294" width="46" height="6" fill="#e07b39"><title>B States explored: 5.6</title></rect>
+  <text x="311" y="288" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">5.6</text>
+  <text x="295" y="318" font-size="11" text-anchor="middle" fill="#222222" font-weight="normal">States explored</text>
+  <rect x="380" y="297" width="46" height="3" fill="#3b7dd8"><title>A Tests generated: 2.6</title></rect>
+  <text x="403" y="291" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">2.6</text>
+  <rect x="438" y="299" width="46" height="1" fill="#e07b39"><title>B Tests generated: 1.0</title></rect>
+  <text x="461" y="293" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">1.0</text>
+  <text x="445" y="318" font-size="11" text-anchor="middle" fill="#222222" font-weight="normal">Tests generated</text>
+  <rect x="530" y="289" width="46" height="11" fill="#3b7dd8"><title>A Behaviors seen: 11.0</title></rect>
+  <text x="553" y="283" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">11.0</text>
+  <rect x="588" y="295" width="46" height="5" fill="#e07b39"><title>B Behaviors seen: 5.1</title></rect>
+  <text x="611" y="289" font-size="10" text-anchor="middle" fill="#222222" font-weight="normal">5.1</text>
+  <text x="595" y="318" font-size="11" text-anchor="middle" fill="#222222" font-weight="normal">Behaviors seen</text>
+  <rect x="70" y="330" width="14" height="14" fill="#3b7dd8"/>
+  <text x="90" y="341" font-size="12" text-anchor="start" fill="#222222" font-weight="normal">Architecture A (DOM)</text>
+  <rect x="240" y="330" width="14" height="14" fill="#e07b39"/>
+  <text x="260" y="341" font-size="12" text-anchor="start" fill="#222222" font-weight="normal">Architecture B (vision)</text>
+</svg>
