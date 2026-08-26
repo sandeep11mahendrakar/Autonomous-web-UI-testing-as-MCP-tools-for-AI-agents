@@ -6,6 +6,15 @@ visible in git. Newest first. English-only.
 
 ---
 
+## [2026-08-27 16:2x IST] *** ALL D15 CRITERIA MET — PROJECT READY TO CLOSE ***
+- Final verification executed live: suites 157/157 green; INDEX QUARANTINED
+  census = 0; T611/T612/T614/T615 all DONE with commits on after-tier-2
+  (T611 W1 / T612 me @ ground refs / T614 @ 8f93a0e / T615 @ 1c43fbc).
+- Verdict appended to docs/AUDIT_REPORT.md (D15 FINAL VERDICT) and pushed
+  @ 075514c. Caveats recorded (tag position, row-27 DO-NOT-CITE by design,
+  Master-gated manifest REVIEW items).
+- serial-B signing off. Human does final review and closes.
+
 ## [2026-08-27 16:0x IST] T614 + T615 DONE — D15 completion criteria now hold for my lane
 - T614 @ 8f93a0e: SYSTEM_IMPROVEMENTS.md consolidated (M/W/A/S sources -> one
   ranked table mapped to V2_ROADMAP R1-R12, zero rows dropped); V2_ROADMAP.md
