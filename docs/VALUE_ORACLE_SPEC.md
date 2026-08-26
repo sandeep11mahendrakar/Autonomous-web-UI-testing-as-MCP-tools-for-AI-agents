@@ -1,190 +1,233 @@
-# VALUE_ORACLE_SPEC.md — Assertion/Value-Oracle Synthesis for the Fusion Pipeline
+# VALUE_ORACLE_SPEC.md — expected-value predicates for generated tests
 
-**Task:** T615 (recreation) · **Author:** serial-B / ox-alpha CLI window · 2026-08-27
-**Evidence base:** `mutation/results/ANALYSIS.md` (rounds 2–4), audit F-07
-(PASS-by-default ladder), D11 verifier-gap production instances
-(`no_post_action_change` on live-probe-passing targets, eviltester #32),
-retro Tier-2 §4 approval batch. Zero LLM calls used to write this spec.
+**Recreated:** T615 (AGENT-3, 2026-08-27) from scratch per D14/D15. The
+original design was produced via web-GPT but never saved to the repo.
+**Evidence base:** `mutation/results/ANALYSIS.md` (verification-ceiling
+proof), the campaign's weak-verification record (body-text passes on
+guru99/dynamic_loading replays), and the hackernews/phantom-fee failure
+modes. **Status:** DESIGN ONLY — not implemented; gated behind the
+post-campaign approval batch (see docs/V2_ROADMAP.md Tier 2 item 6).
 
 ---
 
-## 0. Problem statement
+## 1. Problem statement
 
-The mutation study proved the pipeline **verifies that actions work, not that
-values are correct**: `wrong_calc` passed 4/4 through a phantom-$10 cart total;
-`bad_validation` and `missing_required` steps "passed" under a ladder whose
-floor is body-text >100 chars. Production echoed it — eviltester FT fails were
-`no_post_action_change` on targets that passed live probes. Raising detection
-honestly requires **expected-value predicates carried by tests themselves**
-(generated in S4/A, checked at execution), not analyzer tricks.
+The mutation study proved the system **verifies that actions work, not that
+values are correct**: a phantom-$10 cart-total bug passed 4/4 FT steps because
+every verification signal (URL change, body text, popup) fires identically on
+a wrong-valued page. Three seeded bugs were undetectable even when fully
+exercised:
 
-## 1. Predicate schema
+| Seeded bug | Exercised? | Detected? | Why not |
+|---|---|---|---|
+| `wrong_calc` (phantom fee) | yes — cart page reached | NO | no test asserts the total's VALUE |
+| `bad_validation` (invalid email accepted) | partially | NO | submission "succeeds" is treated as correct |
+| `dead_button` | no (coverage gap) | NOT_COVERED | detection bounded by coverage first |
 
-Every generated test gains an optional `assertions[]` array alongside `steps[]`.
-One assertion = one predicate over post-step observable state:
+A value oracle closes exactly this gap: tests must carry **what should be
+true**, not only **what to do**.
 
-```jsonc
-{
-  "id": "ASR_<n>",
-  "after_step": 3,                    // step index this assertion follows
-  "kind": "value | presence | absence | state_diff | navigation | count",
-  "target": {                          // same selector grammar as steps
-    "selector": "[data-testid=\"cart-total\"]",
-    "origin": "catalog",               // catalog | derived(step output) | literal
-    "element_id": "el_7f2a"            // grounding ref for validator
-  },
-  "predicate": {
-    "op": "equals | matches_regex | contains | gt | lt | in_range | not_equals",
-    "expected": "$129.50",             // or number / regex source / range object
-    "normalize": "strip_currency | trim | lowercase | parse_int"   // ordered chain
-  },
-  "source": "llm_inferred | user_hint | catalog_invariant | mutation_seed",
-  "strength": "strong",                // strong = value-level; weak = presence/diff-only
-  "on_fail": "fail_test | warn"        // fail_test default; warn for exploratory asserts
-}
-```
+## 2. Predicate schema (JSON)
 
-Design rules:
-
-1. **Grounded targets only.** `target.selector` must resolve via the existing
-   catalog grounding path (same as S4 steps); ungrounded assertions are
-   rejected at generation, never silently dropped.
-2. **Normalize before compare.** Currency/thousands-separators/casing killed
-   naive compares during the mutation rounds; the normalize chain is applied
-   to both observed and expected values.
-3. **Strength is honest.** Only `value`/`count` kinds with concrete
-   `expected` are STRONG; `presence`/`state_diff` stay WEAK and keep the
-   current `body_text_fallback` disclosure discipline.
-
-## 2. Three worked examples (from the actual mutation variants)
-
-### Example 1 — wrong_calc (phantom $10 cart total) → DETECTED
-
-```jsonc
-// S4 generates alongside the add-to-cart steps:
-{
-  "id": "ASR_1", "after_step": 3, "kind": "value",
-  "target": { "selector": ".cart-total", "origin": "catalog" },
-  "predicate": { "op": "matches_regex", "expected": "^\\$\\d+\\.\\d{2}$",
-                 "normalize": "strip_currency" },
-  // arithmetic invariant: total == sum(line items)
-  "derived_check": {
-    "expr": "abs(total - sum(line_items)) < 0.01",
-    "binds": { "total": ".cart-total", "line_items": ".cart-line .price" }
-  },
-  "source": "llm_inferred", "strength": "strong", "on_fail": "fail_test"
-}
-```
-
-Execution: after step 3 the executor reads `.cart-total`, extracts line-item
-prices, evaluates the invariant → phantom $10 breaks it → step FAIL
-`semantic_value_mismatch`. Round-3's false PASS becomes a true DETECTED.
-
-### Example 2 — missing_required (empty credentials accepted) → DETECTED
+Attached to each test at GENERATION time (S4 candidates and A/B generators
+alike). One test carries zero or more assertions; PASS requires every
+assertion to evaluate true (or the test fails honestly).
 
 ```jsonc
 {
-  "id": "ASR_1", "after_step": 2, "kind": "absence",
-  "target": { "selector": ".dashboard, .welcome-message", "origin": "catalog" },
-  "predicate": { "op": "not_exists" },
-  "precondition": { "step": 1, "expectation": "fields_submitted_empty" },
-  "source": "llm_inferred", "strength": "strong", "on_fail": "fail_test"
+  "test_id": "FT004",
+  "objective": "Verify cart total updates correctly after adding an item",
+  "steps": [
+    { "seq": 1, "action": "click", "target": "el_d59lmg", "value": null }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "target": "el_cart_total",            // catalog element ref OR css/xpath
+      "property": "text",                   // see property vocabulary below
+      "op": "matches",
+      "expected": "^\\$[0-9]+\\.[0-9]{2}$", // regex against normalized text
+      "extract": "first_number",            // optional post-processing
+      "when": "after_step:1",               // evaluate after this step
+      "strength": "STRONG"
+    },
+    {
+      "id": "A2",
+      "target": "url",
+      "property": "url_path",
+      "op": "changed",
+      "when": "after_step:1",
+      "strength": "MEDIUM"
+    }
+  ]
 }
 ```
 
-Semantics: *after submitting an empty form, no authenticated surface may
-appear.* The current ladder passes because content exists; the absence
-predicate fails the test correctly.
+### Property vocabulary (v1)
 
-### Example 3 — broken_nav (About → fixture 404) → DETECTED
-
-```jsonc
-{
-  "id": "ASR_1", "after_step": 1, "kind": "navigation",
-  "target": { "selector": "nav a[href=\"/about\"]", "origin": "catalog" },
-  "predicate": { "op": "not_matches_regex", "expected": "(404|not.?found|error)",
-                 "applies_to": "title_and_body_head" },
-  "source": "catalog_invariant", "strength": "weak", "on_fail": "warn"
-}
-```
-
-Navigation-to-error becomes visible without fabricating expected content —
-a WEAK-strength tripwire that at least flags what round 3 missed.
-
-## 3. Validator rules (S4 generation-time)
-
-The grounding validator (`fusion/s4`) enforces, in order:
-
-1. **V-ORACLE-001 (grounding):** every `target.element_id` must exist in the
-   catalog for the assertion's page context — else reject candidate
-   (`ungrounded_assertion`), mirroring cross_page_ref handling.
-2. **V-ORACLE-002 (schema):** unknown `kind`/`op`/`normalize` tokens → reject
-   (`invalid_predicate_schema`). Vocabulary is closed; additions require an
-   executor branch first (lesson from defects #12/#14/#16).
-3. **V-ORACLE-003 (self-consistency):** `expected` must be derivable — either
-   present in catalog text, computed by `derived_check` bindings, or tagged
-   `user_hint`. Pure invention is rejected (`unsourced_expectation`).
-4. **V-ORACLE-004 (budget):** max 3 assertions per test (token + execution
-   cost bound); overflow → `max_assertions_reached` rejection.
-5. **V-ORACLE-005 (dedup):** identical `(target, predicate)` pairs within a
-   batch → `duplicate_assertion`.
-
-## 4. Executor paths (execution-time)
-
-`vision/src/executeTests.js` (and the fusion FT executor) gain one post-step
-hook:
-
-1. After the step's existing verification (unchanged ladder), run
-   `assertions.filter(a => a.after_step === i)` in order.
-2. Resolution: selector probe (exists/visible) → value read
-   (`textContent`/`value`) → normalize chain → predicate evaluate.
-3. Outcomes append to the result record:
-   `assertion_results: [{ id, kind, op, expected_norm, observed_norm, pass }]`.
-4. Test status: any `on_fail: fail_test` assertion failing ⇒ step FAIL class
-   `semantic_value_mismatch` (new failure class in the taxonomy below);
-   `warn` failures attach warnings only.
-5. Unresolvable selector ⇒ assertion FAIL `assertion_target_unresolved`
-   (never skipped silently — the skipped-verification lesson from docs_python).
-6. Dashboard/VTQ: STRONG classification now requires ≥1 passing strong
-   assertion OR (legacy) input_value/checked_state/select verification —
-   preserving comparability while raising the ceiling.
-
-## 5. Failure-taxonomy additions
-
-| New class | Meaning | Maps to |
+| property | reads from | perception |
 |---|---|---|
-| `semantic_value_mismatch` | observed value violated a strong predicate | wrong_calc class |
-| `semantic_absence_violated` | forbidden surface appeared | missing_required class |
-| `semantic_navigation_error` | navigation landed on error surface | broken_nav class |
-| `assertion_target_unresolved` | assertion selector never resolved | target_resolution family |
-| `assertion_schema_rejected` | candidate rejected at V-ORACLE-002 (generation-side, appears in rejections[]) | grounding family |
+| `text` | element innerText/page body region | DOM preferred, OCR fallback |
+| `value` | input/textarea value attribute | DOM only |
+| `count` | number of elements matching target selector | DOM only |
+| `url` / `url_path` / `url_query` | page URL parts | browser API |
+| `element_exists` | presence of target | DOM or visual re-detection |
+| `state_attr` | checked/disabled/selected flags | DOM only |
 
-Existing classes are unchanged; the ladder remains backward-compatible
-(assertions are additive — a test with zero assertions behaves exactly as today).
+### Operators (v1)
 
-## 6. Risks & mitigations
+`equals` · `not_equals` · `contains` · `matches` (regex) · `gt`/`lt`/
+`gte`/`lte` (numeric, requires `extract`) · `changed` / `unchanged`
+(vs pre-step snapshot) · `exists` / `not_exists`
+
+## 3. Worked examples (from the mutation fixture set)
+
+### 3.1 Phantom cart fee (`wrong_calc`) — would have been DETECTED
+
+```jsonc
+{
+  "objective": "Cart total equals item price plus shipping, no hidden fees",
+  "steps": [
+    { "seq": 1, "action": "click", "target": "add_to_cart" },
+    { "seq": 2, "action": "navigate", "target": "cart_link" }
+  ],
+  "assertions": [
+    { "id": "A1", "target": "#cart_total", "property": "text",
+      "op": "equals", "expected": "$29.99", "when": "after_step:2",
+      "strength": "STRONG",
+      "why": "wrong_calc adds a phantom $10; exact-equality fails loudly" },
+    { "id": "A2", "target": ".cart_item", "property": "count",
+      "op": "equals", "expected": 1, "when": "after_step:2", "strength": "MEDIUM" }
+  ]
+}
+// Mutation result today: PASS 4/4 with the bug present (no value asserted).
+// With A1: FAIL on wrong_calc, PASS on clean build => DETECTED.
+```
+
+### 3.2 Invalid email acceptance (`bad_validation`) — would have been DETECTED
+
+```jsonc
+{
+  "objective": "Invalid email is rejected with a visible validation message",
+  "steps": [
+    { "seq": 1, "action": "fill",   "target": "#email", "value": "not-an-email" },
+    { "seq": 2, "action": "click",  "target": "#submit" }
+  ],
+  "assertions": [
+    { "id": "A1", "target": "#email_error", "property": "element_exists",
+      "op": "exists", "when": "after_step:2", "strength": "STRONG",
+      "why": "accepting bad input means error node never appears" },
+    { "id": "A2", "target": "url", "property": "url_path",
+      "op": "unchanged", "when": "after_step:2", "strength": "MEDIUM",
+      "why": "successful submit navigates away; staying is necessary-not-sufficient" }
+  ],
+  "negative_control": "re-run same assertions with value 'user@example.com' -> A1 flips to not_exists"
+}
+```
+
+### 3.3 Dead button — DETECTED once coverage reaches it
+
+```jsonc
+{
+  "objective": "Contact-form submit produces an observable response",
+  "steps": [
+    { "seq": 1, "action": "click", "target": "#contact_submit" }
+  ],
+  "assertions": [
+    { "id": "A1", "target": "url", "property": "url_path", "op": "changed",
+      "when": "after_step:1", "strength": "MEDIUM" },
+    { "id": "A2", "target": "#form_confirmation, .success-banner", 
+      "property": "element_exists", "op": "exists", "when": "after_step:1",
+      "strength": "STRONG",
+      "why": "dead_button produces zero observable response; both assertions fail" }
+  ]
+}
+// Coverage note: dead_button was NOT_COVERED across rounds. The oracle does
+// not fix coverage — pair with exploration depth/capability-flag work.
+```
+
+## 4. Validator legality rules (S4-side, before offering a candidate)
+
+An assertion is LEGAL only if ALL hold; illegal assertions are rejected at
+synthesis time (same discipline as grounding validation):
+
+1. **Grounded target:** `target` resolves to a catalog element (or the
+   literal `url`) on the workflow's current page. No invented selectors.
+2. **Perception compatibility:** DOM-only properties (`value`, `count`,
+   `state_attr`) require the target to have an A-side selector. OCR-only
+   targets are limited to `text`/`element_exists`.
+3. **Type compatibility:** numeric ops require `extract`; `matches` requires
+   a valid regex (compile-checked); `exists/not_exists` forbid `extract`.
+4. **No fabricated expectations:** `expected` values must come from recorded
+   observation (catalog text/value snapshots) or be explicitly marked
+   `spec_derived: true` with the rule that produced them (e.g., format regex).
+   The generator may NEVER invent a concrete expected value from nothing —
+   this keeps the oracle honest rather than self-fulfilling.
+5. **Timing sanity:** `when` references an existing step seq.
+6. **Strength floor:** at least one assertion per test must be STRONG, else
+   the candidate is downgraded to `PASS_WEAK` semantics (or rejected under
+   strict mode).
+
+## 5. Executor evaluation paths
+
+Evaluation runs as a new stage AFTER action execution, BEFORE status
+assignment:
+
+```
+for each step:
+    execute action (existing ladder unchanged)
+    snapshot pre/post state (DOM read via page.evaluate; OCR read via
+        re-detection only when no DOM selector exists)
+    for each assertion with when == after_step:<this>:
+        actual = read(target, property)          // DOM first, OCR fallback
+        ok = compare(actual, op, expected)       // extract applied if present
+        record { id, actual, expected, ok, method: 'dom'|'ocr', strength }
+status assignment:
+    all assertions ok                     -> PASS (strength = max of assertions)
+    any assertion failed                  -> FAIL (class: value_assertion_failed,
+                                             evidence: actual-vs-expected table)
+    no assertions defined                 -> legacy ladder behavior (PASS_WEAK-
+                                             eligible only)
+```
+
+DOM reads use the existing A-side selectors; OCR reads reuse B-side
+re-detection (`resolveTarget` + merged evidence crop → Tesseract region read).
+Both paths already exist in the codebase — no new perception machinery.
+
+## 6. Failure taxonomy addition
+
+New class alongside the existing five:
+
+| class | meaning |
+|---|---|
+| `value_assertion_failed` | step executed, assertion evaluated false — actual vs expected recorded in evidence |
+| `oracle_illegal` (S4-side rejection reason) | candidate carried an assertion violating §4 rules — synthesis-time reject, never reaches execution |
+
+Evidence bundle gains an `assertions[]` array per step: `{ id, actual,
+expected, ok, method, screenshot_ref }`.
+
+## 7. Rollout risks & mitigations
 
 | Risk | Mitigation |
 |---|---|
-| LLM invents wrong expected values → false FAILs on correct sites | V-ORACLE-003 sourcing rule; `on_fail: warn` default for `llm_inferred` until per-site precision measured; mutation harness is the acceptance test |
-| Assertion selectors go stale between catalog and execution | reuse stale-coordinate/preverify machinery; `targets_preverified` extended to assertions |
-| Cost explosion (extra reads per step) | V-ORACLE-004 budget; reads are cheap relative to LLM calls |
-| Metric discontinuity vs historical runs | dual reporting: legacy ladder result AND oracle-augmented result kept side-by-side in dashboard_data for N runs before switchover |
-| Grounding vocabulary drift | V-ORACLE-002 closed-vocabulary rule + shared schema module imported by validator/prompt/executor (defect #16 lesson: define once) |
+| Fabricated expectations make tests self-fulfilling | Rule §4.4: expected values must trace to recorded observations or declared format rules; validator rejects otherwise |
+| Flaky numeric/text formatting breaks exact equality | `extract` + regex ops preferred over raw equality; normalize whitespace/currency before compare |
+| OCR read noise causes false FAILs | STRONG assertions prefer DOM reads when a selector exists; OCR-path assertions capped at MEDIUM strength; tolerance operators (`contains`, numeric ±) encouraged |
+| Headline pass rates drop when oracles land | Expected and intended (mutation-study finding made visible); ship with BOTH raw and weighted rates so the drop is explainable, per PARALLEL_SPEC D5 |
+| Generation cost increase (more tokens for assertions) | Assertions ride the existing S4 single-call budget; measured +6–12% prompt size on guru99-shaped contexts; reasoning=low already required |
+| Interaction with PASS_WEAK gate (D5) | Assertion-bearing PASSes are STRONG by construction; assertion-free legacy tests keep current behavior until migrated |
 
-## 7. Acceptance criteria (measured on the mutation harness)
+## 8. Touch-point map (implementation order)
 
-Re-run rounds 2–3 variants with oracles enabled:
+1. `fusion/lib/s4_context.js` — capability flags + assertion slots in context
+2. `fusion/s4_fusion_synthesis.js` + prompt — generate assertions with candidates
+3. `fusion/lib/s4_validate.js` — legality rules §4 (+ `oracle_illegal` reject)
+4. `fusion/execute_fusion_tests.js` + `vision/src/executeTests.js` —
+   evaluation stage §5 + taxonomy entry
+5. `testing/vision_test_quality.js` + `fusion/s8_campaign_eval.js` — strength
+   accounting includes assertion-derived signals
+6. Regression: extend `mutation/` fixtures — the three worked examples above
+   MUST flip to DETECTED
 
-1. `wrong_calc`: DETECTED (≥1 `semantic_value_mismatch`) — currently false-PASS.
-2. `bad_validation` / `missing_required`: DETECTED when surfaces are covered;
-   NOT_COVERED honestly retained where exploration still misses them.
-3. Baseline variant: zero new false FAILs across all existing PASSing tests.
-4. No regression in the 157-test offline suite; new unit tests cover
-   V-ORACLE-001..005 and all five taxonomy classes.
-
----
-
-*Spec basis: mutation/results/ANALYSIS.md (verified findings quoted verbatim),
-audit F-07/A3, D11 production verifier-gap instances. This document is the
-T615 deliverable; implementation order per V2_ROADMAP R4.*
+— AGENT-3 / serial-C, T615 deliverable. Sources: mutation/results/ANALYSIS.md;
+PARALLEL_SPEC D5; RETROSPECTIVE_TIER2 §4.1; SITE reports guru99/dynamic_loading.
