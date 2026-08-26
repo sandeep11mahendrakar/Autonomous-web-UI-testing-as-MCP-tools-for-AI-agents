@@ -1,17 +1,17 @@
 # Vision Test-Case Quality Report
 
-<!-- Regenerated 2026-08-25T15:16:21.611Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
+<!-- Regenerated 2026-08-26T07:13:26.906Z by regen_ledger.js; boundary definition: a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification; excluded runs: run_20260825_055129, run_20260825_060707, run_20260825_062152, run_20260825_063248, run_20260825_064713, run_20260825_065652, run_20260825_070918 -->
 
 Boundary definition (single source of truth): **a test is STRONG iff any step used input_value/checked_state/dropdown_option_selected/select_option/scroll_position verification**.
 
 ## Rubric summary
 
 ```text
-Total B test cases executed:   62
-Passed:                        48 (77%)
+Total B test cases executed:   71
+Passed:                        54 (76%)
 Verification strength:
-  STRONG (value-level asserts): 33
-  MEDIUM (state-change):        25
+  STRONG (value-level asserts): 35
+  MEDIUM (state-change):        32
   WEAK   (body-text fallback):  4
 ```
 
@@ -81,3 +81,12 @@ Verification strength:
 | 195406 | TC01 | MEDIUM | PASS | 2 | Replays an autonomously discovered visual workflow: click(200) -> click(E ementa) |
 | 201027 | TC01 | MEDIUM | PASS | 8 | Replays an autonomously discovered visual workflow: click(Pricing) -> click(Open the quote form in a |
 | 203014 | TC01 | WEAK | ERROR | 0 | Replays an autonomously discovered visual workflow: fill(Search Q) -> click(Classic Books) -> click( |
+| 230647 | TC01 | MEDIUM | FAIL | 3 | Replays an autonomously discovered visual workflow: click(Web security testing) -> click(List of web |
+| 232415 | TC01 | MEDIUM | PASS | 5 | Replays an autonomously discovered visual workflow: click(anthropics / claude-plugins-community) ->  |
+| 002227 | TC01 | STRONG | PASS | 4 | Replays an autonomously discovered visual workflow: fill(What needs to be done?) -> click -> click(T |
+| 005704 | TC01 | MEDIUM | PASS | 6 | Replays an autonomously discovered visual workflow: click(Server Side Infinite Scroll challenge.) -> |
+| 010716 | TC01 | MEDIUM | FAIL | 8 | Replays an autonomously discovered visual workflow: click(Timer) -> click -> click -> click -> click |
+| 020711 | TC01 | STRONG | PASS | 7 | Replays an autonomously discovered visual workflow: fill -> fill -> fill -> fill -> fill -> fill ->  |
+| 022742 | TC01 | MEDIUM | PASS | 3 | Replays an autonomously discovered visual workflow: click -> click(E ementa) -> click(E ementa) |
+| 023111 | TC01 | MEDIUM | PASS | 3 | Replays an autonomously discovered visual workflow: click(E ementa) -> click(edit delete) -> click(E |
+| 023441 | TC01 | MEDIUM | FAIL | 2 | Replays an autonomously discovered visual workflow: click(CHEATSHEETS) -> click(VIM Cheat Sheet) |

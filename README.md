@@ -44,6 +44,52 @@ study) — assertion oracles are the top future item. Full data:
 `testing/TIER2_MEGA_REPORT.md`, `testing/TIER3_MEGA_REPORT.md`,
 `testing/D11_FINAL_BATCH_MEGA_REPORT.md`, `testing/CAMPAIGN_EVALUATION.md`.
 
+### Final scoreboard (all registered rows)
+
+| # | Site | Verdict | FT live | Fusion-attributable |
+|---|---|---|---|---|
+| 1 | SauceDemo | CLEARED | 2/3 | 37.5% |
+| 3 | BrowserStack Demo | CLEARED | 0/1 | 14.3% |
+| 4 | Demoblaze | CLEARED | 4/4 | 40% |
+| 5 | CURA Healthcare | CLEARED | n/a | 0% |
+| 6 | Parasoft ParaBank | CLEARED | n/a (honest zero) | 0% |
+| 7 | Automation Exercise | CLEARED | n/a | 0% |
+| 8 | OpenCart Demo | BLOCKED-honest | — | — | <sub>no executable tests</sub>
+| 9 | The Internet (Heroku) | CLEARED | n/a | 0% |
+| 10 | OWASP Juice Shop | CLEARED | 0/1 | 16.7% |
+| 11 | Books to Scrape | CLEARED | 4/5 | 71.4% |
+| 12 | Quotes to Scrape | CLEARED | 4/5 | 83.3% |
+| 13 | LambdaTest Playground | CLEARED | 4/5 | 100% |
+| 14 | Python.org Docs | CLEARED | 1/8 | 88.9% |
+| 15 | Project Gutenberg | CLEARED | 4/4 | 80% |
+| 16 | WeatherSpark | CLEARED | 5/8 | 100% |
+| 17 | SahiTest Demo | CLEARED | 3/3 | 60% |
+| 18 | The Internet (status codes) | CLEARED | 4/4 | 80% |
+| 19 | PHPTravels Demo | CLEARED | 5/6 | 60% |
+| 20 | Open Library | CLEARED | 0/7 | 87.5% |
+| 22 | StackOverflow Questions | BLOCKED-honest | - | — |
+| 24 | IMDb Chart Top | BLOCKED-honest | - | — |
+| 29 | npmjs Packages | BLOCKED-honest | - | — |
+| 21 | Wikipedia (Web testing) | CLEARED | 3/7 | 87.5% |
+| 23 | GitHub Trending | CLEARED | 3/5 | 83.3% |
+| 26 | Hacker News | CLEARED | 1/8 | 100% |
+| 27 | 🚫 BBC News | DO-NOT-CITE | - | — | <sub>contaminated folder — evidence only</sub>
+| 32 | EvilTester Test Pages | CLEARED | 1/3 | 42.9% |
+| 35 | Practice Test Automation | CLEARED | - | — |
+| 37 | GlobalSQA Example Pages Hub | CLEARED | 7/8 | 66.7% |
+| 28 | Archive.org (Internet Archive) | CLEARED | ➖ not executable (no fusion tests) | 0% |
+| 25 | Goodreads Lists | BLOCKED-honest | - | — |
+| 30 | Reddit Public (old.reddit) | BLOCKED-honest | - | — |
+| 31 | Magento Luma (softwaretestingboard) | BLOCKED-honest | - | — |
+| 33 | TodoMVC React (TS) | CLEARED | 3/3 | 30% |
+| 34 | Techlistic (Selenium practice) | DO-NOT-CITE | - | — | <sub>contaminated folder — evidence only</sub>
+| 36 | Guru99 Bank demo | CLEARED | 4/8 | 66.7% |
+| 38 | Dynamic Loading Example 2 | CLEARED | 1/1 | 14.3% |
+| 39 | The Internet: Tables | BLOCKED-honest | 1/1 | 14.3% |
+| 40 | W3Schools <input> reference | BLOCKED-honest | - | — |
+
+_Verdicts: CLEARED = guard-passing run on-target; BLOCKED-honest = environment/bot-wall recorded without quota burn; MIRROR-EVIDENCE / DO-NOT-CITE = see QUARANTINE_TIER2.md. Rows without FT data are exploration-only or exploration-thin runs._
+
 ## Quickstart
 
 Prerequisites: **Node.js 18+**, Python 3.10+ with the vision requirements,
