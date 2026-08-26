@@ -1,129 +1,174 @@
-# AUTHORSHIP_CLAIM.md — making the contribution graph show this project
+# Authorship Claim Guide — making the contribution graph count
 
-**Audience:** the repo owner (sandeep11mahendrakar), fixing an empty GitHub
-contribution graph before submission/grading.
-**Verified facts on 2026-08-27:** local `git config user.email` is
-`sandeep_mahendrakar.11@pes.edu`; recent commits are authored **and**
-committed with that address; all campaign work sits on the non-default branch
-`after-tier-2`.
+## Overview
+
+The GitHub contribution graph for [`sandeep11mahendrakar`](https://github.com/sandeep11mahendrakar)
+shows almost no activity even though this repository carries 294 commits. This guide
+explains exactly why, and gives three remediation paths with runnable commands.
+
+**Verified facts (from `git log --format='%ae' --all` at HEAD, 2026-08-27):**
+
+| Author email | Commits | Linked to GitHub? |
+|---|---|---|
+| `sandeep_mahendrakar.11@pes.edu` | **281** | No — PES student mailbox, since dissolved |
+| `navyagn66564@gmail.com` | 6 | teammate account |
+| `pes2ug23cs387@pesu.pes.edu` | 3 | teammate account |
+| `143856083+Neonishh@users.noreply.github.com` | 2 | yes |
+| `nidhinairy96@gmail.com` | 1 | teammate account |
+| `sandeep@local` | 1 | no (misconfigured one-off) |
+
+Two independent causes, both required to break the graph:
+
+1. **Unlinked author email.** GitHub attributes a commit only when the author email
+   matches an address verified on some GitHub account. The PES address was never
+   registered there, and the mailbox has been dissolved by the university.
+2. **Non-default branches.** All work lived on `after-tier-2` (and earlier working
+   branches) while the repository's default branch showed none of it. Contribution
+   graphs count commits reachable from the default branch head only after the branch
+   history was force-moved did the commits become visible at all — but they still do
+   not *count* while cause 1 stands.
+
+## Prerequisites
+
+- Git 2.22+ (`git --version`)
+- Admin access to the local clone: `C:\Users\sandeep\pes\vs code\Capstone-Project`
+- Your GitHub numeric ID — find it with either of:
+  ```bash
+  curl -s https://api.github.com/users/sandeep11mahendrakar | findstr '"id"'
+  ```
+  or open `https://api.github.com/users/sandeep11mahendrakar` in a browser and read the
+  `"id"` field. If you see HTTP 403, you are rate-limited; retry from a browser while
+  logged in.
+
+> **Warning:** Path 2 rewrites commit SHAs across all branches. Every clone except the
+> one you rewrite becomes invalid, and any open pull requests break. Do it once, on a
+> fresh backup, and force-push only after verifying the rewritten copy.
 
 ---
 
-## Why the graph is empty
+## Path 1 — Add the PES address to your GitHub account (zero rewrite)
 
-GitHub attributes a commit to your profile only when **both** are true:
+Works only if the dissolved mailbox can still receive mail (mailbox restored,
+forwarding rule, or admin re-enable). GitHub sends a verification message there.
 
-1. The commit's author email matches an email **verified on your GitHub
-   account**, and
-2. The commit lands on the repository's **default branch** (or is merged into
-   it).
+1. Open <https://github.com/settings/emails>.
+2. In **Add email address**, enter `sandeep_mahendrakar.11@pes.edu` and click **Add**.
+3. Click the verification link in the mail GitHub sends.
+4. Keep **Keep my email addresses private** unchecked *or* leave it checked — attribution
+   works either way once the address is verified on the account.
 
-This repo fails both tests:
+Result: all 281 historical commits attribute immediately; future commits keep working
+only while your local git still uses that address.
 
-- Every commit uses `sandeep_mahendrakar.11@pes.edu`. If that PES student
-  mailbox is dissolved (typical after graduation), it can never be verified
-  on a personal GitHub account, so GitHub drops attribution.
-- All campaign work lives on `after-tier-2` / earlier feature branches;
-  commits count for the graph only once they are reachable from the default
-  branch, which happened late (force-move) or not at all.
+---
 
-## Remediation paths
+## Path 2 — Switch identity + optional one-time history rewrite (recommended)
 
-Do **one** of paths 1–3, then path 4 (branch merge), which applies regardless.
+### Step 2a — Point new commits at your GitHub identity
 
-### Path 1 — Add the PES address to your GitHub account (if the mailbox still works)
-
-Only viable if `sandeep_mahendrakar.11@pes.edu` can still receive mail
-(GitHub sends a verification message there).
-
-1. GitHub → **Settings → Emails → Add email address**.
-2. Enter `sandeep_mahendrakar.11@pes.edu`, click **Add**.
-3. Open the verification mail in the PES inbox and click **Verify**.
-
-Done. Existing commits attribute retroactively — no history rewrite needed.
-This is the safest path: zero SHA changes.
-
-### Path 2 — Rewrite history to your GitHub noreply identity (if the mailbox is dead)
-
-Find your noreply address: GitHub → Settings → Emails → "Keep my email
-addresses private" shows `ID+sandeep11mahendrakar@users.noreply.github.com`.
-Substitute your real numeric ID below.
-
-#### 2a. Point future commits at it (do this first, always)
+Use the noreply address so the real mailbox is never exposed in public commits:
 
 ```bash
+cd "C:\Users\sandeep\pes\vs code\Capstone-Project"
+git config user.email "YOUR_ID+sandeep11mahendrakar@users.noreply.github.com"
 git config user.name "sandeep11mahendrakar"
-git config user.email "12345678+sandeep11mahendrakar@users.noreply.github.com"
 ```
 
-(Run inside the repo; omit `--global` so other projects are untouched.)
-
-#### 2b. One-time rewrite of existing history with git-filter-repo
-
-> ⚠️ **Safety warnings — read before running**
-> - Rewriting **changes every commit SHA** on the branch.
-> - Any clone/fork/local copy elsewhere becomes stale and must be re-cloned.
-> - Open PRs referencing old SHAs break.
-> - Back up first: `git bundle create ../capstone-backup.bundle --all`
-> - Requires [git-filter-repo](https://github.com/newren/git-filter-repo):
->   `pip install git-filter-repo`
+Replace `YOUR_ID` with the numeric ID from Prerequisites (for example
+`12345678+sandeep11mahendrakar@users.noreply.github.com`). Verify:
 
 ```bash
-# from the repo root, on after-tier-2, with a clean working tree
-git filter-repo --email-callback '
-  return b"12345678+sandeep11mahendrakar@users.noreply.github.com" \
-    if email == b"sandeep_mahendrakar.11@pes.edu" else email
-'
+git config user.email
+# Expected: YOUR_ID+sandeep11mahendrakar@users.noreply.github.com
 ```
 
-Then re-add the remote (filter-repo removes it by design) and force-push:
+Every commit made after this attributes to your account automatically — no rewrite
+needed for future work.
+
+### Step 2b (optional) — Rewrite past commits to the same identity
+
+Install the filter tool first:
 
 ```bash
-git remote add backup https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-.git
-git push backup after-tier-2 --force
+pip install git-filter-repo
 ```
 
-Force-pushing is required because rewritten history shares no SHAs with the
-remote. Coordinate with any other agent windows first.
-
-### Path 3 — GitHub Support route (mailbox dead, no rewrite wanted)
-
-1. github.com/support → category **"My commits are not linked to my
-   profile"**.
-2. State that the author email belongs to a **dissolved institutional
-   mailbox** you cannot access, that you own the repository and made the
-   pushes from your account, and request attribution transfer to
-   `12345678+sandeep11mahendrakar@users.noreply.github.com`.
-3. Attach proof of ownership (repo URL, account, commit samples). Support
-   handles dissolved-domain cases case-by-case.
-
-### Path 4 — Branch merge (required regardless of path chosen)
-
-Commits count only when reachable from the **default branch**.
+Then, **from a fresh clone** of the branch you want to fix (never your only copy):
 
 ```bash
-# inspect what would move first
-git log --oneline after-tier-2 | head -20
-
-# fast-forward the default branch
-git checkout main          # or whichever branch GitHub shows as default
-git merge --ff-only after-tier-2
-git push origin main
+git clone --branch after-tier-2 --no-single-branch https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-.git rewrite-work
+cd rewrite-work
+git filter-repo --email-callback "
+return email if email != b'sandeep_mahendrakar.11@pes.edu' else b'YOUR_ID+sandeep11mahendrakar@users.noreply.github.com'
+"
 ```
 
-If the default branch diverged irreconcilably, a merge commit is acceptable:
-`git merge after-tier-2` (drop `--ff-only`).
+Check the result before pushing:
 
-## Verification
+```bash
+git log --format="%ae" | sort | uniq -c
+```
+Expected: only your noreply address (plus teammates' untouched addresses) remains.
 
-1. Push, wait ~1 minute, refresh your profile — contributions appear for the
-   campaign window (from 2026-08-22 onward).
-2. Spot-check a commit page (e.g. the freeze-tag commit): your avatar must
-   replace the bare email.
-3. `git log --format="%ae" -5` shows the identity you chose.
+Push the rewritten branches:
 
-## Recommendation
+```bash
+git push origin --force --all
+git push origin --force --tags
+```
 
-Path 1 if the PES inbox still lives; otherwise **Path 2b + Path 4** — fully
-under your control, ~10 minutes, no third party. Keep the bundle from the
-backup step until the graph verifies.
+> **Warning — read before force-pushing**
+> - Rewriting changes **every commit SHA**, including teammates' commits whose trees
+>   touch rewritten ones.
+> - All other clones must be re-cloned; old PRs and issue references to SHAs detach.
+> - The `backup` remote is the project archive — coordinate with the team and take a
+>   second backup bundle first: `git bundle create capstone-pre-rewrite.bundle --all`.
+> - Teammates' emails are deliberately left untouched by the callback above.
+
+---
+
+## Path 3 — GitHub Support for dissolved institutional mailboxes
+
+If the PES mailbox cannot receive verification mail, GitHub Support can attribute
+historical commits manually:
+
+1. Open <https://support.github.com/request> and sign in.
+2. Choose **Account or profile → General account query**.
+3. State: *"My university (PES University) dissolved the student mailbox
+   `sandeep_mahendrakar.11@pes.edu`, which authored 281 commits in
+   sandeep11mahendrakar/mcp-for-the-testing-temp-. I cannot add or verify it under
+   Path 1. Please attach these commits to my account."*
+4. Attach proof of ownership: student ID screenshot, transcript line, or the university
+   portal showing the assigned address.
+
+Typical turnaround is a few business days. Support applies attribution server-side;
+no history rewrite is involved.
+
+---
+
+## Troubleshooting
+
+**Contribution graph still empty after Path 1**
+Commits count only when they are on the default branch of a repo *owned by you* and
+created after... check three things: (1) default branch actually contains the commits
+(`git log origin/HEAD --oneline | Select-Object -First 5`), (2) the repo is not a fork
+(forks count only after being made public again), (3) **Contribution settings** in your
+profile includes "Private contributions" if the repo is private.
+
+**`git filter-repo` refuses to run ("fresh clone check")**
+The tool aborts inside a non-fresh repo on purpose. Re-run in a brand-new clone as shown
+in Step 2b, or pass `--force` only if you understand the risk.
+
+**403 from api.github.com when looking up your ID**
+Unauthenticated requests are rate-limited per IP. Retry from a logged-in browser session
+(the JSON `"id"` field renders fine there), or run the curl against
+`https://api.github.com/users/USERNAME` from a different network.
+
+**Commit shows the wrong name but right email (or vice-versa)**
+Name and email are configured separately: `git config user.name "..."` next to the
+Step 2a email command.
+
+## Related resources
+
+- [GitHub Docs — why are my contributions not showing up?](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-settings-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile)
+- [git-filter-repo manual](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html)
