@@ -83,3 +83,17 @@ Date: 2026-08-25 (overnight session) · Branch: `vision-standalone`
 
 See `git log vision-standalone`; final commit includes all mcp/ changes,
 docs, package.json bin entry. `.env` untouched and untracked (gitignored).
+
+---
+
+## T609 SHIP-POLISH VERIFICATION (2026-08-27, serial-B)
+
+| Check | Result |
+|---|---|
+| master-v1 merge state | HEAD 863275 final-review-pass; tree clean except local-only model-weight edit (screenparser_best.pt, gitignored class *.pt but historically tracked) + untracked presentation/ dir (morning-review material, not shipped) |
+| npm pack dry-run | OK — capstone-vision-architecture-1.0.0.tgz, 1.9 MB, 69 files, all five mcp/ tool files included |
+| .env safety | .env gitignored (line 6) AND untracked; pack contains only .env.example placeholders — **no secret leak** |
+| bin entry | ision-test-mcp -> mcp/server.js resolves from repo root; POSIX shebang present (#97f2de4) |
+| FINAL_REPORT freshness | this section = T609 stamp; content above unchanged and still accurate |
+
+Verdict: **BETA-ready for morning merge review.** No code changes required by T609.
