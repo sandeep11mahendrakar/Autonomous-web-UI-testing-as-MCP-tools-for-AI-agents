@@ -11,3 +11,5 @@ Tracked mirror of TASK_BOARD.md entries by AGENT-3/serial-C while the board is u
 (Also: standing rule active - every completed item now mirrored here. See SHIP_MANIFEST.md section 7 re board-untracked sync caveat.)
 
 [2026-08-27 15:0x IST] F-03 DONE @ 3d1db66: agents/ restructure complete (memory/planning/comms layout), dead files archived to _TEMP_BIN/final_archive/, references updated, suites 157/157. Mirror relocated to agents/memory/comms/AGENT-3.md.
+
+[2026-08-27 15:5x IST] T614 DONE: SYSTEM_IMPROVEMENTS consolidated (27 rows) + V2_ROADMAP.md ranked roadmap created.
