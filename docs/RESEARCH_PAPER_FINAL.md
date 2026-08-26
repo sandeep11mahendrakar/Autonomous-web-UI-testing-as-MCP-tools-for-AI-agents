@@ -1,7 +1,9 @@
 # AI-Assisted Dual-Perception Web UI Testing with Grounded LLM Fusion
 
 **Team 101, PES University — Capstone Final Report**
-Status: FINAL v1.0 (2026-08-27). Supersedes RESEARCH_PAPER_DRAFT.md v4.
+Status: FINAL v1.1 (2026-08-27). Dataset frozen at tag `campaign-v2-end`
+(40/40 sites registered: 39 numbered INDEX rows + 1 pre-campaign reference).
+Supersedes RESEARCH_PAPER_DRAFT.md v4.
 Every figure traces to a raw artifact; sources cite `runs/<id>/` paths,
 `testing/site_reports/INDEX.md`, `testing/CAMPAIGN_EVALUATION.md`, or
 `docs/RESEARCH_DATA_PACK.md`. Nothing is estimated; negative results are
@@ -39,6 +41,17 @@ scripts, quarantine ledger, and independent audit evidence.
 ---
 
 ## 1. INTRODUCTION
+
+**Campaign census.** 40 sites registered: 39 numbered INDEX rows (sites
+1, 3–40 — numbering skips 2) plus site #2 DemoQA as the pre-campaign
+reference run. Final dispositions: **29 cleared/scored** (including thin-run
+archive_org and the sahitest/Tier-2 re-runs), **7 blocked-honest**
+(OpenCart CF-wall, stackoverflow 403, imdb 202 bot-check, goodreads
+blank-render, npmjs 403, reddit login-wall, magento Cloudflare 526), and
+**4 DO-NOT-CITE contamination-evidence rows** (bbc_news retracted per audit
+F7-01, techlistic, practica, w3schools). Dataset frozen at tag
+`campaign-v2-end` after post-freeze re-audit sign-off (zero open findings
+across five audit passes).
 
 **Problem.** Autonomous UI testing stalls on three recurring failure modes:
 
