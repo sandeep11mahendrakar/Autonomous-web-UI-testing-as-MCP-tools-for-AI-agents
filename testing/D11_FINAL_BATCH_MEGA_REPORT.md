@@ -34,8 +34,8 @@ attached (@MCP-LEAD after each site closes). Hard stop 90 min per worker.
 | CONTAMINATION-SKIP honest | 1 | 40 w3schools (defect #24 residual class: fail-open url-less test_cases + guard-scope gap on state_visual_dom/history files) |
 | BLOCKED (unreachable) | 0 | — (every row passed STEP 0 pre-check) |
 
-FT aggregate over cleared rows: **13/17 executed tests PASS (76.5%)**,
-43 steps attempted / 35 passed. Fusion share: 66.7% / 66.7% / 14.3% / 14.3%
+FT aggregate over cleared rows: **13/18 executed tests PASS (72.2%)**,
+33 steps passed / 38 attempted. Fusion share: 66.7% / 66.7% / 14.3% / 14.3%
 — high where catalogs were rich (guru99 bank flows, globalsqa hub), minimal
 where pages were single-purpose micro-surfaces (dynamic_loading, tables).
 

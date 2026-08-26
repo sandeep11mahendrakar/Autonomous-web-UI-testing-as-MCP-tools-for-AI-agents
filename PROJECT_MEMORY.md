@@ -342,6 +342,16 @@ Branch `after-tier-2`, all work pushed to `backup` remote.
       (verification method none). Supersedes voided run_20260825_194511 per
       Master directive.
 
+4c. **TIER-3 FINAL AUDIT + D9 CLOSE (2026-08-26 morning)**: replacement lane
+   closed all remaining rows - #31 magento BLOCKED-honest (Cloudflare 526,
+   full protocol still run purity-PURE), #32 eviltester CLEARED-BY-RERUN
+   run_20260826_005704 (FT 1/3, fus 42.9%), #17 sahitest CLEARED-BY-RERUN
+   run_20260826_010716 (FT 3/3 9/9 steps, fus 60%, supersedes voided 194511).
+   TIER-3 FINAL AUDIT: PASS with ONE gate-blocker F5-01 (#27 bbc_news has no
+   INDEX verdict row; run_000112 never chained; "15/15" wording corrected to
+   14/15+1 pending). Minor audit fixes F3-03/F4-05 landed @ 0df6786 (suites
+   157/157). Campaign tally: original rows 6 cleared / 6 blocked / 2
+   contamination-skips of 15 registered rows; success bar >=6/10 MET.
 REMAINING for full campaign: finish Tier 3 in-flight runs (#27, #35), Master
 consolidation regen at window end (must include the three replacement-lane
 rows above), Tier 4 (31-40), sites 41-50 (repeatability+wildcards), clean C4
