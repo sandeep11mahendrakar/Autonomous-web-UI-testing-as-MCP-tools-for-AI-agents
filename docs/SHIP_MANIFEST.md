@@ -199,3 +199,21 @@ Verified by AGENT-3 (manifest author): .gitignore negation present,
 74-file removal set matches §3b/§3c classes, evidence intact.
 
 — appended 2026-08-27, AGENT-3 / serial-C.
+
+---
+
+## 7. EXECUTION STATUS (T611 — DONE 2026-08-27)
+
+Executed by W1 / ox-alpha serial-1 @ commit a07d716 (remote-synced f357bce):
+
+| Checklist step | Result |
+|---|---|
+| 1. Untrack section-3 paths | **82 files** `git rm --cached` (3a comms/planning x6 incl PARALLEL_SPEC, 3c lockfiles x2, 3b logs/snapshots x74: testing/*.log, extract_run_*.json x9, llm_usage.jsonl, repeatability_runs raw x36, mutation fusion/pipeline x12). Working-tree copies retained. |
+| 2. .gitignore additions | Section-5 block appended verbatim EXCEPT tier3-driver lines left COMMENTED (section-4 gate). Includes `!docs/audit_evidence/*.log` negation. |
+| 3. Suites | 157/157 PASS post-change |
+| 4. Re-census | 342 -> **260** tracked files (~82 fewer, matches section-1 estimate) |
+| 5. Section-4 review items | OPEN — Master sign-off gate honored, none executed |
+
+D13 additional scope verified: `runs/`, `_TEMP_BIN/`, `testing/.campaign.lock`,
+root stray logs (`ft_w4*.log`, `s4_w4.log`) were **never tracked** in git —
+already excluded de facto; zero action required.
