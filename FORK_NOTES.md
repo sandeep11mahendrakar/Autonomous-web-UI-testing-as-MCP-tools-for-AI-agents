@@ -52,6 +52,15 @@ Services auto-start: gateway :5000, YOLO :5001, OCR :5002, merge :5003, browser 
 - Real LLM explore via OpenRouter → completed cleanly (summary + graceful shutdown);
   separate run on a login form produced two correct LLM-driven `fill` actions (username/password).
 
+## Beta release (T612, 2026-08-26)
+
+Published to https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-
+(remote `backup`): branches `master-v1` + `vision-standalone`, tag
+`v1.0.0-mcp`. Unit suite `node --test test/explorer.candidates.test.js`
+→ 4/4 pass. Note: bare `node --test` auto-discovers `mcp/verify_run_test.js`
+(an integration script that needs live services) and reports a spurious
+failure — run the unit suite explicitly as above.
+
 ## Known external constraints (not fork defects)
 
 - Free-tier OpenRouter models rate-limit aggressively (429). The provider retries with backoff;
