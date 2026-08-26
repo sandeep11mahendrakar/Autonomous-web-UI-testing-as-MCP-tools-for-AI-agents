@@ -6,6 +6,15 @@ visible in git. Newest first. English-only.
 
 ---
 
+## [2026-08-27 13:30 IST] D13-T612 MCP ground push + v1.0.0-mcp tag — EXECUTED
+- Ground repo "new mcp testing ground": local tag `v1.0.0-mcp` existed at
+  `5863275` (final-review-pass) but remote `backup` had NO master-v1 branch
+  and NO v1.0.0-mcp tag — D13's push step was outstanding.
+- Executed: pushed `master-v1` branch and `v1.0.0-mcp` tag to remote `backup`
+  (the only configured remote; beta release approved by gate per D13).
+- Note: tag sits at 5863275, one commit before my T609 stamp (3884238) —
+  the stamp is docs-only; flagging in case Master wants the tag moved.
+
 ## [2026-08-27 11:45 IST] T607 README rewrite + MIT LICENSE — DONE
 - Commit `d074837` (local; D12 says commit-only, no push for ship-prep lanes).
 - `README.md`: SHORT rewrite — badges, 2-line intro, architecture table,
