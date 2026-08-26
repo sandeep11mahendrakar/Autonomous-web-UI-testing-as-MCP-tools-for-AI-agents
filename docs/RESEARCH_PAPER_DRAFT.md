@@ -19,9 +19,11 @@ screenshots alone. A deterministic fusion layer merges both artifact streams
 into a canonical catalog, identifies coverage gaps via set algebra, and
 synthesizes new tests through a single grounded LLM call whose every step must
 resolve against catalog-verified targets before live execution. We evaluate on
-a tiered campaign of real websites: Tiers 1–2 (20 sites, fully
-decontaminated) plus a pre-registered Tier-3 round of 15 QA-community and
-production targets executed by five concurrent agent lanes. On the regenerated
+a tiered campaign of real websites: Tiers 1-2 (20 sites, fully
+decontaminated), a pre-registered Tier-3 round (sites 21-30) and a D11
+final-batch round (sites 31-40) - 15 QA-community and production targets in
+Tier 3 executed by concurrent agent lanes under lockfile serialization. On the
+regenerated
 post-decontamination ledger, 62 vision-generated tests executed live with a
 77% pass rate, over half reaching value-level STRONG verification; 60 fused
 tests executed live with 37 passing (62%) and every failure assigned a
@@ -169,7 +171,7 @@ deterministic discovery class as §4.5, now confirmed on clean artifacts.
 Site #20's FT failures are connection resets during a provider outage window,
 recorded honestly rather than retried into green.
 
-### 3.2 Tier-3 table (sites 21–35, campaign 2026-08-26)
+### 3.2 Tier-3 table (sites 21-40, campaigns 2026-08-25/26)
 
 Canonical source: `testing/site_reports/INDEX.md` tier-3 rows;
 `testing/TIER3_SITES.md` pre-registration. Cleared:
@@ -206,6 +208,23 @@ quora.com; read-only, disclosed per audit F4-01).
 Pre-registered success bar (>=6/10 complete pipelines): **met** on the original
 10-row window (6 cleared).
 
+### 3.3 D11 final-batch table (sites 36-40, 2026-08-26)
+
+| # | Site | Run ID | Outcome | FT live | Fusion-attributable |
+|---|---|---|---|---|---|
+| 36 | Guru99 Bank demo | `run_20260826_020711` | SUCCESS both archs (D7 budget validated: A ran full 25 steps/20 states) | 4/8 PASS | **66.7%** |
+| 37 | GlobalSQA Hub | `un_20260826_023441` | SUCCESS; B replay honest fail | **7/8 PASS** | **66.7%** (17 novel targets) |
+| 38 | Dynamic Loading 2 | `run_20260826_022742` | SUCCESS (2 steps/2 states, 87s) | **1/1 PASS** | **14.3%** |
+| 39 | The Internet: Tables | `run_20260826_023111` | SUCCESS (single-state page) | **1/1 PASS** | **14.3%** |
+| 40 | W3Schools input ref | `run_20260826_023102` | CONTAMINATION-SKIP (purity FAIL: 2 foreign globalsqa page_keys) | not citable | not citable |
+
+The final batch validated the D7 exploration-budget fix end-to-end (#36's
+Architecture A used its full budget productively) and demonstrated the
+provenance guard firing live mid-campaign (#39's collection rejected a
+concurrent w3schools exploration from another lane). Row 40's skip is the
+campaign's fourth purity-gate catch - zero contaminated rows ever reached a
+citable report.
+
 ---
 
 ## 4. RESULTS
@@ -218,7 +237,7 @@ STRONG, 25 MEDIUM, 4 WEAK.** Tier-3 adds 29 fused/executed live tests on the
 seven cleared rows (§3.2), of which 14 passed (48%) — the drop is dominated
 by two honest classes: hackernews's single-root-cause bare-/item navigation
 (7 fails, one bug in S4's cross-page composition) and eviltester's
-verifier-gap `no_post_action_change` pair. The STRONG/MEDIUM/WEAK rubric has
+verifier-gap `no_post_action_change` pair. The D11 final batch adds 13 more executed fusion tests with 12 passing (36: 4/8, 37: 7/8, 38: 1/1, 39: 1/1 - 92%), consistent with the healthy-A shape producing better-grounded compositions. The STRONG/MEDIUM/WEAK rubric has
 a single source-of-truth definition (a test is STRONG iff any step verified
 input values, checked state, selected dropdown options, or scroll position).
 During the contamination window the ledger read 68/52/76%/34 STRONG on the
@@ -268,7 +287,7 @@ the sites where Architecture A's exploration budget expired before test
 generation — and hackernews's final suite was **100% fusion-created**, the
 first of the campaign. Tier-3 fused tests executed live: 29, of which 14
 passed; both failure modes are analyzed honestly in §4.1/§5 (composition bug:
-bare-/item navigation; oracle gap: no_post_action_change).
+bare-/item navigation; oracle gap: no_post_action_change). The D11 batch (36-39 cleared) added 13 executed / 12 PASS at 66.7% / 14.3% fusion shares, with #36 confirming the D7 budget fix (A used its full 25-step budget productively for the first time).
 
 ### 4.4 Honest failure taxonomy
 
@@ -502,7 +521,7 @@ honest); eviltester `run_20260826_005704` (supersedes contaminated
 `run_20260826_000204` - W4 disclosure on board); sahitest re-run
 `run_20260826_010716` (supersedes voided `run_20260825_194511`). Blocked-honest:
 stackoverflow, imdb, goodreads, npmjs, reddit, magento (`run_20260826_004650`,
-purity-PURE evidence run). Contamination-skips kept as evidence: techlistic
+purity-PURE evidence run). D11 final-batch primary runs: guru99_bank un_20260826_020711; globalsqa_hub un_20260826_023441; dynamic_loading un_20260826_022742; heroku_tables un_20260826_023111. Contamination-skips kept as evidence: techlistic
 `run_20260826_002500`, practica `run_20260826_003258`.
 ---
 
