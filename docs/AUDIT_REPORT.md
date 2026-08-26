@@ -1016,6 +1016,33 @@ remaining and an offline verification harness — upgrades my earlier
 
 ---
 
+# D15 FINAL COMPLETION CONFIRMATION (independent auditor, 2026-08-27)
+
+serial-B appended a D15 verdict at `075514c`; per the D15 role table the
+*auditor* owns this call, so I independently re-executed every criterion at
+HEAD rather than co-signing unread. **ALL CRITERIA MET — project ready to
+close.**
+
+| Criterion | Independent result |
+|---|---|
+| T611 SHIP_MANIFEST done | ✔ `docs/SHIP_MANIFEST.md`; executed `a07d716` (82 untracked, census 342→260) + W1 QA `f357bce` |
+| T612 MCP beta release pushed | ✔ tag `v1.0.0-mcp` (5863275) on backup remote; fork `master-v1`; `run_test` wired `26b5e2b`, zero stubs |
+| T614 SYSTEM_IMPROVEMENTS + V2_ROADMAP | ✔ serial-B `8f93a0e`: consolidated suggestion table (45 status-classified rows, auditor-counted); `docs/V2_ROADMAP.md` restored to spec path (5796b), evidence-cited ranking |
+| T615 VALUE_ORACLE_SPEC recreated | ✔ AGENT-5 `bd10e40`: predicate schema, worked examples from mutation-study bugs, validator rules R1-R6, executor paths, taxonomy, risks — design-only as specified |
+| Suites green | ✔ **157/157** re-executed live by auditor at final HEAD |
+| Zero QUARANTINED markers | ✔ 0 in `testing/site_reports/INDEX.md` |
+| Auditor verdict appended | ✔ this section (supersedes/complements the `075514c` verdict — both reach PASS independently) |
+
+Notes for the record: T614/T615 were delivered by different agents than the
+D15 claim order anticipated (serial-B took T614; AGENT-5 took T615) — content,
+not claim order, is what the criteria require. The BETA→STABLE checklist
+(S1–S10, previous section) remains the standing gap list for stable 1.0 and is
+correctly reflected as future work inside `docs/V2_ROADMAP.md`.
+
+*— D15 CLOSING AUDITOR (ox-alpha), 2026-08-27 — ALL CRITERIA MET, PROJECT READY TO CLOSE*
+
+---
+
 ## D15 FINAL VERDICT (appended by serial-B/ox-alpha, 2026-08-27 ~16:1x IST)
 
 Scope: completion-criteria recomputation over the final repo state after all
