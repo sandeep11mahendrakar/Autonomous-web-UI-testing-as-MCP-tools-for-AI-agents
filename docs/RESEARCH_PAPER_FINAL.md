@@ -1,6 +1,6 @@
 # AI-Assisted Dual-Perception Web UI Testing with Grounded LLM Fusion
 
-**Team 101, PES University — Capstone Final Report**
+**Author: sandeep11mahendrakar. Initial architecture concept (v0) developed in collaboration with Team 101, PES University. — Capstone Final Report**
 Status: FINAL v1.1 (2026-08-27). Dataset frozen at tag `campaign-v2-end`
 (40/40 sites registered: 39 numbered INDEX rows + 1 pre-campaign reference).
 Supersedes RESEARCH_PAPER_DRAFT.md v4.
