@@ -35,3 +35,8 @@ under its post-rebrand domain. Row 13 restored; raw FT record is 4/5 PASS (FT001
 fail). Provenance filter applied: only live-provenance artifacts (A-side,
 B exploration #2 on testmuai.com, FT results) are reinstated; the fixture-
 sourced B exploration #1 stays excluded from aggregates.
+
+## ORPHAN ANNOTATION (T401 finding F7-03, LOW)
+
+run_20260826_020244 (D11 window): manifest-less orphan dir - DO-NOT-CITE,
+must not be registered or cited by any report/aggregator.

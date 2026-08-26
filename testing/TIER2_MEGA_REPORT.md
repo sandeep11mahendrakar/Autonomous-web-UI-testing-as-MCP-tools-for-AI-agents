@@ -245,10 +245,11 @@ be swapped for a spare in the final dataset per TIER2_SITES.md policy.
 fusion explodes on real sites") were built partly on wrong-site data and are
 RETRACTED. What survives is stronger and weaker at the same time: every
 number now traces to a specific manifest-verified run — FT aggregate across
-the current registered runs of sites 11–20 is **27/40 PASS (67.5%)**, not the
-originally claimed 70% — and the verified runs show harsher reality: A-timeouts
-on mega-DOM sites, canvas blind spots, openlibrary's 0/7 honest-fail day. The
-campaign's most important product turned out to be the failure itself: a
+the current registered runs of sites 11–20 is **27/40 PASS (67.5%)**
+[auditor recount F7-02: raw is 13/18 = **72.2%** across the 18 FT-bearing
+final rows; the 27/40 figure included rows whose registered runs predate the
+decontamination window], not the originally claimed 70% — and the verified runs show harsher reality: A-timeouts
+on mega-DOM sites, canvas blind spots, openlibrary's 0/7 honest-fail day. The campaign's most important product turned out to be the failure itself: a
 reproducible contamination class, five named guards built because of it, and
 proof they catch live incidents. The system can now answer the question it
 could not answer before: *which site do these results belong to?*
