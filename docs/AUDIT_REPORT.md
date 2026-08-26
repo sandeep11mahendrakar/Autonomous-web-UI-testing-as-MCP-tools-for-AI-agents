@@ -360,7 +360,7 @@ Select-String runs/*/dom/run_explore.log,vision/*.log -Pattern <fatal-set>    # 
 git status --porcelain; git branch --show-current; git remote -v              # env sanity
 ```
 
-Environment notes: branch `after-tier-2`, remote `backup` ONLY (neonish absent
+Environment notes: branch `after-tier-2`, remote `backup` ONLY (non-backup remotes absent
 — D8(d) honored). Working tree carried other lanes' uncommitted files
 (logs/llm_usage.jsonl, tier3_w*.log, .campaign.lock) — untouched. Live-replay
 audits (B/C-style) skipped: `.campaign.lock` held by live PID 27424 during the

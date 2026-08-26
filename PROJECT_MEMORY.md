@@ -10,7 +10,7 @@ harness, campaign evaluator, repeatability runner; quota-gated work scheduled).
 Branch created off `capstone-final-integrated`; ALL work below committed and
 pushed to the `backup` remote
 (`github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-`).
-**The Neonishh origin remote was REMOVED from git config by user instruction —
+**A former origin remote was REMOVED from git config by user instruction —
 never push there from this clone.**
 
 1. **A2 fuzzy matcher DONE**: `lib/fuzzyMatch.js` (containment -> windowed
@@ -121,7 +121,7 @@ design; needs parameterization if used beyond the reference run.
   - **Mobile** (`mobile/`) — Appium-based exploration (offline dry-run framework only, not production-ready).
 - **Repo:** `C:\Users\sandeep\pes\vs code\Capstone-Project`
   (NEVER use older clone at `C:\Users\sandeep\pes\CAPSTONE\Capstone-Project`)
-- **Remote:** https://github.com/Neonishh/Capstone-Project.git
+- **Remote:** backup only (URL: see `git remote -v`; no other remote is permitted)
 - **Branch:** `capstone-final-integrated`. HEAD `0afd04b` "feat: finalize closed-loop vision execution". Never modify `main`; never force-push.
 - **PR #5** (`capstone-final-integrated` → `main`): OPEN, not merged.
 - **All Fusion-phase work is UNCOMMITTED** (fusion/, lib/, test/, web+vision changes, this file). Commit/push ONLY with explicit user authorization.
