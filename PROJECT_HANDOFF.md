@@ -24,7 +24,7 @@ Repo: `C:\Users\sandeep\pes\vs code\Capstone-Project`
 - Current branch: **`after-tier-2`** — all work below is committed & pushed
 - Parent branch `capstone-tier2-prep`, tag `pre-tier3-cleanup`
 - Remote `backup` = https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-
-  → **PUSH ONLY TO `backup`. The Neonishh origin was REMOVED from git config by user instruction. NEVER push to Neonishh.**
+  → **PUSH ONLY TO `backup`. A former non-backup origin was removed from git config by user instruction. NEVER push to any remote other than `backup`.**
 - Offline test suites: **143/143 PASS** (`node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"`)
 
 ## 3. LLM PROVIDER LANDSCAPE (hard-won knowledge — trust this table)
@@ -56,22 +56,24 @@ Final decontaminated aggregates (testing/CAMPAIGN_EVALUATION.md @ regen
 denominator note recorded for T605); vision rubric 62 tests / 48 PASS (77%) /
 33 STRONG. Gate audit T401 recomputed all of this from raw artifacts: PASS.
 
-### Tier 3 (sites 21–30 + replacements 31–35): 🔄 IN PROGRESS (launched 2026-08-25 ~22:45 IST per D5/D6; D9 replacement round opened 2026-08-26)
-Pair assignments on docs/TASK_BOARD.md directive D6; sequential via
-.campaign.lock round-robin. State at last update (2026-08-26 ~05:30 IST):
-- CLEARED 4: #21 wikipedia run_230647 (FT 3/7, fus 87.5%), #23 github_trending
+### Tier 3 (sites 21-30 + replacements 31-35): NEAR-COMPLETE (launched 2026-08-25 ~22:45 IST per D5/D6; D9 replacement round closed; final audit PASS w/ 1 gate-blocker)
+State at last update (2026-08-26 ~09:00 IST), per INDEX ground truth:
+- CLEARED 7: #21 wikipedia run_230647 (FT 3/7, fus 87.5%), #23 github_trending
   run_232415 (FT 3/5, fus 83.3%, S4 5/5 perfect round), #26 hackernews
-  run_234052 (FT 1/8 honest single-root-cause, 100% fusion-created), #33
-  todomvc_react run_20260826_002227 (FT 3/3 PASS, purity PURE — W4/D9)
-- THIN-RUN-honest: #28 archive_org run_235819 (pure, 0 tests anywhere)
-- BLOCKED-honest 5: #22 stackoverflow(403), #24 imdb(202 bot-check),
-  #25 goodreads(blank-render), #29 npmjs(403), #30 reddit(login-wall)
-- CONTAMINATION-skips: #31 magento, #32 eviltester, #34 techlistic (+ #35
-  practica attempt-1 rejected) — all caught by folder_purity; defect #24
-  logged and guard fix landed @ 97a29cb
-- IN FLIGHT at handoff: #27 bbc_news (W2), #35 practica re-run (W3)
-- Success bar (pre-registered): ≥6/10 complete pipelines; blocked IS data
-
+  run_234052 (FT 1/8 honest single-root-cause, 100% fusion-created), #28
+  archive_org run_235819 THIN-RUN (pure, honest zeros), #32 eviltester re-run
+  run_20260826_005704 (FT 1/3 verifier-gap framing, fus 42.9%), #33 todomvc
+  run_20260826_002227 (FT 3/3 PASS - W4/D9), #17 sahitest RE-RUN
+  run_20260826_010716 (FT 3/3, fus 60%, supersedes voided 194511)
+- BLOCKED-honest 6: #22 stackoverflow(403), #24 imdb(202 bot-check),
+  #25 goodreads(blank-render), #29 npmjs(403), #30 reddit(login-wall),
+  #31 magento(Cloudflare 526; full protocol still executed purity-PURE)
+- CONTAMINATION-skips: #34 techlistic DO-NOT-CITE, #35 practica attempt-1
+  rejected - all caught by folder_purity; defect #24 guard fix @ 97a29cb;
+  minor audit fixes F3-03/F4-05 landed @ 0df6786 (suites 157/157)
+- #27 bbc_news RESOLVED: row retracted to DO-NOT-CITE contamination-evidence per
+  final-audit F7-01 remediation @ 3c67d3f (inside freeze tag campaign-v2-end)
+- Success bar (pre-registered) >=6/10 pipelines: MET (6 cleared)
 ## 5. RESEARCH FINDINGS (validated, use in capstone report)
 
 1. **Fusion value explodes on real sites**: ~20% (Tier 1) → **48.7% campaign mean over the fully decontaminated 20-site ledger** (was 41% pre-decontamination)
