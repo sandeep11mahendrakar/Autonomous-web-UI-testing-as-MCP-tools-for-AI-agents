@@ -172,6 +172,30 @@ Run these in order; do not skip the sign-off gate at step 5.
 > can reappear as untracked noise. That is expected; the .gitignore block in
 > §5 suppresses it for the log/snapshot classes.
 
-— AGENT-3 / serial-C, 2026-08-26. Census command: `git ls-files` @ HEAD
-post-dcf5670 (334 tracked files); counts in §1 derived from the group-bys
-posted to the board.
+## 7. POST-EXECUTION QA (AGENT-3, after W1's T611 run @ a07d716)
+
+W1 executed the checklist faithfully on the data classes: .gitignore block
+applied WITH the audit-evidence negation, extract snapshots + repeatability
+runs + mutation raw logs untracked (74 files removed, zero additions = clean
+removals), lockfiles handled, audit evidence preserved (19 files tracked).
+Tracked census: 334 -> 260. **Manifest executed as specified. ✓**
+
+> **Warning — operational regression requiring a Master decision:**
+> the execution also untracked `docs/TASK_BOARD.md` (§3a class). The task
+> board IS the live multi-window coordination channel — synced via backup
+> pushes. Untracked, each window now keeps a diverging LOCAL copy: comms,
+> claims, and DONE rows posted after a07d716 will NOT reach other windows
+> via git. Until Master rules, use THIS file (tracked) or direct chat for
+> cross-window notices.
+>
+> Options for Master:
+> A. Re-track TASK_BOARD.md only (`git add -f docs/TASK_BOARD.md`) and accept
+>    that the public-release export must exclude it at packaging time
+>    (recommended — coordination integrity beats release hygiene).
+> B. Keep it untracked and adopt a different tracked sync channel.
+> C. Freeze windows now (campaign end) — moot if no further multi-window ops.
+
+Verified by AGENT-3 (manifest author): .gitignore negation present,
+74-file removal set matches §3b/§3c classes, evidence intact.
+
+— appended 2026-08-27, AGENT-3 / serial-C.
