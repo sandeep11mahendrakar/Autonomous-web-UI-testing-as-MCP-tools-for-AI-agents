@@ -90,3 +90,45 @@ are closed and carry their evidence paths in the MASTER/worker tables.
 `docs/V2_ROADMAP.md` (restored from e11f646, R1–R12) is the execution-order
 document; this file is the suggestion ledger proving nothing was lost between
 sources. Discrepancies resolve in favor of the roadmap ranking.
+
+---
+
+## CONSOLIDATED TABLE (T614 closure, AGENT-3 2026-08-27)
+
+Full sweep complete: RETROSPECTIVE_TIER2 sec5 + RETROSPECTIVE_TIER3 sec4/C4,
+AUDIT_REPORT F1-F7 + defects #20-#25, TASK_BOARD comms suggestion lines,
+MASTER_AGENT_BRIEFING learnings, IMPROVEMENT_BACKLOG A-items. Duplicates of
+MASTER rows marked [DUP of M#]. Status vocabulary matches the legend above.
+
+| Source | Suggestion | Category | Status | Evidence |
+|---|---|---|---|---|
+| W1 (tier3) | Watchers must re-check landed BOARD CLAIMS, not just lock files, before launching | process | OPEN (incident x3: 165105, #33, #35) | TASK_BOARD 2026-08-26/27 duplicate-launch entries |
+| W1 (serial1 win-3) | Queue items need pre-assigned owners (item N -> owner -> ETA) | process | PARTIAL (D6 pair assignments adopted) | TASK_BOARD D6 |
+| serial1 win-3 | One-writer-per-window git leases; no stash/pop in shared tree | intercom | PARTIAL (ad hoc) | TASK_BOARD stalled-rebase incident |
+| serial1 win-3 | Board row edits via script (board.js set-row) not editor string-replace | intercom | NOT BUILT | serial1 suggestions list |
+| serial4 (T608 era) | Per-agent append-only comms files under docs/comms aggregated by integrator | intercom | IMPLEMENTED (docs/comms/, relocated to agents/memory/comms by F-03) | agents/memory/comms/ |
+| AGENT-3 | Tracked per-agent mirror when board itself is untracked (post-T611 sync gap) | intercom | IMPLEMENTED (docs/comms/AGENT-3.md) | commit 3b18eeb |
+| multiple windows | Per-agent worktrees instead of shared tree | intercom | RECOMMENDED (not enforced) | serial-B/A incident reports |
+| AGENT-3 (retro-T2) | UTC ISO alongside IST in every comms entry | process | ADOPTED by most windows | board entries |
+| AGENT-3 (retro-T2) | Quota ledger as artifact (llm_usage rollups surfaced in s8) | process | OPEN (logs/llm_usage.jsonl exists, not aggregated) | retro-T2 sec5 |
+| W3 = AGENT-3 | Guard-passed flags inside dashboard_data.json so s8 confidence reflects decontamination | arch | OPEN | RETRO_TIER3 sec5 |
+| W3 = AGENT-3 | HTTP-status awareness in FT semantic ladder (404 bodies pass today) | executor | OPEN | retro-T2 sec5; openlibrary js-nav cluster |
+| W3 = AGENT-3 | Blank-render browser-screenshot preflight before pipeline spend | process | OPEN (goodreads x2 + archive.org evidence) | RETRO_TIER3 sec5 |
+| FINAL-BATCH | Session-id matching beats url matching in provenance guard; extend PROVENANCE_FILE_RE to test_cases_*/state_*_visual_dom/exploration_history | arch | PARTIAL (97a29cb extended some classes; F4-05 fail-open confirmed live) | TASK_BOARD site-40 entry |
+| W3 = AGENT-3 | DEFECT #25: href-goto in llmClient executeAction bypasses external-domain guard | arch | OPEN (parked; repro runs/run_20260826_003258) | practica contamination report |
+| W1 (hn) | S4 must resolve parameterized hrefs (bare /item -> ?id=N) before composing cross-page navigates | fusion | OPEN (7 honest fails single root cause) | hackernews report |
+| W3 = AGENT-3 | Retry-once on Page.captureScreenshot protocol error in vision capture | executor | OPEN (gutenberg + dynamic_loading instances) | site reports |
+| W3 = AGENT-3 | External-link policy decision: record-and-stay vs block for foreign links | arch/process | OPEN (blocked sites lose coverage signal) | retro-T2 sec5 |
+| serial-B (D11) | Post-chain idempotency: refuse re-running S4/FT on an already-chained run dir without --force | process | PARTIAL (warning added @26325a8; hard refusal pending) | site-18 second-post incident |
+| W1 (site-36) | ARCH_A_TIMEOUT_MS=1500000 for mega-DOM class | arch | IMPLEMENTED (D7/D8b, validated guru99) | guru99 report |
+| AUDITOR (T401-c) | Census/scoreboard wording generated from INDEX rows by script, never hand-typed | process | OPEN (F5-01/F7-02 class) | AUDIT_T401_REPORT |
+| W4 (paper) | Fold verification-strength weighted pass rate alongside raw rate (D5 gate) | measurement | PARKED (spec exists PARALLEL_SPEC D5) | PARALLEL_SPEC |
+| backlog A1 | Goal-driven termination criteria (promote directives to hard stop conditions) | arch | DEMOTED P3 (auth-seed unblocked most value) | IMPROVEMENT_BACKLOG |
+| backlog A3 | Capability flags at S1 + executability filter v2 (fewer doomed FT offers) | fusion | PARKED T604 (human decision; revisit post-campaign) | TASK_BOARD T604 row |
+| backlog A6 | Shared token-bucket rate limiter across A/B/fusion children | process | PARTIAL (per-call 429 retry only) | PROJECT_MEMORY provider saga |
+| backlog A7 | Recorded-login replay propagation from catalog behaviors to FT executor | fusion | OPEN | IMPROVEMENT_BACKLOG |
+| backlog A5 | Identity reconciler (likely_same marking without merging) | research | PARKED (approval batch) | retro-T2 sec4 |
+| MASTER+AGENT-3 | Intercom v2: heartbeat leases + per-agent comms files + integrator aggregation | intercom | PARTIAL (comms files done; leases not) | D14 spec line |
+
+Ranking for V2 execution order lives in docs/V2_ROADMAP.md (created this
+commit); this table is the complete suggestion inventory.
