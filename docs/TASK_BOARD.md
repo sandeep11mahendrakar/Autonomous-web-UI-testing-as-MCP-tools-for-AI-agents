@@ -98,6 +98,28 @@ STILL OPEN POST-FREEZE: T609 MCP ground polish (claimed, serial-B in flight); hu
 [2026-08-27 14:2x IST] [serial-B/ox-alpha] *** D10 LANE F-02 DONE *** docs/AUTHORSHIP_CLAIM.md delivered: empty-graph diagnosis (dissolved PES mail + non-default-branch work, both GitHub attribution conditions failed) + 3 remediation paths w/ exact commands (1 add-PES-email if inbox lives / 2a config noreply + 2b git-filter-repo email-callback rewrite w/ SHA-change + force-push safety warnings + bundle backup step / 3 GitHub Support dissolved-mailbox route) + path-4 default-branch merge (required regardless) + verification checklist. Suites 157/157 green (docs-only change). Facts verified from repo before writing: user.email + author/committer addresses on recent commits.
 
 ## COMMS LOG (newest first)
+[2026-08-26 12:40 IST] [MASTER] *** DIRECTIVE D15 - FINAL SELF-SERVE ROUND (SUPERSEDES ALL PRIOR DIRECTIVES; THIS IS THE LAST ROUND) ***
+
+ROLE TABLE - every agent gets exactly one role:
+| ROLE | MISSION |
+|---|---|
+| WORKER | Claim OPEN tasks below in order T611 -> T612 -> T614 -> T615. One task per agent at a time. Finish fully (commit+push), mark DONE, claim next. |
+| SUB-MASTER | Integrator: after each worker DONE, pull --rebase backup after-tier-2, run suites, resolve conflicts, keep after-tier-2 shippable. You do NOT write features yourself. |
+| AUDITOR | Wait until all tasks DONE, then run final recomputation audit over the whole repo state and append verdict to docs/AUDIT_REPORT.md. |
+
+OPEN TASKS (claim in this order):
+T611 Complete SHIP_MANIFEST.md (keep/exclude GitHub push lists; exclude agent comms/logs/_TEMP_BIN/lockfiles/repeatability raw logs)
+T612 MCP beta release push (master-v1 branch + tag v1.0.0-mcp -> backup remote)
+T614 SYSTEM_IMPROVEMENTS.md consolidation + V2_ROADMAP.md (sources listed in prior D14 entry)
+T615 VALUE_ORACLE_SPEC.md recreation from mutation ANALYSIS findings (predicate schema, 3 worked examples, validator rules, executor paths, taxonomy, risks)
+
+COMPLETION CRITERIA (all must hold before any agent stops):
+[ ] T611/T612/T614/T615 DONE with commits on after-tier-2
+[ ] suites green: node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"
+[ ] zero QUARANTINED markers outstanding in INDEX
+[ ] AUDITOR verdict appended to docs/AUDIT_REPORT.md
+Then STOP. Human closes the project.
+
 [2026-08-27 14:41 IST / 2026-08-26T09:11:26.614Z] [W1/ox-alpha serial-1 = AGENT 1] *** F-02 DONE *** docs/AUTHORSHIP_CLAIM.md @ 18edfea: root causes grounded in git census (281/294 commits authored sandeep_mahendrakar.11@pes.edu - dissolved mailbox never linked to GitHub; plus non-default-branch visibility), repo-local user.email confirmed still set to the dead address. Three paths with exact commands: (1) Settings->Emails verification route, (2) noreply identity switch (ID lookup included; repo config command ready to paste) + scoped git-filter-repo rewrite touching ONLY the PES address w/ bundle-backup + force-push warnings, (3) GitHub Support dissolved-mailbox route w/ evidence checklist. Troubleshooting section covers empty-graph-after-fix, filter-repo fresh-clone abort, api 403 rate-limit, name-vs-email config. Suites 157/157 green pre-commit; pushed backup. LANE STATUS: F-01 DONE (mine), F-02 DONE (mine), F-03 CLAIMED by AGENT-3 -> no unclaimed lanes remain; W1 stopping per lane rules.
 
 [2026-08-27 14:36 IST / 2026-08-26T09:06:13.744Z] [W1/ox-alpha serial-1 = AGENT 1] F-LANE CLAIM: F-02 AUTHORSHIP CLAIM GUIDE -> docs/AUTHORSHIP_CLAIM.md. Grounded in verified git data: 281/294 commits authored sandeep_mahendrakar.11@pes.edu (dissolved PES mail, unlinked to GitHub account sandeep11mahendrakar); repo-local user.email STILL set to the dead address (will fix in path-2 instructions); teammates hold 13 commits under their own addresses - filter-repo guidance will scope ONLY the PES address. technical-writer skill loaded for structure. Zero quota, doc-only lane.
