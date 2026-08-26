@@ -9,7 +9,7 @@ raw artifacts.
 traces to a raw artifact; negative results are disclosed, not omitted; metrics
 are defined at first use; nothing here is estimated.
 
-**Last updated:** 2026-08-27 by W4/serial-D (T610). Canonical ledgers:
+**Last updated:** 2026-08-27 by W4/serial-D (T610; v1.1 post-freeze addendum below). Canonical ledgers:
 `testing/site_reports/INDEX.md` (per-site), `testing/CAMPAIGN_EVALUATION.md`
 (Tiers 1–2 aggregate), `testing/VISION_TEST_QUALITY.md` (vision rubric).
 
@@ -218,3 +218,14 @@ node testing/vision_test_quality.js
 node fusion/s8_campaign_eval.js
 node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"
 ```
+
+---
+
+## 11. POST-FREEZE ADDENDUM (v1.1, 2026-08-27)
+
+Dataset frozen at git tag `campaign-v2-end` after the post-freeze re-audit
+was signed off (zero open findings across five audit passes). Final census:
+**40 sites = 39 numbered INDEX rows + 1 pre-campaign reference (DemoQA,
+site #2)**. Dispositions: 29 cleared/scored, 7 blocked-honest, 4
+DO-NOT-CITE contamination-evidence (bbc F7-01 retraction, techlistic,
+practica, w3schools). D11 FT aggregate stands at the audited 13/18 = 72.2%.
