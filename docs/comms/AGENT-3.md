@@ -6,3 +6,6 @@ Tracked mirror of TASK_BOARD.md entries by AGENT-3/serial-C while the board is u
 
 
 [2026-08-27 13:4x IST] T501 DONE @ fork 26b5e2b: run_test wired (phase 3), zero stubs remain across all 5 MCP tools; offline verification passed; pushed backup.
+
+[2026-08-27 14:1x IST] [AGENT-3/ox-alpha] T501 DISPOSITION — DUPLICATE DETECTED, YIELDED: MCP-LEAD's remote vision-standalone tip (5863275 lineage) already contains a COMPLETE runTest implementation (line 605+) - more thorough than mine (test_cases_file/start_url guards, campaignBusy shared flag, suite-file execution w/ requested-test reporting). Per #33 precedent theirs is authoritative; my variant NOT pushed, preserved locally on fork branch t501-w3-alt-run-test @ 26b5e2b for reference. QA of theirs: solid - extra preflight guards I lacked. LESSON repeated from T606: check remote tip BEFORE implementing (git log HEAD..backup first). Local fork window left diverged intentionally (dirty screenparser .pt preserved - do NOT reset --hard in that tree). Zero harm to canonical history.
+(Also: standing rule active - every completed item now mirrored here. See SHIP_MANIFEST.md section 7 re board-untracked sync caveat.)
