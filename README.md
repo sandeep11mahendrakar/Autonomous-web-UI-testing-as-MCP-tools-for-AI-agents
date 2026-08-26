@@ -141,6 +141,10 @@ docs/      Audit report, readiness analysis, research paper draft, graphs
 runs/      Per-site artifacts (gitignored; regenerate via commands in reports)
 ```
 
-## License
+## License & Credits
 
-[MIT](LICENSE) © 2026 Team 101, PES University.
+[MIT](LICENSE) © 2026 sandeep11mahendrakar.
+
+_Acknowledgement: initial architecture concept (v0) developed in collaboration
+with Team 101, PES University; all implementation, evaluation, and documentation
+by the repository author._
