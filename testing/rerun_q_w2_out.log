@@ -1,5 +1,0 @@
-[rerun_q 2026-08-25T11:21:05.662Z] START pipeline docs_python (https://docs.python.org/3/) env={"MAX_STEPS":"25","MAX_STATES":"20","EXPLORE_MAX_STEPS":"25","EXPLORE_MAX_STATES":"20"}
-[rerun_q 2026-08-25T11:36:06.130Z] DONE pipeline docs_python took=15min
-[rerun_q 2026-08-25T11:36:06.239Z] attributed docs_python -> run_20260825_165105
-[rerun_q 2026-08-25T11:36:06.240Z] docs_python PIPELINE OK -> run_20260825_165105. Run "post docs_python" after fusion chain or include in next batch.
-[rerun_q 2026-08-25T11:36:06.241Z] batch finished
