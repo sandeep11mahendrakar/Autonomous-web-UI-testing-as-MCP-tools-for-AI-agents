@@ -938,3 +938,78 @@ side.** Remaining hygiene: fix the one stale D11 line (F8-01) and settle the
 working-tree drift (F8-02).
 
 *— POST-FREEZE RE-AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+# FULL-CAMPAIGN RECOMPUTATION, BETA→STABLE CHECKLIST & DELIVERABLE REVIEW (2026-08-26)
+
+Assignment: (1) fresh full-campaign recomputation over the final 40-row
+ledger, (2) BETA→STABLE requirements checklist, (3) independent review of
+four lane deliverables. Evidence: `docs/audit_evidence/E-T4-1_full_campaign_recompute.json`,
+`E-T4-2_deliverable_scan.txt`.
+
+## 1. Full-campaign recomputation — LEDGER VERIFIED, one stale aggregate found
+
+Parsed all **40/40** INDEX rows; every cleared row's raw artifacts read
+directly (`fusion/{catalog,fusion_report,ft_execution_results,dashboard_data}.json`);
+DO-NOT-CITE rows (27, 34, 35, 40) excluded from aggregates per quarantine
+policy; blocked-honest rows (8, 22, 24, 25, 29, 30, 31) carry no scored tests
+by design.
+
+| Tier | Scored runs w/ raw FT | FT live PASS | Rate | S4 accepted/offered | Max catalog |
+|---|---|---|---|---|---|
+| T1 (1–10) | 5 of 9 scored (4 honest-zero/legacy layouts) | 9/12 | 75.0% | 12/19 | 273 el |
+| T2 (11–20) | 9 of 10 (+ unified `un_` lambdatest stored off-layout) | 30/50 | 60.0% | 50/136 | 605 el |
+| T3+D9+batch (21–40) | 7 of 10 scored | 16/35 | 45.7% | 35/153 | 790 el |
+| **Campaign (raw-addressable)** | **21 runs** | **55/97** | **56.7%** | **97/308** | — |
+
+Foreign-host sweep across ALL cleared runs' catalogs + FT step URLs: only
+known/disclosed hits remain — 8s gitlab + 9 github (the-internet's own
+documented scope leak), 12 goodreads/zyte (quotes footer links), 33
+github/quora (F4-01 disclosure). **Zero undisclosed foreign hosts anywhere in
+the published ledger.** The Tier-2-era `testing/CAMPAIGN_EVALUATION.md`
+snapshot (37/60 = 61.7%, regenerated pre-Tier-3) no longer matches the
+current ledger by design — supersessions (#17 rerun etc.) changed the
+denominators; current-ledger figures above are the citable set.
+
+## 2. BETA→STABLE requirements checklist (v1.0.0-mcp → defensible stable 1.0)
+
+Severity-ranked; sources: `docs/MCP_READINESS.md` (3 BLOCKERs),
+value-oracle ceiling findings (VTQ 33/62 STRONG; row-32 verifier-gap), audit
+trail. "Shipped beta" = tag `v1.0.0-mcp` (5863275) on fork `master-v1`, with
+`run_test` now wired (`26b5e2b` — zero `-32006` stubs remain, offline harness
+`verify_run_test_offline.js` committed).
+
+| # | Sev | Requirement for stable 1.0 | Gap today |
+|---|---|---|---|
+| S1 | **BLOCKER** | Structural concurrency isolation: session-scoped storage dirs (kill the mtime shared-root sweep at `runBoth.js:274/285`) + dynamic service ports (`serviceManager.js:19-24`) + runBoth self-enforced singleton lock (PARALLEL_SPEC D3). Procedural purity gates caught every incident; stable needs it structurally impossible | Not started |
+| S2 | **BLOCKER** | Cross-platform service lifecycle: replace Windows-only `taskkill /T /F` (`runBoth.js:140,189`; `serviceManager.js:41`) with process-group kills; CI matrix proof on linux | Not started |
+| S3 | **BLOCKER** | Auth & key handling for non-local transport (MCP_READINESS blocker #2): per-token identity, keys never transit client | Not started (single-tenant stdio OK for local) |
+| S4 | **HIGH** | Verification floor: PASS requires ≥ MEDIUM-class verification (`execute_fusion_tests.js:248` PASS-default); body-text-only → PASS_WEAK excluded from headline rates; value assertions synthesized at S4 | Rubric exists; enforcement absent |
+| S5 | **HIGH** | Committed ONLINE E2E verification of all five MCP tools incl. `run_test` against a real run (current evidence is offline harness only); then author the still-missing `mcp/FINAL_REPORT.md` + `VERIFICATION.md` | Files absent since first flagged |
+| S6 | **MED** | Provider failover + circuit breaker beyond `llmProvider.js` 429 retries; per-run quota spend surfaced in dashboard | Usage JSONL exists; no failover |
+| S7 | **MED** | CI gate: suites + folder_purity fixture tree + regen-ledger bit-match on every push (windows/ubuntu matrix) | Local-only today |
+| S8 | **MED** | Flakiness pass (C4): ≥5 sites × 2 executions, per-stage variance published | Single-execution only |
+| S9 | **LOW** | Observability: structured `events.jsonl` per run alongside text logs | Text logs + memory_log exist |
+| S10 | **LOW** | A/B identity reconciliation epic (tiny common_elements gap); screenshot-diff oracle option | V2 backlog |
+
+Realistic sizing: S1–S3 ≈ 1.5–2 weeks (matches MCP_READINESS's own estimate);
+S4–S8 ≈ 2–3 weeks. **Stable 1.0 is defensible after P0+P1 of the roadmap in
+the previous section; before that, the shipped artifact should keep the
+"BETA / single-tenant research runner" label** — which the README already
+does.
+
+## 3. Lane deliverable review (overclaims vs artifacts)
+
+| Deliverable | Verdict | Notes |
+|---|---|---|
+| `testing/TIER2_MEGA_REPORT.md` | **ONE STALE AGGREGATE (MED)** | L247–248: "current registered runs … **27/40 (67.5%)**" contradicts raw recount **30/50 (60.0%)** (+unified lambdatest 4/5 → 34/55 = 61.8%); figure predates supersessions. Narrative/incident sections fully match the audit trail |
+| `docs/RETROSPECTIVE_TIER3.md` | **CLEAN, one stale line** | All scoreboard numbers match auditor recomputation; §recommendations still lists F5-01 as open though closed via retraction (`3c67d3f`) — cosmetic refresh |
+| `STUDENT_NOTES.md` (F-07) | **NOT DELIVERED** | Absent from disk; SUB-MASTER lane pending — gate must not assume it |
+| `docs/V2_ROADMAP.md` (F-08) | **NOT DELIVERED** | Same status |
+
+Also confirmed this pass: `run_test` wired in fork `26b5e2b` with zero stubs
+remaining and an offline verification harness — upgrades my earlier
+"run_test stub" finding to *implemented, online-E2E transcript pending* (S5).
+
+*— FULL-CAMPAIGN RECOMPUTE & STABLE-CHECKLIST AUDITOR (ox-alpha), 2026-08-26*

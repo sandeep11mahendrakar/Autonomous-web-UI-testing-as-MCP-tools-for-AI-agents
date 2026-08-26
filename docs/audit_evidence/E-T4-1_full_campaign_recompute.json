@@ -1,0 +1,214 @@
+{
+ "generatedAt": "2026-08-26T08:59:04.655Z",
+ "indexRowCount": 40,
+ "census": [
+  {
+   "num": "1",
+   "status": "CLEARED"
+  },
+  {
+   "num": "3",
+   "status": "CLEARED"
+  },
+  {
+   "num": "4",
+   "status": "CLEARED"
+  },
+  {
+   "num": "5",
+   "status": "CLEARED"
+  },
+  {
+   "num": "6",
+   "status": "CLEARED"
+  },
+  {
+   "num": "7",
+   "status": "CLEARED"
+  },
+  {
+   "num": "8",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "8s",
+   "status": "CLEARED"
+  },
+  {
+   "num": "9",
+   "status": "CLEARED"
+  },
+  {
+   "num": "10",
+   "status": "CLEARED"
+  },
+  {
+   "num": "11",
+   "status": "CLEARED"
+  },
+  {
+   "num": "12",
+   "status": "CLEARED"
+  },
+  {
+   "num": "13",
+   "status": "CLEARED"
+  },
+  {
+   "num": "14",
+   "status": "CLEARED"
+  },
+  {
+   "num": "15",
+   "status": "CLEARED"
+  },
+  {
+   "num": "16",
+   "status": "CLEARED"
+  },
+  {
+   "num": "17",
+   "status": "CLEARED"
+  },
+  {
+   "num": "18",
+   "status": "CLEARED"
+  },
+  {
+   "num": "19",
+   "status": "CLEARED"
+  },
+  {
+   "num": "20",
+   "status": "CLEARED"
+  },
+  {
+   "num": "22",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "24",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "29",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "21",
+   "status": "CLEARED"
+  },
+  {
+   "num": "23",
+   "status": "CLEARED"
+  },
+  {
+   "num": "26",
+   "status": "CLEARED"
+  },
+  {
+   "num": "27",
+   "status": "DO-NOT-CITE"
+  },
+  {
+   "num": "32",
+   "status": "CLEARED"
+  },
+  {
+   "num": "35",
+   "status": "DO-NOT-CITE"
+  },
+  {
+   "num": "37",
+   "status": "CLEARED"
+  },
+  {
+   "num": "28",
+   "status": "CLEARED"
+  },
+  {
+   "num": "25",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "30",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "31",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "33",
+   "status": "CLEARED"
+  },
+  {
+   "num": "34",
+   "status": "DO-NOT-CITE"
+  },
+  {
+   "num": "36",
+   "status": "CLEARED"
+  },
+  {
+   "num": "38",
+   "status": "CLEARED"
+  },
+  {
+   "num": "39",
+   "status": "BLOCKED"
+  },
+  {
+   "num": "40",
+   "status": "DO-NOT-CITE"
+  }
+ ],
+ "tiers": {
+  "T1": {
+   "runsRegistered": 10,
+   "runsWithFT": 5,
+   "ftTestsExecuted": 12,
+   "ftTestsPassed": 9,
+   "ftPassRate": "75.0%",
+   "ftSteps": "27/31",
+   "s4AcceptedOfOffered": "12/19",
+   "maxCatalogElements": 273,
+   "foreignHostFindings": [
+    "8s catalog:about.gitlab.com",
+    "8s ft:about.gitlab.com",
+    "9 catalog:github.com"
+   ],
+   "perRunFT": "1=2/3 fus37.5 | 3=0/1 fus14.3 | 4=4/4 fus40 | 5=no FT file fus0 | 6=no FT file fus0 | 7=no FT file fus0 | 8=BLOCKED | 8s=3/3 fus33.3 | 9=no FT file fus0 | 10=0/1 fus16.7"
+  },
+  "T2": {
+   "runsRegistered": 10,
+   "runsWithFT": 9,
+   "ftTestsExecuted": 50,
+   "ftTestsPassed": 30,
+   "ftPassRate": "60.0%",
+   "ftSteps": "67/88",
+   "s4AcceptedOfOffered": "50/136",
+   "maxCatalogElements": 605,
+   "foreignHostFindings": [
+    "12 ft:www.goodreads.com",
+    "12 ft:www.zyte.com"
+   ],
+   "perRunFT": "11=4/5 fus71.4 | 12=4/5 fus83.3 | 13=CLEARED | 14=1/8 fus88.9 | 15=4/4 fus80 | 16=5/8 fus100 | 17=3/3 fus60 | 18=4/4 fus80 | 19=5/6 fus60 | 20=0/7 fus87.5"
+  },
+  "T3": {
+   "runsRegistered": 20,
+   "runsWithFT": 7,
+   "ftTestsExecuted": 35,
+   "ftTestsPassed": 16,
+   "ftPassRate": "45.7%",
+   "ftSteps": "52/76",
+   "s4AcceptedOfOffered": "35/153",
+   "maxCatalogElements": 790,
+   "foreignHostFindings": [
+    "33 ft:github.com",
+    "33 ft:petehuntsposts.quora.com"
+   ],
+   "perRunFT": "22=BLOCKED | 24=BLOCKED | 29=BLOCKED | 21=3/7 fus87.5 | 23=3/5 fus83.3 | 26=1/8 fus100 | 27=DO-NOT-CITE | 32=1/3 fus42.9 | 35=DO-NOT-CITE | 37=CLEARED | 28=no FT file fus0 | 25=BLOCKED | 30=BLOCKED | 31=BLOCKED | 33=3/3 fus30 | 34=DO-NOT-CITE | 36=4/8 fus66.7 | 38=1/1 fus14.3 | 39=BLOCKED | 40=DO-NOT-CITE"
+  }
+ }
+}

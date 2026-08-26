@@ -1,0 +1,35 @@
+T401-d PART-3 evidence — lane deliverable overclaim scan (2026-08-26)
+
+1. testing/TIER2_MEGA_REPORT.md
+   L247-248 claim: "FT aggregate across the current registered runs of sites
+   11-20 is 27/40 PASS (67.5%)"
+   Auditor raw recount over the SAME scope (every registered run dir with a
+   readable ft_execution_results.json, incl. superseded-run replacements):
+     11=4/5, 12=4/5, 14=1/8, 15=4/4, 16=5/8, 17(rerun)=3/3, 18=4/4,
+     19=5/6, 20=0/7  =>  30/50 = 60.0%
+   (+ row 13 LambdaTest is a unified `un_` run stored outside runs/<id>/fusion;
+   adding its INDEX cell 4/5 gives 34/55 = 61.8%.)
+   => Published 27/40 (67.5%) matches NO reconstruction of the current ledger;
+      it predates the row-17/32-class supersessions. STALE NUMBER - MED.
+
+2. docs/RETROSPECTIVE_TIER3.md
+   Scoreboards match auditor-recomputed per-row values (21=3/7, 23=3/5,
+   26=1/8, 28 thin honest, 31 CF-526, 32=1/3 verifier-gap, 33=3/3).
+   ONE staleness: §recommendations L180 still lists "Close F5-01: chain or
+   reclassify #27 bbc_news" as open - it was closed (retracted DO-NOT-CITE,
+   commit 3c67d3f) after this doc was written. Cosmetic refresh needed.
+
+3. STUDENT_NOTES.md (F-07) and docs/V2_ROADMAP.md (F-08):
+   DO NOT EXIST on disk (board lanes owned by SUB-MASTER, not yet delivered).
+   Review = N/A pending delivery; flagged so the gate does not assume them.
+
+4. MCP surface state (context for BETA->STABLE checklist):
+   - Fork commit 26b5e2b wires run_test(run_id, test_id) -> executeTests.js,
+     serialized via shared busy flag, 10-min cap; "zero -32006 stubs remain";
+     offline verification script verify_run_test_offline.js committed
+     (typed NOT_FOUNDs + schema checks).
+   - Tag v1.0.0-mcp (5863275) pushed to backup remote.
+   - STILL ABSENT: mcp/FINAL_REPORT.md and mcp/VERIFICATION.md (both flagged
+     absent in the readiness verdict; nothing authored since).
+   - No committed ONLINE E2E transcript of run_test against a real run -
+     offline harness only.
