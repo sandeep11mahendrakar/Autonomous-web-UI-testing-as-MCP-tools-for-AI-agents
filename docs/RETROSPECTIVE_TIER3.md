@@ -2,8 +2,9 @@
 
 **Author:** W3 / serial-C (ox-alpha CLI window), following the
 `RETROSPECTIVE_TIER2.md` standard (same protocol, same section pattern).
-**Scope:** D6/D5/D8/D9 Tier-3 execution — 10 primary sites (21–30) plus the 5
-replacement spares (31–35) opened by DIRECTIVE D9 after 4 honest BLOCKEDs.
+**Scope:** D6/D5/D8/D9 Tier-3 execution — 10 primary sites (21–30), the 5
+replacement spares (31–35), AND the D11 final batch (36–40) — see Part C
+addendum at the end of this document.
 **Status:** FINAL for everything landed through commit `edfb999` lineage.
 All numbers artifact-sourced (`extract_run.js` snapshots,
 `folder_purity.js` outputs, per-run `dashboard_data.json`, board comms with
@@ -192,3 +193,76 @@ Per standing human decision (no architecture changes mid-campaign):
 `testing/site_reports/INDEX.md` (rows 21–35), `testing/extract_run_*.json`
 snapshots, `testing/tier3_w*.log`, TASK_BOARD directives D5–D9 + comms trail,
 `docs/AUDIT_REPORT.md` ADDENDUM, `docs/PARALLEL_SPEC.md`.
+
+---
+---
+
+# PART C — FINAL-BATCH ADDENDUM (sites 36–40, DIRECTIVE D11)
+
+Added after the D11 final batch closed. Same protocols, same evidence
+discipline; every number from `extract_run.js` snapshots + purity outputs.
+
+## C0. Scoreboard (36–40)
+
+| # | Site | Run | Verdict | FT live | Fusion attr. |
+|---|---|---|---|---|---|
+| 36 | Guru99 Bank demo | `run_20260826_020711` | ✅ CLEARED, purity PURE — manifest SUCCESS: **A 25 steps / 20 states completed** (D7 mega-DOM budget validated in production) | ✅ replay 1/1 PASS **STRONG** (input_value) | 8/18 accepted | 4/8 PASS (15/19 steps) | **66.7%** |
+| 37 | GlobalSQA Example Pages Hub | `un_20260826_023441` | ✅ CLEARED, purity PURE — A 25 steps / 18 states (`max_steps` cap; ext-nav guard ×4 blocked honestly); B replay 0/1 honest FAIL | **7/8 PASS** live | S4 8/10 grounded | **66.7%** |
+| 38 | Dynamic Loading Example 2 | `run_20260826_022742` | ✅ CLEARED, purity PURE — manifest **SUCCESS both archs**: A completed 87 s with **5 grounded tests**; B replay 1/1 PASS (weak ×1 disclosed, stale-prevented ×1) | **1/1 PASS** | **14.3%** (healthy-A shape) |
+| 39 | The Internet: Tables | `run_20260826_023111` | ✅ CLEARED, purity PURE — manifest SUCCESS both archs; A 3 steps/1 state completed; B replay 1/1 PASS (weak ×1 disclosed) | **1/1 PASS** | **14.3%** |
+| 40 | W3Schools tag_input reference | CONTAMINATION-SKIP HONEST — purity FAIL caught **foreign globalsqa page_keys** (defect #24 class struck again, late campaign); NOT patched to report/INDEX; evidence retained | – | – |
+
+**Final-batch tally: 4 CLEARED / 1 contamination-skip.** The single-widget
+heroku pages (#38, #39) produced byte-for-byte the same healthy-A shape
+(FT 1/1, fusion 14.3%) from two different windows — a repeatability data
+point the campaign never had before.
+
+## C1. Problems faced (36–40) — root causes and resolutions
+
+| Problem | Class | Root cause | Disposition |
+|---|---|---|---|
+| #40 foreign globalsqa page_keys in w3schools run | Attribution/stitching (defect #24 recurrence) | Shared storage + concurrent unlocked launches persisted to the last batch | Caught by purity gate → skip + evidence; structural fix remains the D1–D3 bundle (parked) |
+| guru99 A would have timed out under old 900 s budget | Budget class (Tier-3's dominant finding) | Mega-DOM exploration vs fixed orchestrator clock | **VALIDATED FIXED:** 25 steps/20 states completed under `ARCH_A_TIMEOUT_MS=1500000` — the D7/D8(b) decision is now production-proven, not just approved |
+| #37 A capped at `max_steps` (25) with ext-nav guard firing ×4 | Policy working as designed | Hub page is a link farm; every external edge blocked-and-recorded | Honest cap recorded; no leakage (purity PURE) |
+| #38 B-side trailing `Page.captureScreenshot` protocol fatal | Known gutenberg-class vision issue | Screenshot protocol error AFTER useful captures | Did not affect downstream artifacts; retry-once logged as post-freeze minor candidate |
+| Weak-signal passes again on widget pages (#38/#39 replays = body-text fallback) | Verification ceiling (mutation finding) | Delayed text has no input/state signal to verify strongly | Feeds value-oracle item; disclosed per taxonomy |
+
+## C2. What went right (final batch)
+
+1. **Zero quota wasted on unreachable sites** — mandatory pre-checks worked;
+   all five were HTTP 200 before any pipeline spend.
+2. **The D7 budget decision paid off exactly where predicted** — guru99's
+   25-step completion would have been another timeout-row under Tier-3's
+   original caps.
+3. **Cross-window repeatability evidence emerged for free**: two windows,
+   same-site-family runs (#38/#39), identical healthy-A outcome shapes.
+4. **Purity gate stayed sharp to the very end** — #40's catch proves the
+   stitching vector was still live even as discipline improved; guards, not
+   hope, closed the campaign.
+5. **STRONG verification appeared on guru99's B replay** (input_value) — the
+   strongest B signal of the tier, on the site with the most complete form
+   surface.
+
+## C3. Fixes applied during final batch
+
+- None required at pipeline level — both incidents (none new) were handled by
+  existing gates. Driver + budget work from earlier batches carried the batch.
+
+## C4. Suggestions carried forward (final-batch specific)
+
+1. #40 w3schools re-run is a cheap win once single-launch discipline holds —
+   reference page, static content, pre-check already green.
+2. The #38/#39 identical-shape result should be cited in the paper's
+   repeatability section as informal cross-window consistency evidence.
+3. B screenshot-fatal retry (gutenberg + dynamic_loading instances) is now
+   two occurrences — promote to minor-fix shortlist post-freeze.
+
+## C5. Tier-3 grand total (21–40)
+
+With the final batch folded in: **8 full clears** (21, 23, 26, 33, 36, 37,
+38, 39) + 1 thin-honest complete (28) out of 20 attempted rows, 6 BLOCKED-
+honest, 4 contamination-skips kept as evidence, 1 pending verdict (#27).
+Every non-clear row carries a named root cause and either a queued re-run
+path or an explicit park decision. No number in any ledger lacks provenance.
+
+— W3 / serial-C / ox-alpha, final-batch addendum appended 2026-08-26.
