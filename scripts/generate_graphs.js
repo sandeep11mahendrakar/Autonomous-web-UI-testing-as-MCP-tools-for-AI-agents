@@ -266,6 +266,350 @@ function buildPerceptionAsymmetry(sites) {
   return svg + '</svg>\n';
 }
 
+// ---------- zero-dependency PNG fallbacks (zlib + hand-rolled rasterizer) ----------
+
+const zlib = require('zlib');
+
+/* Classic 5x7 bitmap font (rows are 5-bit values, bit 4 = leftmost column). */
+const FONT_5X7 = {
+  A: [14, 17, 17, 31, 17, 17, 17], B: [30, 17, 17, 30, 17, 17, 30], C: [14, 17, 16, 16, 16, 17, 14],
+  D: [30, 17, 17, 17, 17, 17, 30], E: [31, 16, 16, 30, 16, 16, 31], F: [31, 16, 16, 30, 16, 16, 16],
+  G: [14, 17, 16, 23, 17, 17, 15], H: [17, 17, 17, 31, 17, 17, 17], I: [14, 4, 4, 4, 4, 4, 14],
+  J: [7, 2, 2, 2, 2, 18, 12], K: [17, 18, 20, 24, 20, 18, 17], L: [16, 16, 16, 16, 16, 16, 31],
+  M: [17, 27, 21, 21, 17, 17, 17], N: [17, 25, 21, 19, 17, 17, 17], O: [14, 17, 17, 17, 17, 17, 14],
+  P: [30, 17, 17, 30, 16, 16, 16], Q: [14, 17, 17, 17, 21, 18, 13], R: [30, 17, 17, 30, 20, 18, 17],
+  S: [15, 16, 16, 14, 1, 1, 30], T: [31, 4, 4, 4, 4, 4, 4], U: [17, 17, 17, 17, 17, 17, 14],
+  V: [17, 17, 17, 17, 17, 10, 4], W: [17, 17, 17, 21, 21, 27, 17], X: [17, 10, 4, 4, 4, 10, 17],
+  Y: [17, 17, 10, 4, 4, 4, 4], Z: [31, 1, 2, 4, 8, 16, 31],
+  '0': [14, 17, 19, 21, 25, 17, 14], '1': [4, 12, 4, 4, 4, 4, 14], '2': [14, 17, 1, 6, 8, 16, 31],
+  '3': [31, 2, 4, 2, 1, 17, 14], '4': [2, 6, 10, 18, 31, 2, 2], '5': [31, 16, 30, 1, 1, 17, 14],
+  '6': [6, 8, 16, 30, 17, 17, 14], '7': [31, 1, 2, 4, 8, 8, 8], '8': [14, 17, 17, 14, 17, 17, 14],
+  '9': [14, 17, 17, 15, 1, 2, 12], '%': [25, 26, 2, 4, 8, 11, 19], '/': [1, 1, 2, 4, 8, 16, 16],
+  '-': [0, 0, 0, 31, 0, 0, 0], '.': [0, 0, 0, 0, 0, 12, 12], ':': [0, 12, 12, 0, 12, 12, 0],
+  '(': [2, 4, 8, 8, 8, 4, 2], ')': [8, 4, 2, 2, 2, 4, 8], '+': [0, 4, 4, 31, 4, 4, 0],
+  '>': [8, 4, 2, 1, 2, 4, 8], '<': [2, 4, 8, 16, 8, 4, 2], '=': [0, 0, 31, 0, 31, 0, 0],
+  ' ': [0, 0, 0, 0, 0, 0, 0],
+};
+
+function makeCanvas(width, height) {
+  return { width, height, pixels: Buffer.alloc(width * height * 3, 0xff) };
+}
+
+function canvasFillRect(canvas, x, y, w, h, [r, g, b]) {
+  for (let row = y; row < y + h && row < canvas.height; row++) {
+    for (let col = x; col < x + w && col < canvas.width; col++) {
+      if (col < 0 || row < 0) continue;
+      const offset = (row * canvas.width + col) * 3;
+      canvas.pixels[offset] = r; canvas.pixels[offset + 1] = g; canvas.pixels[offset + 2] = b;
+    }
+  }
+}
+
+function canvasDrawLine(canvas, x1, y1, x2, y2, color, thickness = 2) {
+  const steps = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1), 1);
+  for (let i = 0; i <= steps; i++) {
+    const x = Math.round(x1 + ((x2 - x1) * i) / steps);
+    const y = Math.round(y1 + ((y2 - y1) * i) / steps);
+    canvasFillRect(canvas, x - thickness / 2, y - thickness / 2, thickness, thickness, color);
+  }
+}
+
+/** Uppercase-only bitmap text (fallback charts are English/ASCII by policy). */
+function canvasDrawText(canvas, text, x, y, color, scale = 2) {
+  let cursor = x;
+  for (const rawChar of String(text).toUpperCase()) {
+    const glyph = FONT_5X7[rawChar] || FONT_5X7[' '];
+    for (let row = 0; row < 7; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (glyph[row] & (1 << (4 - col))) {
+          canvasFillRect(canvas, cursor + col * scale, y + row * scale, scale, scale, color);
+        }
+      }
+    }
+    cursor += 6 * scale;
+  }
+  return cursor;
+}
+
+function measureText(text, scale = 2) {
+  return String(text).length * 6 * scale;
+}
+
+const CRC32_TABLE = (() => {
+  const table = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    table[n] = c >>> 0;
+  }
+  return table;
+})();
+
+function crc32(buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) crc = CRC32_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type, data) {
+  const len = Buffer.alloc(4);
+  len.writeUInt32BE(data.length);
+  const body = Buffer.concat([Buffer.from(type, 'ascii'), data]);
+  const crc = Buffer.alloc(4);
+  crc.writeUInt32BE(crc32(body));
+  return Buffer.concat([len, body, crc]);
+}
+
+/** Encode RGB canvas -> PNG bytes (color type 2, filter 0 per scanline). */
+function writePng(filePath, canvas) {
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(canvas.width, 0);
+  ihdr.writeUInt32BE(canvas.height, 4);
+  ihdr[8] = 8; // bit depth
+  ihdr[9] = 2; // color type RGB
+  const raw = Buffer.alloc(canvas.height * (canvas.width * 3 + 1));
+  for (let row = 0; row < canvas.height; row++) {
+    const dest = row * (canvas.width * 3 + 1);
+    raw[dest] = 0; // filter none
+    canvas.pixels.copy(raw, dest + 1, row * canvas.width * 3, (row + 1) * canvas.width * 3);
+  }
+  const png = Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    pngChunk('IHDR', ihdr),
+    pngChunk('IDAT', zlib.deflateSync(raw)),
+    pngChunk('IEND', Buffer.alloc(0)),
+  ]);
+  fs.writeFileSync(filePath, png);
+}
+
+/** Post-write integrity gate: signature, IHDR dims, inflated size == w*h*3 + h. */
+function verifyPngBytes(filePath, canvas) {
+  const bytes = fs.readFileSync(filePath);
+  const signatureOk = bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  const widthOk = bytes.readUInt32BE(16) === canvas.width;
+  const heightOk = bytes.readUInt32BE(20) === canvas.height;
+  const idatStart = bytes.indexOf(Buffer.from('IDAT', 'ascii'));
+  if (!signatureOk || !widthOk || !heightOk || idatStart < 0) {
+    throw new Error(`PNG integrity failed for ${filePath}`);
+  }
+  const idatLen = bytes.readUInt32BE(idatStart - 4);
+  const inflated = zlib.inflateSync(bytes.subarray(idatStart + 4, idatStart + 4 + idatLen));
+  const expected = canvas.height * (canvas.width * 3 + 1);
+  if (inflated.length !== expected) {
+    throw new Error(`PNG inflate size ${inflated.length} != expected ${expected} for ${filePath}`);
+  }
+}
+
+// ---------- architecture diagram (SVG + PNG) ----------
+
+const ARCH_NODES = [
+  { id: 'a', label: 'ARCH A - DOM EXPLORER', sub: 'web/ runBoth + Playwright', x: 60, y: 60, w: 250, h: 64 },
+  { id: 'b', label: 'ARCH B - VISION', sub: 'YOLO + OCR gateway (vision/)', x: 640, y: 60, w: 280, h: 64 },
+  { id: 's1', label: 'S1 CATALOG MERGE', sub: 'fusion/catalog.json', x: 350, y: 180, w: 260, h: 56 },
+  { id: 's2', label: 'S2 GAP REPORT', sub: 'uncovered elements/behaviors', x: 350, y: 270, w: 260, h: 52 },
+  { id: 's4', label: 'S4 FUSION SYNTHESIS', sub: 'LLM-composed grounded tests', x: 350, y: 356, w: 260, h: 52 },
+  { id: 'ft', label: 'FT LIVE EXECUTION', sub: 'Playwright replay + evidence', x: 680, y: 356, w: 240, h: 52 },
+  { id: 's6', label: 'S6 DASHBOARD', sub: 'dashboard_data.json + reports', x: 60, y: 356, w: 220, h: 52 },
+];
+
+const ARCH_EDGES = [
+  ['a', 's1'], ['b', 's1'], ['s1', 's2'], ['s2', 's4'], ['s4', 'ft'], ['ft', 's6'],
+];
+
+function buildArchDiagramSvg() {
+  const width = 980;
+  const height = 470;
+  let svg = svgOpen(width, height, 'System architecture: dual exploration + fusion pipeline');
+  svg += svgText(20, 28, 'System architecture - dual-explorer fusion testing pipeline', { size: 16, weight: 'bold' });
+  svg += `  <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#444444"/></marker></defs>\n`;
+
+  const centers = {};
+  for (const node of ARCH_NODES) {
+    centers[node.id] = { cx: node.x + node.w / 2, cy: node.y + node.h / 2 };
+    svg += `  <rect x="${node.x}" y="${node.y}" width="${node.w}" height="${node.h}" rx="8" fill="#eef3fb" stroke="#3b7dd8" stroke-width="2"/>\n`;
+    svg += svgText(node.x + node.w / 2, node.y + 24, node.label, { anchor: 'middle', size: 13, weight: 'bold', fill: '#1d4f91' });
+    svg += svgText(node.x + node.w / 2, node.y + 42, node.sub, { anchor: 'middle', size: 10, fill: '#555555' });
+  }
+  for (const [from, to] of ARCH_EDGES) {
+    const start = centers[from];
+    const end = centers[to];
+    const bendY = end.cy < start.cy ? start.cy + (end.cy - start.cy) / 2 : start.cy;
+    const midX = start.cx + (end.cx - start.cx) / 2;
+    const pathD =
+      from === 'a' || from === 'b'
+        ? `M ${start.cx} ${start.cy + 32} C ${start.cx} ${bendY}, ${end.cx} ${end.y - 20}, ${end.cx} ${end.y - 4}`
+        : `M ${start.cx} ${start.cy + 26} L ${midX} ${start.cy + 26} L ${midX} ${end.cy - 4} L ${end.cx} ${end.cy - 4}`;
+    // vertical chains use straight arrows into node top; side flows route via mid points
+    const d = from === 'a' || from === 'b'
+      ? pathD
+      : (Math.abs(start.cy - end.cy) < 5
+        ? `M ${start.cx + 130} ${start.cy} L ${end.cx - 6} ${end.cy}`
+        : pathD);
+    svg += `  <path d="${d}" fill="none" stroke="#444444" stroke-width="2" marker-end="url(#arr)"/>\n`;
+  }
+  svg += svgText(20, height - 12, 'Guards on every edge of evidence: strict run attribution + catalog domains + vision start_urls + folder purity', { size: 10, fill: '#777777' });
+  return svg + '</svg>\n';
+}
+
+function renderArchDiagramPng(filePath) {
+  const width = 980;
+  const height = 470;
+  const canvas = makeCanvas(width, height);
+  const blue = [59, 125, 216];
+  const dark = [34, 34, 34];
+  const gray = [85, 85, 85];
+  canvasDrawText(canvas, 'SYSTEM ARCHITECTURE - DUAL-EXPLORER FUSION PIPELINE', 20, 16, dark);
+
+  for (const node of ARCH_NODES) {
+    canvasFillRect(canvas, node.x, node.y, node.w, node.h, [238, 243, 251]);
+    for (let t = 0; t < 2; t++) {
+      canvasFillRect(canvas, node.x + t, node.y + t, node.w - t * 2, node.h - t * 2 - (node.h - t * 2 - 1), blue); // top+bottom lines
+      canvasFillRect(canvas, node.x + t, node.y + t, 1, node.h - t * 2, blue);
+      canvasFillRect(canvas, node.x + node.w - 1 - t, node.y + t, 1, node.h - t * 2, blue);
+    }
+    const labelScale = 2;
+    canvasDrawText(canvas, node.label, node.x + Math.max(6, (node.w - measureText(node.label, labelScale)) / 2), node.y + 12, [29, 79, 145], labelScale);
+    canvasDrawText(canvas, node.sub.toUpperCase(), node.x + Math.max(6, (node.w - measureText(node.sub, 1)) / 2), node.y + 34, gray, 1);
+  }
+  const centers = {};
+  for (const node of ARCH_NODES) centers[node.id] = { cx: node.x + node.w / 2, cy: node.y + node.h / 2 };
+  for (const [from, to] of ARCH_EDGES) {
+    const s = centers[from];
+    const e = centers[to];
+    if (from === 'a' || from === 'b') {
+      canvasDrawLine(canvas, s.cx, s.cy + 32, e.cx, e.y - 3, dark);
+    } else if (Math.abs(s.cy - e.cy) < 5) {
+      canvasDrawLine(canvas, s.cx + 130, s.cy, e.cx - 4, e.cy, dark);
+    } else {
+      canvasDrawLine(canvas, s.cx, s.cy + 26, e.cx, e.cy - 4, dark);
+    }
+  }
+  canvasDrawText(canvas, 'GUARDS ON EVERY EVIDENCE EDGE: STRICT ATTRIBUTION + DOMAIN CHECKS + FOLDER PURITY', 20, height - 22, [119, 119, 119], 1);
+  writePng(filePath, canvas);
+  verifyPngBytes(filePath, canvas);
+}
+
+
+
+/** Simplified horizontal bar chart fallback (labels uppercase, values annotated). */
+function renderBarChartPng(filePath, title, rows, footer) {
+  const rowHeight = 26;
+  const width = 760;
+  const height = rows.length * rowHeight + 90;
+  const canvas = makeCanvas(width, height);
+  const chartLeft = 300;
+  const chartWidth = 330;
+  canvasDrawText(canvas, title.toUpperCase(), 20, 14, [34, 34, 34]);
+  rows.forEach((row, i) => {
+    const y = 50 + i * rowHeight;
+    canvasDrawText(canvas, row.label.slice(0, 30), 8, y + 4, [85, 85, 85], 1);
+    const barWidth = Math.max(2, Math.round((row.value / 100) * chartWidth));
+    canvasFillRect(canvas, chartLeft, y, barWidth, rowHeight - 10, row.color || [59, 125, 216]);
+    canvasDrawText(canvas, row.annotation, chartLeft + chartWidth + 8, y + 4, [85, 85, 85], 1);
+  });
+  if (footer) canvasDrawText(canvas, footer.toUpperCase(), 20, height - 24, [119, 119, 119], 1);
+  writePng(filePath, canvas);
+  verifyPngBytes(filePath, canvas);
+}
+
+function renderDonutPng(filePath, segments, total, title) {
+  const size = 320;
+  const canvas = makeCanvas(size + 260, size + 40);
+  const center = size / 2;
+  const outer = 110;
+  const inner = 62;
+  canvasDrawText(canvas, title.toUpperCase(), 20, 14, [34, 34, 34]);
+  for (let py = 0; py < size; py++) {
+    for (let px = 0; px < size; px++) {
+      const dx = px - center;
+      const dy = py - center;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= outer && dist >= inner) {
+        let angle = Math.atan2(dy, dx) + Math.PI / 2;
+        if (angle < 0) angle += Math.PI * 2;
+        let acc = 0;
+        for (const seg of segments) {
+          const sweep = (seg.value / total) * Math.PI * 2;
+          if (angle >= acc && angle < acc + sweep) {
+            canvasFillRect(canvas, px, py, 1, 1, seg.color);
+            break;
+          }
+          acc += sweep;
+        }
+      }
+    }
+  }
+  segments.forEach((seg, i) => {
+    const y = 80 + i * 34;
+    canvasFillRect(canvas, size + 24, y - 12, 16, 16, seg.color);
+    canvasDrawText(canvas, `${seg.key}: ${seg.value} (${((seg.value / total) * 100).toFixed(1)}%)`, size + 48, y, [34, 34, 34], 1);
+  });
+  canvasDrawText(canvas, `${total} TESTS`, center - 30, size - 12, [34, 34, 34]);
+  writePng(filePath, canvas);
+  verifyPngBytes(filePath, canvas);
+}
+
+/** Emit same-basename .png fallbacks for every shipped SVG + verify raw bytes. */
+function generatePngFallbacks(sites, qualityCounts) {
+  const outDir = OUT_DIR;
+
+  const attributionRows = sites
+    .map((s) => ({ label: s.siteLabel, value: s.dashboard.headline.pct_final_tests_attributable_to_fusion || 0, annotation: `${s.dashboard.headline.pct_final_tests_attributable_to_fusion}%` }))
+    .sort((a, b) => b.value - a.value);
+  renderBarChartPng(path.join(outDir, 'fusion_attribution_by_site.png'), 'Fusion-attributable % of final tests', attributionRows,
+    `MEAN ${ (attributionRows.reduce((s, r) => s + r.value, 0) / attributionRows.length).toFixed(1) }% ACROSS ${attributionRows.length} SITES`);
+
+  const ftRows = sites
+    .filter((s) => s.dashboard.execution && s.dashboard.execution.available)
+    .map((s) => ({
+      label: s.siteLabel,
+      value: s.dashboard.execution.pass_rate,
+      color: s.dashboard.execution.pass_rate >= 75 ? [46, 158, 91] : s.dashboard.execution.pass_rate >= 40 ? [216, 165, 59] : [201, 79, 79],
+      annotation: `${s.dashboard.execution.passed}/${s.dashboard.execution.executed_tests}`,
+    }));
+  renderBarChartPng(path.join(outDir, 'ft_pass_rates.png'), 'FT live pass rate per site', ftRows,
+    'GREEN >=75 | AMBER >=40 | RED <40 - HONEST FAILURES ARE DATA');
+
+  const qualityTotal = qualityCounts.STRONG + qualityCounts.MEDIUM + qualityCounts.WEAK;
+  renderDonutPng(path.join(outDir, 'quality_rubric.png'), [
+    { key: 'STRONG', value: qualityCounts.STRONG, color: [46, 158, 91] },
+    { key: 'MEDIUM', value: qualityCounts.MEDIUM, color: [216, 165, 59] },
+    { key: 'WEAK', value: qualityCounts.WEAK, color: [201, 79, 79] },
+  ], qualityTotal, 'B-side test verification strength');
+
+  const asymSites = sites.filter((s) => s.dashboard.architecture_comparison);
+  const meanOf = (field, arch) =>
+    (asymSites.reduce((sum, s) => sum + (s.dashboard.architecture_comparison[arch][field] || 0), 0) / asymSites.length).toFixed(1);
+  const metrics = [
+    { name: 'ELEMENTS', a: Number(meanOf('elements_seen', 'a')), b: Number(meanOf('elements_seen', 'b')) },
+    { name: 'STATES', a: Number(meanOf('states', 'a')), b: Number(meanOf('states', 'b')) },
+    { name: 'TESTS', a: Number(meanOf('tests', 'a')), b: Number(meanOf('tests', 'b')) },
+    { name: 'BEHAVIORS', a: Number(meanOf('behaviors_seen', 'a')), b: Number(meanOf('behaviors_seen', 'b')) },
+  ];
+  const asymWidth = 720;
+  const asymCanvas = makeCanvas(asymWidth, 340);
+  const baseY = 280;
+  const maxScale = Math.max(...metrics.flatMap((m) => [m.a, m.b]), 1);
+  canvasDrawText(asymCanvas, `PERCEPTION ASYMMETRY - A VS B MEANS OVER ${asymSites.length} SITES`, 20, 14, [34, 34, 34]);
+  metrics.forEach((metric, i) => {
+    const x0 = 60 + i * 160;
+    const scaleH = (value) => Math.round((value / maxScale) * 180);
+    canvasFillRect(asymCanvas, x0, baseY - scaleH(metric.a), 46, scaleH(metric.a), [59, 125, 216]);
+    canvasDrawText(asymCanvas, String(metric.a), x0 + 10, baseY - scaleH(metric.a) - 18, [34, 34, 34], 1);
+    canvasFillRect(asymCanvas, x0 + 58, baseY - scaleH(metric.b), 46, scaleH(metric.b), [224, 123, 57]);
+    canvasDrawText(asymCanvas, String(metric.b), x0 + 68, baseY - scaleH(metric.b) - 18, [34, 34, 34], 1);
+    canvasDrawText(asymCanvas, metric.name, x0 + 20, baseY + 10, [85, 85, 85], 1);
+  });
+  canvasFillRect(asymCanvas, 60, 316, 14, 14, [59, 125, 216]);
+  canvasDrawText(asymCanvas, 'ARCH A (DOM)', 80, 318, [34, 34, 34], 1);
+  canvasFillRect(asymCanvas, 220, 316, 14, 14, [224, 123, 57]);
+  canvasDrawText(asymCanvas, 'ARCH B (VISION)', 240, 318, [34, 34, 34], 1);
+  writePng(path.join(outDir, 'perception_asymmetry.png'), asymCanvas);
+  verifyPngBytes(path.join(outDir, 'perception_asymmetry.png'), asymCanvas);
+
+  console.log('[generate_graphs] PNG fallbacks written + byte-verified (5 files)');
+}
+
 // ---------- main ----------
 
 function main() {
@@ -288,6 +632,11 @@ function main() {
   writeSvg('quality_rubric.svg', buildQualityRubric(extractQualityCounts(vtqMarkdown)));
 
   writeSvg('perception_asymmetry.svg', buildPerceptionAsymmetry(sites));
+
+  writeSvg('system_architecture.svg', buildArchDiagramSvg());
+
+  generatePngFallbacks(sites, extractQualityCounts(vtqMarkdown));
+  renderArchDiagramPng(path.join(OUT_DIR, 'system_architecture.png'));
 
   console.log('[generate_graphs] done.');
 }

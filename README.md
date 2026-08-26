@@ -28,23 +28,10 @@ no coordinates trusted blindly, no failures hidden.
 
 ## Architecture
 
-```
- Arch A (DOM)                Arch B (Vision)              Fusion
-┌──────────────────┐   ┌──────────────────────────┐   ┌─────────────────────┐
-│ Playwright DOM    │   │ Screenshot → YOLO11       │   │ S1 canonical catalog│
-│ extraction        │   │ ScreenParser (55 classes) │   │ (deterministic      │
-│ → LLM action loop │   │ + Tesseract OCR           │   │ merge of A+B)       │
-│ → memory log      │   │ → visual DOM JSON         │   │ S2 coverage gaps    │
-│ → grounded tests  │   │ → LLM agent loop          │   │ S4 grounded LLM     │
-│                   │   │ → coordinate replay w/    │   │ synthesis (1 call,  │
-│                   │   │   live re-detection       │   │ validator-gated)    │
-└─────────┬─────────┘   └──────────┬────────────────┘   │ FT live execution   │
-          └────────────────────────┼────────────────────┘ │ S6 dashboard        │
-                                   ▼                      ▼                     │
-                          ┌─────────────────────────────────────────┘
-                          ▼
-            runs/<run_id>/  (catalog · gaps · fusion tests · FT results · dashboard)
-```
+![System architecture](docs/artifacts/system_architecture.svg)
+
+*PNG fallbacks for every chart above live beside the SVGs at `docs/artifacts/<same-basename>.png` (rendered by `node scripts/generate_graphs.js`, zero dependencies).*
+
 
 **MCP server** (`new mcp testing ground/mcp/server.js` in the dev clone;
 [`vision-test-mcp` release](https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-/releases/tag/v1.0.0-mcp))
