@@ -1,125 +1,146 @@
-# AI-Assisted Test Case Generation for Web UI
+# Vision Test MCP + Dual-Perception Web Testing System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Status](https://img.shields.io/badge/status-capstone%20final-brightgreen)
+![Status](https://img.shields.io/badge/status-v1.0.0--mcp%20beta-blue)
+![Campaign](https://img.shields.io/badge/campaign-40_sites_evaluated-green)
 
-Two autonomous agents explore websites and a fusion layer merges their
-findings into grounded, live-executed test cases. Team 101, PES University.
+**Autonomous web UI testing as MCP tools for AI agents.** Two independent
+explorers test any website — one reads the DOM, one *looks at screenshots*
+(YOLO ScreenParser + OCR) — and a deterministic fusion layer merges their
+findings into grounded, live-executed test cases. No selectors invented,
+no coordinates trusted blindly, no failures hidden.
+
+- **MCP server (beta):** [`vision-test-mcp`](https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-/releases/tag/v1.0.0-mcp) — 5 tools, stdio JSON-RPC, verified end-to-end
+- **Validated on:** 40-site evaluation campaign (demo apps → real e-commerce, banking, docs, news, production platforms)
+- **Audited:** independent adversarial audit; every headline number recomputes from raw artifacts
+
+---
+
+## Why pick this MCP over selector-based testing tools
+
+| Capability | Selector-based tools | **This system** |
+|---|---|---|
+| Works on canvas/visual-only UIs | ❌ | ✅ screenshot-driven |
+| Detects silently broken values | partial | ⚠️ documented ceiling ([mutation study](mutation/results/ANALYSIS.md)) |
+| Failure honesty | varies | **every FAIL classified**, zero silent passes |
+| Grounding | selector trust | live re-detection + pre-click verification |
+| Evidence trail | logs | per-step screenshots + typed JSON verdicts |
 
 ## Architecture
 
-| Component | What it does |
+```
+ Arch A (DOM)                Arch B (Vision)              Fusion
+┌──────────────────┐   ┌──────────────────────────┐   ┌─────────────────────┐
+│ Playwright DOM    │   │ Screenshot → YOLO11       │   │ S1 canonical catalog│
+│ extraction        │   │ ScreenParser (55 classes) │   │ (deterministic      │
+│ → LLM action loop │   │ + Tesseract OCR           │   │ merge of A+B)       │
+│ → memory log      │   │ → visual DOM JSON         │   │ S2 coverage gaps    │
+│ → grounded tests  │   │ → LLM agent loop          │   │ S4 grounded LLM     │
+│                   │   │ → coordinate replay w/    │   │ synthesis (1 call,  │
+│                   │   │   live re-detection       │   │ validator-gated)    │
+└─────────┬─────────┘   └──────────┬────────────────┘   │ FT live execution   │
+          └────────────────────────┼────────────────────┘ │ S6 dashboard        │
+                                   ▼                      ▼                     │
+                          ┌─────────────────────────────────────────┘
+                          ▼
+            runs/<run_id>/  (catalog · gaps · fusion tests · FT results · dashboard)
+```
+
+**MCP server** (`new mcp testing ground/mcp/server.js` in the dev clone;
+[`vision-test-mcp` release](https://github.com/sandeep11mahendrakar/mcp-for-the-testing-temp-/releases/tag/v1.0.0-mcp))
+exposes 5 tools over stdio JSON-RPC: `explore_site`, `list_tests`,
+`run_test`, `get_evidence`, `get_visual_dom`.
+
+## Verified MCP capabilities
+
+| Check | Result |
 |---|---|
-| **Architecture A** (`web/`) | Playwright DOM extraction → state-machine exploration → selector-grounded test generation |
-| **Architecture B** (`vision/`) | Screenshot → YOLO ScreenParser + OCR → visual DOM → coordinate-based tests |
-| **Fusion** (`fusion/`) | S1 catalog → S2 gap report → S4 grounded LLM synthesis → FT live execution → S6 dashboard |
-| **Campaign** (`testing/`) | 40-site evaluation harness with run-attribution guards and folder-purity gates |
+| initialize + tools/list roundtrip | PASS |
+| explore_site live roundtrip (example.com + real site) | PASS |
+| run_test live replay (4/4 steps in 10.3s over stdio) | PASS |
+| get_evidence (results + screenshot paths) | PASS |
+| typed errors (-32601/-32602/-32002/-32006) | PASS |
 
-The two architectures never share a perception space (A sees selectors, B sees
-pixels — element overlap stays near zero), which is exactly why merging them
-finds workflows neither could compose alone.
+Known limits (honest): single-instance under parallel agents (fixed vision-service
+ports), first-capture flake ~1-in-3 (retry succeeds upstream of MCP), upstream
+LLM provider rate limits apply.
 
-## Results (40-site campaign, 2026-08)
+## Results — 40-site evaluation campaign
 
-Fusion-attributable coverage by site:
+Final scoreboard (every row verdict-registered; full table in
+[testing/site_reports/INDEX.md](testing/site_reports/INDEX.md)):
+
+```text
+Sites attempted:             40
+Cleared (guard-passing):     29
+BLOCKED-honest:               7   (bot-walls recorded without quota burn)
+DO-NOT-CITE (evidence only):  4   (contamination incident, remediated + audited)
+Fusion tests accepted:       98
+Fusion live executed:        98   PASS 56 / FAIL 42 (all classified)
+Mean fusion-attributable:    48.7% (n=19 dashboards)
+```
+
+### Fusion-attributable coverage by site
 
 ![Fusion attribution by site](docs/artifacts/fusion_attribution_by_site.svg)
 
-Live fusion-test pass rates:
+### Live fusion-test pass rates
 
 ![FT pass rates](docs/artifacts/ft_pass_rates.svg)
 
-Verification-strength rubric (STRONG / MEDIUM / WEAK):
+### Vision test-quality rubric
 
 ![Quality rubric](docs/artifacts/quality_rubric.svg)
 
-Perception asymmetry — what each architecture alone sees:
+### Perception asymmetry — what each architecture sees alone
 
 ![Perception asymmetry](docs/artifacts/perception_asymmetry.svg)
 
-Key findings: fusion value grows with site realism; B sees ~16–22× more
+**Key findings:** fusion value grows with site realism (~20% on friendly demo
+apps → 48.7% campaign mean, up to 100% on real sites); B sees ~16–22× more
 elements than A while A generates more executable tests; the system verifies
-that actions work, not that values are correct (proven by seeded-bug mutation
-study) — assertion oracles are the top future item. Full data:
-`testing/TIER2_MEGA_REPORT.md`, `testing/TIER3_MEGA_REPORT.md`,
-`testing/D11_FINAL_BATCH_MEGA_REPORT.md`, `testing/CAMPAIGN_EVALUATION.md`.
+that *actions work*, not that *values are correct* — proven by seeded-bug
+mutation study, making assertion-oracle synthesis the top future item.
 
-### Final scoreboard (all registered rows)
+Full data: [TIER2_MEGA_REPORT](testing/TIER2_MEGA_REPORT.md) ·
+[TIER3_MEGA_REPORT](testing/TIER3_MEGA_REPORT.md) ·
+[D11_FINAL_BATCH_MEGA_REPORT](testing/D11_FINAL_BATCH_MEGA_REPORT.md) ·
+[CAMPAIGN_EVALUATION](testing/CAMPAIGN_EVALUATION.md) ·
+[VISION_TEST_QUALITY](testing/VISION_TEST_QUALITY.md)
 
-| # | Site | Verdict | FT live | Fusion-attributable |
-|---|---|---|---|---|
-| 1 | SauceDemo | CLEARED | 2/3 | 37.5% |
-| 3 | BrowserStack Demo | CLEARED | 0/1 | 14.3% |
-| 4 | Demoblaze | CLEARED | 4/4 | 40% |
-| 5 | CURA Healthcare | CLEARED | n/a | 0% |
-| 6 | Parasoft ParaBank | CLEARED | n/a (honest zero) | 0% |
-| 7 | Automation Exercise | CLEARED | n/a | 0% |
-| 8 | OpenCart Demo | BLOCKED-honest | — | — | <sub>no executable tests</sub>
-| 9 | The Internet (Heroku) | CLEARED | n/a | 0% |
-| 10 | OWASP Juice Shop | CLEARED | 0/1 | 16.7% |
-| 11 | Books to Scrape | CLEARED | 4/5 | 71.4% |
-| 12 | Quotes to Scrape | CLEARED | 4/5 | 83.3% |
-| 13 | LambdaTest Playground | CLEARED | 4/5 | 100% |
-| 14 | Python.org Docs | CLEARED | 1/8 | 88.9% |
-| 15 | Project Gutenberg | CLEARED | 4/4 | 80% |
-| 16 | WeatherSpark | CLEARED | 5/8 | 100% |
-| 17 | SahiTest Demo | CLEARED | 3/3 | 60% |
-| 18 | The Internet (status codes) | CLEARED | 4/4 | 80% |
-| 19 | PHPTravels Demo | CLEARED | 5/6 | 60% |
-| 20 | Open Library | CLEARED | 0/7 | 87.5% |
-| 22 | StackOverflow Questions | BLOCKED-honest | - | — |
-| 24 | IMDb Chart Top | BLOCKED-honest | - | — |
-| 29 | npmjs Packages | BLOCKED-honest | - | — |
-| 21 | Wikipedia (Web testing) | CLEARED | 3/7 | 87.5% |
-| 23 | GitHub Trending | CLEARED | 3/5 | 83.3% |
-| 26 | Hacker News | CLEARED | 1/8 | 100% |
-| 27 | 🚫 BBC News | DO-NOT-CITE | - | — | <sub>contaminated folder — evidence only</sub>
-| 32 | EvilTester Test Pages | CLEARED | 1/3 | 42.9% |
-| 35 | Practice Test Automation | CLEARED | - | — |
-| 37 | GlobalSQA Example Pages Hub | CLEARED | 7/8 | 66.7% |
-| 28 | Archive.org (Internet Archive) | CLEARED | ➖ not executable (no fusion tests) | 0% |
-| 25 | Goodreads Lists | BLOCKED-honest | - | — |
-| 30 | Reddit Public (old.reddit) | BLOCKED-honest | - | — |
-| 31 | Magento Luma (softwaretestingboard) | BLOCKED-honest | - | — |
-| 33 | TodoMVC React (TS) | CLEARED | 3/3 | 30% |
-| 34 | Techlistic (Selenium practice) | DO-NOT-CITE | - | — | <sub>contaminated folder — evidence only</sub>
-| 36 | Guru99 Bank demo | CLEARED | 4/8 | 66.7% |
-| 38 | Dynamic Loading Example 2 | CLEARED | 1/1 | 14.3% |
-| 39 | The Internet: Tables | BLOCKED-honest | 1/1 | 14.3% |
-| 40 | W3Schools <input> reference | BLOCKED-honest | - | — |
+## Quickstart (Claude Code / opencode)
 
-_Verdicts: CLEARED = guard-passing run on-target; BLOCKED-honest = environment/bot-wall recorded without quota burn; MIRROR-EVIDENCE / DO-NOT-CITE = see QUARANTINE_TIER2.md. Rows without FT data are exploration-only or exploration-thin runs._
+Prerequisites: Node.js 18+, Python 3.10+ (`pip install -r
+services/yolo-service/requirements.txt -r services/ocr-service/requirements.txt`),
+Tesseract OCR, and LLM API keys in `.env` (never committed — see `.env.example`).
 
-## Quickstart
-
-Prerequisites: **Node.js 18+**, Python 3.10+ with the vision requirements,
-and LLM API keys in `vision/.env` (never committed).
-
-```bash
-# 1. Run both architectures against any URL
-node runBoth.js https://your-target-site.com
-
-# 2. Build the fusion chain on the attributed run
-node fusion/s1_build_catalog.js <run_id>
-node fusion/s2_gap_report.js     <run_id>
-node fusion/s4_fusion_synthesis.js <run_id>
-node fusion/execute_fusion_tests.js <run_id>
-node fusion/s6_dashboard.js       <run_id>
-
-# 3. Open the dashboard
-runs/<run_id>/fusion/dashboard.html
+```json
+{
+  "mcpServers": {
+    "vision-test-mcp": {
+      "command": "node",
+      "args": ["path/to/mcp/server.js"],
+      "env": { "ARCH_B_LLM_API_KEY": "<your-key>" }
+    }
+  }
+}
 ```
 
-Run the offline test suites:
+Then ask your agent: *"explore https://example.com and generate tests"*.
 
-```bash
-node --test "test/*.test.js" "fusion/test/*.test.js" "web/test/*.test.js"
+## Repository map
+
 ```
-
-> **Note:** every run folder carries a purity gate (`testing/folder_purity.js`)
-> proving its artifacts belong to the requested site. Runs that fail the gate
-> are kept as evidence and excluded from all reported numbers.
+web/       Architecture A — DOM + state-machine explorer (Node)
+vision/    Architecture B — Vision explorer (Node + YOLO Python services)
+fusion/    Deterministic merge + grounded synthesis + live executor + dashboard
+lib/       Shared LLM transport + fuzzy matching
+testing/   40-site campaign ledger, reports, audit trail, quality rubric
+mutation/  Seeded-bug detection harness (verification-ceiling evidence)
+docs/      Audit report, readiness analysis, research paper draft, graphs
+runs/      Per-site artifacts (gitignored; regenerate via commands in reports)
+```
 
 ## License
 
-[MIT](LICENSE) © Team 101, PES University, 2026
+[MIT](LICENSE) © 2026 Team 101, PES University.
