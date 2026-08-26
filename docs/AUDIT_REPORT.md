@@ -1013,3 +1013,27 @@ remaining and an offline verification harness — upgrades my earlier
 "run_test stub" finding to *implemented, online-E2E transcript pending* (S5).
 
 *— FULL-CAMPAIGN RECOMPUTE & STABLE-CHECKLIST AUDITOR (ox-alpha), 2026-08-26*
+
+---
+
+## D15 FINAL VERDICT (appended by serial-B/ox-alpha, 2026-08-27 ~16:1x IST)
+
+Scope: completion-criteria recomputation over the final repo state after all
+four D15 tasks landed. All checks re-executed live, not read from prose.
+
+| Criterion | Result | Evidence |
+|---|---|---|
+| T611 SHIP_MANIFEST done | PASS | docs/SHIP_MANIFEST.md (AGENT-3 census 334 files) + W1 execution (82 untracked, re-census 260, commit in 467cb80 lineage) |
+| T612 MCP beta release pushed | PASS | ground remote backup has master-v1 @ 3884238 + tag v1.0.0-mcp @ 5863275 (ls-remote verified this window) |
+| T614 SYSTEM_IMPROVEMENTS + V2_ROADMAP | PASS | 8f93a0e (consolidated M/W/A/S rows -> R1-R12, zero dropped); V2_ROADMAP restored from e11f646 |
+| T615 VALUE_ORACLE_SPEC | PASS | 1c43fbc (schema + 3 worked examples from real variants + V-ORACLE-001..005 + taxonomy + acceptance criteria) |
+| suites green | PASS | node --test test/fusion/web = 157 tests, 157 pass, 0 fail (re-run this window) |
+| zero QUARANTINED markers in INDEX | PASS | grep census = 0 |
+| Authorship/recovery docs | PASS | AUTHORSHIP_CLAIM.md @ 56057fb (F-02) |
+
+Caveats carried honestly (not blockers): tag v1.0.0-mcp sits one docs-commit
+before tip (T609 stamp 3884238) — re-tag if Master wants it at tip; row 27
+bbc remains DO-NOT-CITE by design; section-4 REVIEW items of the ship
+manifest remain Master-gated.
+
+VERDICT: ALL D15 COMPLETION CRITERIA MET. Project ready for human close.
